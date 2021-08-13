@@ -1,7 +1,8 @@
 import React from "react";
 import { Styles } from "./style";
-import { useTable, useRowSelect, Column } from "react-table";
+import { useTable, useRowSelect, Column, useGlobalFilter } from "react-table";
 import { IndeterminateCheckbox } from "./IndeterminateCheckbox";
+import { Searchbar } from "./SearchBar";
 
 type Props = {
   columns: Column<object>[];
@@ -10,51 +11,68 @@ type Props = {
 
 export const Table = ({ columns, data }: Props) => {
   // Use the state and functions returned from useTable to build your UI
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable(
-      {
-        columns,
-        data,
-      },
-      useRowSelect,
-      (hooks) => {
-        hooks.visibleColumns.push((columns) => [
-          // Let's make a column for selection
-          {
-            id: "selection",
-            // The header can use the table's getToggleAllRowsSelectedProps method
-            // to render a checkbox
-            Header: ({
-              getToggleAllRowsSelectedProps,
-            }: {
-              getToggleAllRowsSelectedProps: () => void;
-            }) => (
-              <div>
-                {
-                  // @ts-ignore
-                  <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-                }
-              </div>
-            ),
-            // The cell can use the individual row's getToggleRowSelectedProps method
-            // to the render a checkbox
-            Cell: ({ row }) => (
-              <div>
-                <IndeterminateCheckbox
-                  //@ts-ignore
-                  {...row.getToggleRowSelectedProps()}
-                />
-              </div>
-            ),
-          },
-          ...columns,
-        ]);
-      }
-    );
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    // @ts-ignore
+    preGlobalFilteredRows,
+    // @ts-ignore
+    setGlobalFilter,
+    state,
+  } = useTable(
+    {
+      columns,
+      data,
+    },
+    useRowSelect,
+    (hooks) => {
+      hooks.visibleColumns.push((columns) => [
+        // Let's make a column for selection
+        {
+          id: "selection",
+          // The header can use the table's getToggleAllRowsSelectedProps method
+          // to render a checkbox
+          Header: ({
+            getToggleAllRowsSelectedProps,
+          }: {
+            getToggleAllRowsSelectedProps: () => void;
+          }) => (
+            <div>
+              {
+                // @ts-ignore
+                <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+              }
+            </div>
+          ),
+          // The cell can use the individual row's getToggleRowSelectedProps method
+          // to the render a checkbox
+          Cell: ({ row }) => (
+            <div>
+              <IndeterminateCheckbox
+                //@ts-ignore
+                {...row.getToggleRowSelectedProps()}
+              />
+            </div>
+          ),
+        },
+        ...columns,
+      ]);
+    },
+    useGlobalFilter
+  );
 
   // Render the UI for your table
   return (
     <Styles>
+      <Searchbar
+        preGlobalFilteredRows={preGlobalFilteredRows}
+        // @ts-ignore
+        globalFilter={state.globalFilter}
+        setGlobalFilter={setGlobalFilter}
+      />
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
