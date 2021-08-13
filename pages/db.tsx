@@ -45,5 +45,10 @@ export default function Database({}: Props) {
     return <p>Oops there is no database</p>;
   }
 
-  return <Table columns={columns} data={database} />;
+  return (
+    <div>
+      <h2>Estimator</h2>
+      <Table columns={columns} data={database} />;
+    </div>
+  );
 }
