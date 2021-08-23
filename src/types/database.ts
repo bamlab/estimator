@@ -10,4 +10,5 @@ export type Field = {
   archi: string;
   epic: string;
   sales: string;
+  details: string;
 };

@@ -4,7 +4,7 @@ import Loader from "react-loader-spinner";
 import { useQuery } from "react-query";
 import { Table } from "../src/components/Table";
 import { fetchAllRecords } from "../src/queries/fetchAllRecords";
-import { Field } from "../src/types/database";
+import { columns } from "../src/constants/columns";
 
 export const getServerSideProps = async () => {
   return {
@@ -17,24 +17,6 @@ type Props = {
 };
 
 export default function Database({}: Props) {
-  const columns: { Header: string; accessor: keyof Field }[] = React.useMemo(
-    () => [
-      {
-        Header: "Feature",
-        accessor: "feature",
-      },
-      {
-        Header: "EPIC",
-        accessor: "epic",
-      },
-      {
-        Header: "Tribe",
-        accessor: "tribe",
-      },
-    ],
-    []
-  );
-
   const { data: database, isLoading } = useQuery("database", fetchAllRecords);
 
   if (isLoading) {
