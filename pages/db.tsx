@@ -14,9 +14,9 @@ import {
   useTable,
 } from "react-table";
 import { useHooks } from "../src/components/Table/useHooks";
-import { fuzzyTextFilterFn } from "../src/components/Table/filters/fuzzyTextFilter";
-import { DefaultColumnFilter } from "../src/components/Table/filters/DefaultColumnFilter";
 import { Field } from "../src/types/database";
+import { filterTypes } from "../src/components/Table/options/filterTypes";
+import { defaultColumn } from "../src/components/Table/options/defaultColumn";
 
 export const getServerSideProps = async () => {
   return {
@@ -37,28 +37,6 @@ export default function Database({}: Props) {
   const { data: database, isLoading } = useQuery("database", fetchAllRecords);
 
   const [activeId, setActiveId] = useState(tabOptions[0].id);
-
-  const defaultColumn = React.useMemo(
-    () => ({
-      // Let's set up our default Filter UI
-      Filter: DefaultColumnFilter,
-    }),
-    []
-  );
-
-  // Let the table remove the filter if the string is empty
-  // @ts-ignore
-  fuzzyTextFilterFn.autoRemove = (val) => !val;
-
-  const filterTypes = React.useMemo(
-    () => ({
-      // Add a new fuzzyTextFilterFn filter type.
-      fuzzyText: fuzzyTextFilterFn,
-      // Or, override the default text filter to use
-      // "startWith"
-    }),
-    []
-  );
 
   const { selectedFlatRows, ...tableInstance } = useTable<Field>(
     // @ts-ignore
