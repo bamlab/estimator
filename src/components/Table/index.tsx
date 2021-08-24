@@ -1,73 +1,21 @@
 import React from "react";
 import { Styles } from "./style";
-import {
-  useTable,
-  useRowSelect,
-  Column,
-  useGlobalFilter,
-  useFilters,
-} from "react-table";
+import { TableInstance } from "react-table";
 import { Searchbar } from "./SearchBar";
-import { fuzzyTextFilterFn } from "./filters/fuzzyTextFilter";
-import { DefaultColumnFilter } from "./filters/DefaultColumnFilter";
 import { Field } from "../../types/database";
-import { useHooks } from "./useHooks";
 
-type Props = {
-  columns: Column<Field>[];
-  data: Field[];
-};
-
-export const Table = ({ columns, data }: Props) => {
-  const defaultColumn = React.useMemo(
-    () => ({
-      // Let's set up our default Filter UI
-      Filter: DefaultColumnFilter,
-    }),
-    []
-  );
-
-  // Let the table remove the filter if the string is empty
+export const Table = ({
+  getTableProps,
+  getTableBodyProps,
+  headerGroups,
+  rows,
+  prepareRow,
   // @ts-ignore
-  fuzzyTextFilterFn.autoRemove = (val) => !val;
-
-  const filterTypes = React.useMemo(
-    () => ({
-      // Add a new fuzzyTextFilterFn filter type.
-      fuzzyText: fuzzyTextFilterFn,
-      // Or, override the default text filter to use
-      // "startWith"
-    }),
-    []
-  );
-
-  // Use the state and functions returned from useTable to build your UI
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    // @ts-ignore
-    preGlobalFilteredRows,
-    // @ts-ignore
-    setGlobalFilter,
-    state,
-  } = useTable(
-    //@ts-ignore
-    {
-      columns,
-      data,
-      // @ts-ignore
-      defaultColumn,
-      filterTypes,
-    },
-    useHooks,
-    useFilters,
-    useGlobalFilter,
-    useRowSelect
-  );
-
+  preGlobalFilteredRows,
+  // @ts-ignore
+  setGlobalFilter,
+  state,
+}: TableInstance<Field>) => {
   // Render the UI for your table
   return (
     <Styles>
