@@ -6,13 +6,13 @@ import {
   Column,
   useGlobalFilter,
   useFilters,
-  Row,
 } from "react-table";
-import { IndeterminateCheckbox } from "./IndeterminateCheckbox";
 import { Searchbar } from "./SearchBar";
 import { fuzzyTextFilterFn } from "./filters/fuzzyTextFilter";
 import { DefaultColumnFilter } from "./filters/DefaultColumnFilter";
 import { Field } from "../../types/database";
+import { useHooks } from "./useHooks";
+
 type Props = {
   columns: Column<Field>[];
   data: Field[];
@@ -62,40 +62,7 @@ export const Table = ({ columns, data }: Props) => {
       defaultColumn,
       filterTypes,
     },
-
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => [
-        // Let's make a column for selection
-        {
-          id: "selection",
-          // The header can use the table's getToggleAllRowsSelectedProps method
-          // to render a checkbox
-          Header: ({
-            getToggleAllRowsSelectedProps,
-          }: {
-            getToggleAllRowsSelectedProps: () => void;
-          }) => (
-            <div>
-              {
-                // @ts-ignore
-                <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-              }
-            </div>
-          ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
-          // to the render a checkbox
-          Cell: ({ row }: { row: Row }) => (
-            <div>
-              {
-                // @ts-ignore
-                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-              }
-            </div>
-          ),
-        },
-        ...columns,
-      ]);
-    },
+    useHooks,
     useFilters,
     useGlobalFilter,
     useRowSelect
