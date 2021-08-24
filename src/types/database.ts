@@ -12,3 +12,10 @@ export type Field = {
   sales: string;
   details: string;
 };
+
+export interface EstimatedField extends Field {
+  type: "A" | "B" | "C";
+  exclude: string | null;
+  dependencies: string | null;
+  batch: string;
+}

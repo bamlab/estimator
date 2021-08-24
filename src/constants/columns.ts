@@ -1,8 +1,8 @@
 import { Column } from "react-table";
 import { SelectColumnFilter } from "../components/Table/filters/SelectColumnFilter";
-import { Field } from "../types/database";
+import { EstimatedField, Field } from "../types/database";
 
-export const columns: Column<Field>[] = [
+export const databaseColumns: Column<Field>[] = [
   {
     Header: "Feature",
     accessor: "feature",
@@ -36,23 +36,64 @@ export const columns: Column<Field>[] = [
     defaultCanFilter: true,
   },
   {
-    Header: "Estim. Front Min",
+    Header: "Estim. Front Min (JH)",
     accessor: "estimationFrontMin",
     defaultCanFilter: false,
   },
   {
-    Header: "Estim. Front Max",
+    Header: "Estim. Front Max (JH)",
     accessor: "estimationFrontMax",
     defaultCanFilter: false,
   },
   {
-    Header: "Estim. Back Min",
+    Header: "Estim. Back Min (JH)",
     accessor: "estimationBackMin",
     defaultCanFilter: false,
   },
   {
-    Header: "Estim. Back Max",
+    Header: "Estim. Back Max (JH)",
     accessor: "estimationBackMax",
     defaultCanFilter: false,
+  },
+];
+
+export const estimationColumns: Column<EstimatedField>[] = [
+  { Header: "Type", accessor: "type" },
+  {
+    Header: "EPIC",
+    accessor: "epic",
+  },
+  {
+    Header: "Feature",
+    accessor: "feature",
+  },
+  {
+    Header: "Tâches techniques incluses",
+    accessor: "details",
+  },
+  { Header: "Préciser ce qui n'est pas dans le scope", accessor: "exclude" },
+  {
+    Header: "Estim. Front Min (JH)",
+    accessor: "estimationFrontMin",
+  },
+  {
+    Header: "Estim. Front Max (JH)",
+    accessor: "estimationFrontMax",
+  },
+  {
+    Header: "Estim. Back Min (JH)",
+    accessor: "estimationBackMin",
+  },
+  {
+    Header: "Estim. Back Max (JH)",
+    accessor: "estimationBackMax",
+  },
+  {
+    Header: "Dépendances",
+    accessor: "dependencies",
+  },
+  {
+    Header: "Lot",
+    accessor: "batch",
   },
 ];

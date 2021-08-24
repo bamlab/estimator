@@ -19,12 +19,14 @@ export const Table = ({
   // Render the UI for your table
   return (
     <Styles>
-      <Searchbar
-        preGlobalFilteredRows={preGlobalFilteredRows}
-        // @ts-ignore
-        globalFilter={state.globalFilter}
-        setGlobalFilter={setGlobalFilter}
-      />
+      {preGlobalFilteredRows && (
+        <Searchbar
+          preGlobalFilteredRows={preGlobalFilteredRows}
+          // @ts-ignore
+          globalFilter={state.globalFilter}
+          setGlobalFilter={setGlobalFilter}
+        />
+      )}
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (

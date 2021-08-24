@@ -4,7 +4,7 @@ import Loader from "react-loader-spinner";
 import { useQuery } from "react-query";
 import { Table } from "../src/components/Table";
 import { fetchAllRecords } from "../src/queries/fetchAllRecords";
-import { columns } from "../src/constants/columns";
+import { databaseColumns, estimationColumns } from "../src/constants/columns";
 import { TabBar } from "../src/components/TabBar";
 import styled from "@emotion/styled";
 import {
@@ -28,20 +28,24 @@ type Props = {
   database: FieldSet[];
 };
 
-const tabOptions = [
-  { id: "database", label: "Database" },
-  { id: "myEstimation", label: "Mon estimation" },
+export enum tabId {
+  database = "database",
+  estimation = "estimation",
+}
+const tabOptions: { id: tabId; label: string }[] = [
+  { id: tabId.database, label: "Database" },
+  { id: tabId.estimation, label: "Mon estimation" },
 ];
 
 export default function Database({}: Props) {
   const { data: database, isLoading } = useQuery("database", fetchAllRecords);
 
-  const [activeId, setActiveId] = useState(tabOptions[0].id);
+  const [activeId, setActiveId] = useState<tabId>(tabId.database);
 
   const { selectedFlatRows, ...tableInstance } = useTable<Field>(
     // @ts-ignore
     {
-      columns,
+      columns: databaseColumns,
       data: database || [],
       defaultColumn,
       filterTypes,
@@ -50,6 +54,16 @@ export default function Database({}: Props) {
     useFilters,
     useGlobalFilter,
     useRowSelect
+  );
+
+  const estimationTableInstance = useTable(
+    //@ts-ignore
+    {
+      // @ts-ignore
+      columns: estimationColumns,
+      data: selectedFlatRows ? selectedFlatRows.map((row) => row.original) : [],
+      defaultColumn,
+    }
   );
 
   if (isLoading) {
@@ -70,9 +84,13 @@ export default function Database({}: Props) {
           activeId={activeId}
         />
       </Header>
-      {activeId === "database" && (
+      {activeId === tabId.database && (
         // @ts-ignore
         <Table {...tableInstance} />
+      )}
+      {activeId === tabId.estimation && (
+        // @ts-ignore
+        <Table {...estimationTableInstance} />
       )}
     </div>
   );

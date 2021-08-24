@@ -1,11 +1,12 @@
 import styled from "@emotion/styled";
 import React from "react";
+import { tabId } from "../../../pages/db";
 import { TabSelector } from "./TabSelector";
 
 type Props = {
-  options: { label: string; id: string }[];
-  activeId: string;
-  onChange: (id: string) => void;
+  options: { label: string; id: tabId }[];
+  activeId: tabId;
+  onChange: (id: tabId) => void;
 };
 
 export const TabBar = ({ options, activeId, onChange }: Props) => {
