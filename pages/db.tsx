@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FieldSet } from "airtable";
 import Loader from "react-loader-spinner";
 import { useQuery } from "react-query";
@@ -66,6 +66,26 @@ export default function Database({}: Props) {
     }
   );
 
+  const minSum = useMemo(() => {
+    const minArray = selectedFlatRows.map(
+      (row) =>
+        row.original.estimationFrontMin ||
+        0 + row.original.estimationBackMin ||
+        0
+    );
+    return minArray.reduce((prev, current) => prev + current, 0);
+  }, [selectedFlatRows]);
+
+  const maxSum = useMemo(() => {
+    const minArray = selectedFlatRows.map(
+      (row) =>
+        row.original.estimationFrontMax ||
+        0 + row.original.estimationBackMax ||
+        0
+    );
+    return minArray.reduce((prev, current) => prev + current, 0);
+  }, [selectedFlatRows]);
+
   if (isLoading) {
     return <Loader type="Puff" color="#00BFFF" height={50} width={50} />;
   }
@@ -78,11 +98,16 @@ export default function Database({}: Props) {
     <div>
       <Header>
         <h2>Estimator</h2>
-        <TabBar
-          options={tabOptions}
-          onChange={setActiveId}
-          activeId={activeId}
-        />
+        <ToolbarContainer>
+          <TabBar
+            options={tabOptions}
+            onChange={setActiveId}
+            activeId={activeId}
+          />
+          <Sum>{`Min : ${minSum}`}</Sum>
+
+          <Sum>{`Max : ${maxSum}`}</Sum>
+        </ToolbarContainer>
       </Header>
       {activeId === tabId.database && (
         // @ts-ignore
@@ -98,4 +123,13 @@ export default function Database({}: Props) {
 
 const Header = styled.div`
   margin-left: 1rem;
+`;
+
+const ToolbarContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const Sum = styled.p`
+  margin-right: 1rem;
 `;
