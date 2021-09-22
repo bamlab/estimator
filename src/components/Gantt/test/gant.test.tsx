@@ -1,12 +1,11 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import { Gantt } from "../index";
+import { render } from "@testing-library/react";
+import { GanttChart } from "../index";
 
 describe("gantt", () => {
   it("renders without crashing", () => {
-    const div = document.createElement("div");
-    ReactDOM.render(
-      <Gantt
+    const component = render(
+      <GanttChart
         tasks={[
           {
             start: new Date(2020, 0, 1),
@@ -17,9 +16,9 @@ describe("gantt", () => {
             type: "task",
           },
         ]}
-      />,
-      div
+      />
     );
-    ReactDOM.unmountComponentAtNode(div);
+
+    component.unmount();
   });
 });

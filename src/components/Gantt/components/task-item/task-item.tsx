@@ -23,7 +23,7 @@ export type TaskItemProps = {
   ) => any;
 };
 
-export const TaskItem: React.FC<TaskItemProps> = props => {
+export const TaskItem: React.FC<TaskItemProps> = (props) => {
   const {
     task,
     arrowIndent,
@@ -57,7 +57,7 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
   }, [task, isSelected]);
 
   useEffect(() => {
-    if (textRef.current) {
+    if (textRef.current && textRef.current.getBBox) {
       setIsTextInside(textRef.current.getBBox().width < task.x2 - task.x1);
     }
   }, [textRef, task]);
@@ -68,7 +68,7 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
     if (isTextInside) {
       return task.x1 + width * 0.5;
     }
-    if (rtl && textRef.current) {
+    if (rtl && textRef.current && textRef.current.getBBox) {
       return (
         task.x1 -
         textRef.current.getBBox().width -
@@ -82,7 +82,7 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
 
   return (
     <g
-      onKeyDown={e => {
+      onKeyDown={(e) => {
         switch (e.key) {
           case "Delete": {
             if (isDelete) onEventStart("delete", task, e);
@@ -91,13 +91,13 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
         }
         e.stopPropagation();
       }}
-      onMouseEnter={e => {
+      onMouseEnter={(e) => {
         onEventStart("mouseenter", task, e);
       }}
-      onMouseLeave={e => {
+      onMouseLeave={(e) => {
         onEventStart("mouseleave", task, e);
       }}
-      onDoubleClick={e => {
+      onDoubleClick={(e) => {
         onEventStart("dblclick", task, e);
       }}
       onFocus={() => {

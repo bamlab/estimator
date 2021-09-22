@@ -55,7 +55,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   onDoubleClick,
   onDelete,
 }) => {
-  const point = svg?.current?.createSVGPoint();
+  const point = svg?.current?.createSVGPoint && svg?.current?.createSVGPoint();
   const [xStep, setXStep] = useState(0);
   const [initEventX1Delta, setInitEventX1Delta] = useState(0);
   const [isMoving, setIsMoving] = useState(false);
@@ -256,8 +256,8 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   return (
     <g className="content">
       <g className="arrows" fill={arrowColor} stroke={arrowColor}>
-        {tasks.map(task => {
-          return task.barChildren.map(child => {
+        {tasks.map((task) => {
+          return task.barChildren.map((child) => {
             return (
               <Arrow
                 key={`Arrow from ${task.id} to ${tasks[child.index].id}`}
@@ -273,7 +273,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
         })}
       </g>
       <g className="bar" fontFamily={fontFamily} fontSize={fontSize}>
-        {tasks.map(task => {
+        {tasks.map((task) => {
           return (
             <TaskItem
               task={task}

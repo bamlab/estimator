@@ -1,4 +1,4 @@
-export { Gantt } from "./components/gantt/gantt";
+export { GanttChart } from "./components/gantt/GanttChart";
 export { ViewMode } from "./types/public-types";
 export type {
   GanttProps,
