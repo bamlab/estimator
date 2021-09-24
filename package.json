@@ -7,12 +7,13 @@
     "build": "next build",
     "start": "next start",
     "backoffice": "npx prisma studio",
-    "prisma:push": "npx prisma db push"
+    "prisma:push": "npx prisma db push",
+    "prisma:generate": "npx prisma generate"
   },
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@prisma/client": "3.1.1",
+    "@prisma/client": "^3.1.1",
     "airtable": "^0.11.1",
     "match-sorter": "^6.3.0",
     "next": "11.1.0",
