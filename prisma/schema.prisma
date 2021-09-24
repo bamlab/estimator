@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Project {
+  id        String     @default(uuid()) @id
+  name      String
+  epics     Epic[]
+  estimatedAt DateTime
+  signedAt DateTime
+  startAt DateTime
+  @@map(name: "projects")
+}
+
+model Epic {
+  id            String       @default(uuid()) @id
+  name          String
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  Project       Project @relation(fields: [projectId], references: [id])
+  projectId     String
+  features      Feature[]
+  @@map(name: "epics")
+}
+
+model Feature {
+  id            String       @default(uuid()) @id
+  name          String
+  currentStep FeatureStep
+  Epic Epic @relation(fields: [epicId], references: [id])
+  epicId String
+  tickets Ticket[]
+}
+
+model Ticket {
+  id            String       @default(uuid()) @id
+  name          String
+  Feature Feature @relation(fields: [featureId], references: [id])
+  featureId String
+  dependencies Ticket[] @relation("Dependency")
+  dependencyFor Ticket? @relation("Dependency", fields: [dependencyForId], references: [id])
+  dependencyForId String?
+  points Int
+  currentStep TicketStep
+}
+
+enum FeatureStep {
+  DESIGN
+  CONCEPTION
+  DEVELOPMENT
+  DONE
+}
+
+enum TicketStep {
+  BACKLOG
+  DOING
+  PEER_REVIEW
+  TEST
+  DONE
+}

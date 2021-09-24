@@ -5,14 +5,18 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "backoffice": "npx prisma studio",
+    "prisma:push": "npx prisma db push"
   },
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
+    "@prisma/client": "3.1.1",
     "airtable": "^0.11.1",
     "match-sorter": "^6.3.0",
     "next": "11.1.0",
+    "prisma": "3.1.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-loader-spinner": "^4.0.0",
