@@ -38,6 +38,8 @@ model Feature {
   Epic Epic @relation(fields: [epicId], references: [id])
   epicId String
   tickets Ticket[]
+  @@map(name: "features")
+
 }
 
 model Ticket {
@@ -50,6 +52,7 @@ model Ticket {
   dependencyForId String?
   points Int
   currentStep TicketStep
+  @@map(name: "tickets")
 }
 
 enum FeatureStep {
