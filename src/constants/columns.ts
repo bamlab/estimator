@@ -1,5 +1,6 @@
 import { Column } from "react-table";
-import { SelectCell } from "../components/Datasheet/SelectCell";
+import { SelectCell } from "../modules/estimation/Datasheet/SelectCell";
+import { TextCell } from "../modules/estimation/Datasheet/TextCell";
 import { SelectColumnFilter } from "../components/Table/filters/SelectColumnFilter";
 import { EstimatedField, Field } from "../types/database";
 
@@ -98,11 +99,13 @@ export const estimationColumns: Column<EstimatedField>[] = [
     id: "estimationFrontMin",
     Header: "Estim. Front Min (JH)",
     accessor: "estimationFrontMin",
+    Cell: TextCell,
   },
   {
     id: "estimationFrontMax",
     Header: "Estim. Front Max (JH)",
     accessor: "estimationFrontMax",
+    Cell: TextCell,
   },
   {
     id: "estimationBackMin",
