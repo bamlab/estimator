@@ -4,7 +4,7 @@ import Loader from "react-loader-spinner";
 import { useQuery } from "react-query";
 import { Table } from "../src/components/Table";
 import { fetchAllRecords } from "../src/queries/fetchAllRecords";
-import { databaseColumns, estimationColumns } from "../src/constants/columns";
+import { databaseColumns, estimationDbColumns } from "../src/constants/columns";
 import { TabBar } from "../src/components/TabBar";
 import styled from "@emotion/styled";
 import {
@@ -60,7 +60,7 @@ export default function Database({}: Props) {
     //@ts-ignore
     {
       // @ts-ignore
-      columns: estimationColumns,
+      columns: estimationDbColumns,
       data: selectedFlatRows ? selectedFlatRows.map((row) => row.original) : [],
       defaultColumn,
     }

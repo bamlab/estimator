@@ -11,6 +11,7 @@ export type Field = {
   epic: string;
   sales: string;
   details: string;
+  gestures: string[];
 };
 
 export interface EstimatedField extends Field {

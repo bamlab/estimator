@@ -1,4 +1,5 @@
 import { Column } from "react-table";
+import { SelectCell } from "../components/Datasheet/SelectCell";
 import { SelectColumnFilter } from "../components/Table/filters/SelectColumnFilter";
 import { EstimatedField, Field } from "../types/database";
 
@@ -57,8 +58,76 @@ export const databaseColumns: Column<Field>[] = [
   },
 ];
 
+export const columnWiths = {
+  s: 100,
+  m: 200,
+  l: 400,
+};
+
 export const estimationColumns: Column<EstimatedField>[] = [
-  { Header: "Type", accessor: "type" },
+  { id: "type", Header: "Type", accessor: "type", width: columnWiths.s },
+  {
+    id: "epic",
+    Header: "EPIC",
+    accessor: "epic",
+  },
+  {
+    id: "feature",
+    Header: "Feature",
+    accessor: "feature",
+    width: columnWiths.m,
+  },
+  {
+    id: "gestures",
+    Header: "Gestes techniques inclus",
+    accessor: "gestures",
+    Cell: SelectCell,
+    width: columnWiths.l,
+  },
+  {
+    id: "exclude",
+    Header: "Préciser ce qui n'est pas dans le scope",
+    accessor: "exclude",
+  },
+  {
+    id: "details",
+    Header: "Détails (nom du SDK, SaaS, lien utile, etc...)",
+    accessor: "details",
+  },
+  {
+    id: "estimationFrontMin",
+    Header: "Estim. Front Min (JH)",
+    accessor: "estimationFrontMin",
+  },
+  {
+    id: "estimationFrontMax",
+    Header: "Estim. Front Max (JH)",
+    accessor: "estimationFrontMax",
+  },
+  {
+    id: "estimationBackMin",
+    Header: "Estim. Back Min (JH)",
+    accessor: "estimationBackMin",
+  },
+  {
+    id: "estimationBackMax",
+    Header: "Estim. Back Max (JH)",
+    accessor: "estimationBackMax",
+  },
+  {
+    id: "dependencies",
+    Header: "Dépendances",
+    accessor: "dependencies",
+  },
+  {
+    id: "batch",
+    Header: "Lot",
+    accessor: "batch",
+  },
+];
+
+export const estimationDbColumns: Column<EstimatedField>[] = [
+  { Header: "Type", accessor: "type", width: columnWiths.s },
   {
     Header: "EPIC",
     accessor: "epic",
@@ -66,6 +135,7 @@ export const estimationColumns: Column<EstimatedField>[] = [
   {
     Header: "Feature",
     accessor: "feature",
+    width: columnWiths.m,
   },
   {
     Header: "Tâches techniques incluses",
