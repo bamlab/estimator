@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import styled from "@emotion/styled";
 import Select from "react-select";
 import { Project } from "@prisma/client";
+import { Container } from "@nextui-org/react";
 
 export const getServerSideProps = async () => {
   const response = await fetch(
@@ -28,13 +29,13 @@ export default function ProjectsPage({ projects }: Props) {
   );
 
   return (
-    <div>
+    <Container>
       <Header>
         <h2>Projects page</h2>
       </Header>
       <h2>Choisir un projet</h2>
       <Select options={options} />
-    </div>
+    </Container>
   );
 }
 

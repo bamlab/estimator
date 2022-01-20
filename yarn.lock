@@ -1364,6 +1364,13 @@
   resolved "https://registry.yarnpkg.com/@next/react-refresh-utils/-/react-refresh-utils-11.1.0.tgz#60c3c7b127a5dab8b0a2889a7dcf8a90d2c4e592"
   integrity sha512-g5DtFTpLTGa36iy9DuZawtJeitI11gysFGKPQQqy+mNbSFazguArcJ10gAYFlbqpIi4boUamWNI5mAoSPx3kog==
 
+"@nextui-org/react@^1.0.2-alpha.2":
+  version "1.0.2-alpha.2"
+  resolved "https://registry.yarnpkg.com/@nextui-org/react/-/react-1.0.2-alpha.2.tgz#1e1a6e04359d221ab64226dd7604f95e796378e3"
+  integrity sha512-rQevxh8pzRdJFHh5exsIwswHLwW6HFqxSiyA7/lkzoJcd4oHH8m34QE/RNK5hn6ibblZsuW5VKEBc6ME2aHqzQ==
+  dependencies:
+    "@stitches/react" "^1.2.6"
+
 "@node-rs/helper@1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@node-rs/helper/-/helper-1.2.1.tgz#e079b05f21ff4329d82c4e1f71c0290e4ecdc70c"
@@ -1401,6 +1408,11 @@
   integrity sha512-iQADsW4LBMISqZ6Ci1dupJL9pprqwcVFTcOsEmQOEhW+KLCVn/Y4Jrvg2k19fIHCp+iFprriYPTdRcQR8NbUPg==
   dependencies:
     "@sinonjs/commons" "^1.7.0"
+
+"@stitches/react@^1.2.6":
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/@stitches/react/-/react-1.2.6.tgz#61f2a3d1110334ecd33bcb7463650127d42470cb"
+  integrity sha512-gRVITYj8W4jJmoiVxWDv72yCvd12VvtUUAnTzs07EqmtvGCVgKZu3Dx0x5KVCcb0b6tfgvvNH2L84YrzdM4Mag==
 
 "@testing-library/dom@^8.0.0":
   version "8.5.0"
