@@ -1,16 +1,15 @@
-import React, { EventHandler, useState } from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 import {
   useBlockLayout,
-  useFlexLayout,
   useResizeColumns,
   useRowSelect,
   useTable,
 } from "react-table";
-import { Datasheet } from "../src/components/Datasheet";
+import { Datasheet } from "../src/modules/estimation/Datasheet";
 import { estimationColumns } from "../src/constants/columns";
 import { EstimatedField } from "../src/types/database";
-import { InputCell } from "../src/components/Datasheet/InputCell";
+import { InputCell } from "../src/modules/estimation/Datasheet/InputCell";
 
 export const getServerSideProps = async () => {
   return {
