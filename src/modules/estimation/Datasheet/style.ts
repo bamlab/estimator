@@ -26,11 +26,14 @@ export const Styles = styled.div`
         border-right: 0;
       }
 
-      input {
+      input,
+      textarea {
         font-size: 1rem;
         padding: 0;
         margin: 0;
         border: 0;
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+          Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
       }
     }
   }

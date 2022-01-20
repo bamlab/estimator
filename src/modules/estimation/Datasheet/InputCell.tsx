@@ -10,7 +10,7 @@ export const InputCell = ({
   // We need to keep and update the state of the cell normally
   const [value, setValue] = React.useState(initialValue);
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value);
   };
 
@@ -25,11 +25,11 @@ export const InputCell = ({
   }, [initialValue]);
 
   return (
-    <input
+    <textarea
       value={value}
       onChange={onChange}
       onBlur={onBlur}
-      style={{ width: width - 20 }}
+      style={{ width: width - 20, height: "100%", resize: "none" }}
     />
   );
 };

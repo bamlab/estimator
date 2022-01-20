@@ -101,10 +101,20 @@ export default function Database() {
     useRowSelect
   );
 
+  const estimationMin = Math.round(
+    data.reduce((prev, row) => prev + row["estimationFrontMin"], 0)
+  );
+  const estimationMax = Math.round(
+    data.reduce((prev, row) => prev + row["estimationFrontMax"], 0)
+  );
   return (
     <div>
       <Header>
         <h2>Estimator</h2>
+        <TotalContainer>
+          <p>{`Estimation min: ${estimationMin}`}</p>
+          <p>{`Estimation max: ${estimationMax}`}</p>
+        </TotalContainer>
       </Header>
 
       <Datasheet {...tableInstance} />
@@ -114,4 +124,10 @@ export default function Database() {
 
 const Header = styled.div`
   margin-left: 1rem;
+  display: flex;
+  flex-direction: row;
+`;
+
+const TotalContainer = styled.div`
+  margin-left: 2rem;
 `;
