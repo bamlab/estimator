@@ -2,8 +2,19 @@ import React, { useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import Select from "react-select";
 import { Project } from "@prisma/client";
-import { Button, Container, Spacer } from "@nextui-org/react";
+import {
+  Button,
+  Container,
+  Input,
+  Row,
+  Spacer,
+  useInput,
+} from "@nextui-org/react";
 import Link from "next/link";
+import { useRouter } from "next/dist/client/router";
+import { ROOT_URL } from "../../src/constants";
+import { toast } from "react-toastify";
+import wretch from "wretch";
 
 export const getServerSideProps = async () => {
   const response = await fetch(
@@ -19,6 +30,26 @@ type Props = { projects: Project[] };
 
 export default function ProjectsPage({ projects }: Props) {
   const [projectId, setProjectId] = useState("");
+  const router = useRouter();
+  const { bindings, value } = useInput("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const createNewProject = async () => {
+    if (!value) {
+      setErrorMessage("Choisis le nom du projet");
+      return;
+    }
+    const response = await wretch(`${ROOT_URL}/projects`)
+      .post({
+        name: value,
+      })
+      .json();
+
+    if (response.project) {
+      toast("Super ! C'est parti pour une nouvelle aventure 🚀");
+      router.push(`/projects/${response.project.id}`);
+    }
+  };
 
   const options = useMemo(
     () =>
@@ -47,10 +78,23 @@ export default function ProjectsPage({ projects }: Props) {
         }}
       />
       <Spacer y={1} />
-
       <Link href={`/projects/${projectId}`}>
         <Button>{"C'est parti !"}</Button>
       </Link>
+      <Spacer y={1} />
+      <Row align="flex-end">
+        <Input
+          label="Nom du projet"
+          placeholder="Yomoni"
+          {...bindings}
+          color={errorMessage ? "error" : "default"}
+          status={errorMessage ? "error" : "default"}
+        />
+        <Spacer x={3} />
+        <Button onClick={createNewProject} color={"success"}>
+          Créer un nouveau projet
+        </Button>
+      </Row>
     </Container>
   );
 }

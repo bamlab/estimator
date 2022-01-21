@@ -6,19 +6,70 @@ import {
   useRowSelect,
   useTable,
 } from "react-table";
-import { Datasheet } from "../src/modules/estimation/Datasheet";
-import { estimationColumns } from "../src/constants/columns";
-import { EstimatedField } from "../src/types/database";
-import { InputCell } from "../src/modules/estimation/Datasheet/InputCell";
+import { Datasheet } from "../../../src/modules/estimation/Datasheet";
+import { estimationColumns } from "../../../src/constants/columns";
+import { EstimatedField } from "../../../src/types/database";
+import { InputCell } from "../../../src/modules/estimation/Datasheet/InputCell";
+import { GetServerSideProps } from "next";
+import { ProjectWithEstimation } from "../../../src/types/relations";
+import { EstimatedRow } from "../../../src/types/datasheet";
+import { Estimation } from "@prisma/client";
 
-export const getServerSideProps = async () => {
+import {
+  Container,
+  Input,
+  Row,
+  Spacer,
+  Text,
+  useInput,
+} from "@nextui-org/react";
+import wretch from "wretch";
+
+type Props = {
+  project: ProjectWithEstimation;
+  estimation: Estimation;
+};
+
+type Params = {
+  projectId: string;
+};
+
+export const getServerSideProps: GetServerSideProps<
+  Props | {},
+  Params
+> = async ({ params }) => {
+  if (!params || !params.projectId) {
+    return {
+      redirect: "/projects",
+      props: {},
+    };
+  }
+
+  const { projectId } = params;
+
+  const project: ProjectWithEstimation = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/estimation/${projectId}`
+  ).then((res) => res.json());
+
+  if (!project.estimation) {
+    const estimation = await wretch(
+      `${process.env.NEXT_PUBLIC_API_URL}/estimation/${projectId}`
+    )
+      .post()
+      .json();
+    return {
+      props: {
+        project,
+        estimation,
+      },
+    };
+  }
   return {
-    props: {},
+    props: { project, estimation: project.estimation },
   };
 };
 
-const defaultRow: EstimatedField = {
-  archi: "",
+const defaultRow: EstimatedRow = {
   batch: "",
   dependencies: "",
   details: "",
@@ -30,14 +81,11 @@ const defaultRow: EstimatedField = {
   estimationFrontMin: 0,
   exclude: "",
   feature: "",
-  projet: "",
   saasOrPackage: "",
-  sales: "",
-  tribe: "",
   type: "A",
 };
 
-const createEmptyData = (rowsNumber: number = 10): EstimatedField[] => {
+const createEmptyData = (rowsNumber: number = 10): EstimatedRow[] => {
   const data = [];
   for (let i = 1; i < rowsNumber; i++) {
     data.push(defaultRow);
@@ -46,10 +94,11 @@ const createEmptyData = (rowsNumber: number = 10): EstimatedField[] => {
   return data;
 };
 
-const CELERITE_MIN = 0.7;
-const CELERITE_MAX = 0.85;
-export default function Database() {
+export default function Database({ project, estimation }: Props) {
   const [data, setData] = useState(() => createEmptyData());
+
+  const { value: cMin } = useInput(estimation.minSpeed.toString());
+  const { value: cMax } = useInput(estimation.maxSpeed.toString());
 
   const updateMyData = (
     rowIndex: number,
@@ -65,10 +114,10 @@ export default function Database() {
           };
           if (columnId === "gestures") {
             base["estimationFrontMin"] = parseFloat(
-              (base["gestures"].length * CELERITE_MIN).toFixed(2)
+              (base["gestures"].length * estimation.minSpeed).toFixed(2)
             );
             base["estimationFrontMax"] = parseFloat(
-              (base["gestures"].length * CELERITE_MAX).toFixed(2)
+              (base["gestures"].length * estimation.maxSpeed).toFixed(2)
             );
           }
           return {
@@ -108,17 +157,24 @@ export default function Database() {
     data.reduce((prev, row) => prev + row["estimationFrontMax"], 0)
   );
   return (
-    <div>
+    <Container>
       <Header>
         <h2>Estimator</h2>
-        <TotalContainer>
-          <p>{`Estimation min: ${estimationMin}`}</p>
-          <p>{`Estimation max: ${estimationMax}`}</p>
-        </TotalContainer>
+        <Spacer x={3} />
+
+        <Row align="flex-end">
+          <Input label="Célérité min" type="number" value={cMin} />
+          <Spacer x={1} />
+          <Input label="Célérité max" type="number" value={cMax} />
+          <Spacer x={2} />
+          <Text>{`Estimation min: ${estimationMin}`}</Text>
+          <Spacer x={1} />
+          <Text>{`Estimation max: ${estimationMax}`}</Text>
+        </Row>
       </Header>
 
       <Datasheet {...tableInstance} />
-    </div>
+    </Container>
   );
 }
 

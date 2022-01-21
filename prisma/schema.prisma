@@ -11,47 +11,110 @@ generator client {
 }
 
 model Project {
-  id        String     @default(uuid()) @id
-  name      String
-  epics     Epic[]
-  estimatedAt DateTime
-  signedAt DateTime
-  startAt DateTime
+  id          String     @default(uuid()) @id
+  name        String
+  epics       Epic[]
+  estimation  Estimation?
+  estimatedAt DateTime?
+  signedAt    DateTime?
+  startAt     DateTime?
   @@map(name: "projects")
 }
 
-model Epic {
+model Estimation {
+  id            String       @default(uuid()) @id
+  archi         String
+  sales         String
+  projectId     String
+  project       Project @relation(fields: [projectId], references: [id])
+  epics         EstimationEpic[]
+  minSpeed      Float
+  maxSpeed      Float
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  @@map(name: "estimations")
+}
+
+model EstimationEpic {
   id            String       @default(uuid()) @id
   name          String
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  Project       Project @relation(fields: [projectId], references: [id])
-  projectId     String
-  features      Feature[]
+  estimationId  String
+  estimation    Estimation @relation(fields: [estimationId], references: [id])
+  epic          Epic?
+  features      EstimationFeature[]
+  @@map(name: "estimation_epics")
+}
+
+model EstimationFeature {
+  id                String       @default(uuid()) @id
+  name              String
+  batch             Int
+  dependencies      String
+  details           String
+  gestures          Gesture[]
+  exclude           String
+  saasOrPackage     String
+  type              FeatureType
+  currentStep       FeatureStep
+  estimationEpic    EstimationEpic @relation(fields: [estimationEpicId], references: [id])
+  estimationEpicId  String
+  feature           Feature?
+  createdAt         DateTime  @default(now()) @map(name: "created_at")
+  updatedAt         DateTime  @updatedAt @map(name: "updated_at")
+  @@map(name: "estimation_features")
+}
+
+model Gesture {
+  id                  String       @default(uuid()) @id
+  name                String
+  details             String
+  type                GestureType
+  estimationFeature   EstimationFeature @relation(fields: [estimationFeatureId], references: [id])
+  estimationFeatureId String
+  createdAt           DateTime  @default(now()) @map(name: "created_at")
+  updatedAt           DateTime  @updatedAt @map(name: "updated_at")
+  @@map(name: "gestures")
+}
+
+model Epic {
+  id                String       @default(uuid()) @id
+  name              String
+  createdAt         DateTime  @default(now()) @map(name: "created_at")
+  updatedAt         DateTime  @updatedAt @map(name: "updated_at")
+  project           Project @relation(fields: [projectId], references: [id])
+  projectId         String
+  features          Feature[]
+  estimationEpic    EstimationEpic @relation(fields: [estimationEpicId], references: [id])
+  estimationEpicId  String
   @@map(name: "epics")
 }
 
 model Feature {
-  id            String       @default(uuid()) @id
-  name          String
-  currentStep FeatureStep
-  Epic Epic @relation(fields: [epicId], references: [id])
-  epicId String
-  tickets Ticket[]
+  id                  String       @default(uuid()) @id
+  name                String
+  currentStep         FeatureStep
+  epic                Epic @relation(fields: [epicId], references: [id])
+  epicId              String
+  tickets             Ticket[]
+  estimationFeature   EstimationFeature @relation(fields: [estimationFeatureId], references: [id])
+  estimationFeatureId String
+  createdAt           DateTime  @default(now()) @map(name: "created_at")
+  updatedAt           DateTime  @updatedAt @map(name: "updated_at")
   @@map(name: "features")
-
 }
 
 model Ticket {
-  id            String       @default(uuid()) @id
-  name          String
-  Feature Feature @relation(fields: [featureId], references: [id])
-  featureId String
-  dependencies Ticket[] @relation("Dependency")
-  dependencyFor Ticket? @relation("Dependency", fields: [dependencyForId], references: [id])
+  id              String       @default(uuid()) @id
+  name            String
+  feature         Feature @relation(fields: [featureId], references: [id])
+  featureId       String
+  dependencies    Ticket[] @relation("Dependency")
+  dependencyFor   Ticket? @relation("Dependency", fields: [dependencyForId], references: [id])
   dependencyForId String?
-  points Int
-  currentStep TicketStep
+  points          Int
+  currentStep     TicketStep
   @@map(name: "tickets")
 }
 
@@ -68,4 +131,15 @@ enum TicketStep {
   PEER_REVIEW
   TEST
   DONE
+}
+
+enum FeatureType {
+  A
+  B
+  C
+}
+
+enum GestureType {
+  FRONT
+  BACK
 }

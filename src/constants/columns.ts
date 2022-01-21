@@ -3,6 +3,7 @@ import { SelectCell } from "../modules/estimation/Datasheet/SelectCell";
 import { TextCell } from "../modules/estimation/Datasheet/TextCell";
 import { SelectColumnFilter } from "../components/Table/filters/SelectColumnFilter";
 import { EstimatedField, Field } from "../types/database";
+import { EstimatedRow } from "../types/datasheet";
 
 export const databaseColumns: Column<Field>[] = [
   {
@@ -65,7 +66,7 @@ export const columnWiths = {
   l: 400,
 };
 
-export const estimationColumns: Column<EstimatedField>[] = [
+export const estimationColumns: Column<EstimatedRow>[] = [
   { id: "type", Header: "Type", accessor: "type", width: columnWiths.s },
   {
     id: "epic",

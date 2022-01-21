@@ -2,8 +2,9 @@ import React from "react";
 import styled from "@emotion/styled";
 import { GetServerSideProps } from "next";
 import { Project } from "@prisma/client";
-import { Link } from "@nextui-org/react";
-
+import { Container, Link } from "@nextui-org/react";
+import { ROOT_URL } from "../../../src/constants";
+import wretch from "wretch";
 type Props = {
   project: Project;
 };
@@ -25,9 +26,7 @@ export const getServerSideProps: GetServerSideProps<
 
   const { projectId } = params;
 
-  const project = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/project/${projectId}`
-  ).then((res) => res.json());
+  const project = await wretch(`${ROOT_URL}/project/${projectId}`).get().json();
 
   return {
     props: { project },
@@ -36,12 +35,12 @@ export const getServerSideProps: GetServerSideProps<
 
 export default function ProjectPage({ project }: Props) {
   return (
-    <div>
+    <Container>
       <Header>
         <h2>{project.name}</h2>
       </Header>
-      <Link href={`/estimation/${project.id}`}>Estimation</Link>
-    </div>
+      <Link href={`/projects/${project.id}/estimation`}>Estimation</Link>
+    </Container>
   );
 }
 
