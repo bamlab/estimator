@@ -8,14 +8,14 @@ import {
 } from "react-table";
 import { Datasheet } from "../../../src/modules/estimation/Datasheet";
 import { estimationColumns } from "../../../src/constants/columns";
-import { EstimatedField } from "../../../src/types/database";
 import { InputCell } from "../../../src/modules/estimation/Datasheet/InputCell";
 import { GetServerSideProps } from "next";
 import { ProjectWithEstimation } from "../../../src/types/relations";
 import { EstimatedRow } from "../../../src/types/datasheet";
-import { Estimation } from "@prisma/client";
+import { Epic, Estimation, Gesture } from "@prisma/client";
 
 import {
+  Button,
   Container,
   Input,
   Row,
@@ -24,10 +24,13 @@ import {
   useInput,
 } from "@nextui-org/react";
 import wretch from "wretch";
+import { ROOT_URL } from "../../../src/constants";
 
 type Props = {
   project: ProjectWithEstimation;
   estimation: Estimation;
+  gestures: Gesture[];
+  epics: Epic[];
 };
 
 type Params = {
@@ -35,15 +38,20 @@ type Params = {
 };
 
 export const getServerSideProps: GetServerSideProps<
-  Props | {},
+  Props | { props: null },
   Params
 > = async ({ params }) => {
   if (!params || !params.projectId) {
     return {
       redirect: "/projects",
-      props: {},
+      props: { props: null },
     };
   }
+
+  const gestures: Gesture[] = await wretch(`${ROOT_URL}/gestures`).get().json();
+  const epics: Epic[] = await wretch(`${ROOT_URL}/estimation/epics`)
+    .get()
+    .json();
 
   const { projectId } = params;
 
@@ -52,7 +60,7 @@ export const getServerSideProps: GetServerSideProps<
   ).then((res) => res.json());
 
   if (!project.estimation) {
-    const estimation = await wretch(
+    const estimation: Estimation = await wretch(
       `${process.env.NEXT_PUBLIC_API_URL}/estimation/${projectId}`
     )
       .post()
@@ -61,11 +69,13 @@ export const getServerSideProps: GetServerSideProps<
       props: {
         project,
         estimation,
+        gestures,
+        epics,
       },
     };
   }
   return {
-    props: { project, estimation: project.estimation },
+    props: { project, estimation: project.estimation, gestures, epics },
   };
 };
 
@@ -94,8 +104,20 @@ const createEmptyData = (rowsNumber: number = 10): EstimatedRow[] => {
   return data;
 };
 
-export default function Database({ project, estimation }: Props) {
+export default function Database({
+  project,
+  estimation,
+  gestures,
+  epics,
+}: Props) {
   const [data, setData] = useState(() => createEmptyData());
+
+  const [epicList, setEpicList] = useState(() =>
+    epics.map((epic) => ({
+      label: epic.name,
+      value: epic.id,
+    }))
+  );
 
   const { value: cMin } = useInput(estimation.minSpeed.toString());
   const { value: cMax } = useInput(estimation.maxSpeed.toString());
@@ -143,6 +165,13 @@ export default function Database({ project, estimation }: Props) {
       // That way we can call this function from our
       // cell renderer!
       updateMyData,
+      options: gestures.map((gesture) => ({
+        label: gesture.name,
+        value: gesture.id,
+      })),
+      epicList,
+      setEpicList,
+      estimationId: estimation.id,
       manualPagination: true, // see the autoResetPage propss if turned to false
     },
     useResizeColumns,
@@ -156,6 +185,25 @@ export default function Database({ project, estimation }: Props) {
   const estimationMax = Math.round(
     data.reduce((prev, row) => prev + row["estimationFrontMax"], 0)
   );
+
+  const saveEstimation = async (rows: EstimatedRow[]) => {
+    const newEstimation: {
+      estimation: Omit<Estimation, "createdAt" | "updatedAt">;
+      rows: EstimatedRow[];
+    } = {
+      estimation: {
+        id: estimation.id,
+        archi: "",
+        maxSpeed: parseFloat(cMax),
+        minSpeed: parseFloat(cMin),
+        sales: "",
+        projectId: project.id,
+      },
+      rows: data,
+    };
+    await wretch(`${ROOT_URL}/estimation/${project.id}`).post(newEstimation);
+  };
+
   return (
     <Container>
       <Header>
@@ -170,10 +218,12 @@ export default function Database({ project, estimation }: Props) {
           <Text>{`Estimation min: ${estimationMin}`}</Text>
           <Spacer x={1} />
           <Text>{`Estimation max: ${estimationMax}`}</Text>
+          <Spacer x={5} />
+          <Button onClick={() => saveEstimation(data)}>Enregistrer</Button>
         </Row>
       </Header>
 
-      <Datasheet {...tableInstance} />
+      <Datasheet {...tableInstance} gestures={gestures} />
     </Container>
   );
 }

@@ -35,17 +35,7 @@ model Estimation {
   @@map(name: "estimations")
 }
 
-model EstimationEpic {
-  id            String       @default(uuid()) @id
-  name          String
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  estimationId  String
-  estimation    Estimation @relation(fields: [estimationId], references: [id])
-  epic          Epic?
-  features      EstimationFeature[]
-  @@map(name: "estimation_epics")
-}
+
 
 model EstimationFeature {
   id                String       @default(uuid()) @id
@@ -57,7 +47,6 @@ model EstimationFeature {
   exclude           String
   saasOrPackage     String
   type              FeatureType
-  currentStep       FeatureStep
   estimationEpic    EstimationEpic @relation(fields: [estimationEpicId], references: [id])
   estimationEpicId  String
   feature           Feature?
@@ -71,8 +60,8 @@ model Gesture {
   name                String
   details             String
   type                GestureType
-  estimationFeature   EstimationFeature @relation(fields: [estimationFeatureId], references: [id])
-  estimationFeatureId String
+  estimationFeature   EstimationFeature[]
+  feature             Feature[]
   createdAt           DateTime  @default(now()) @map(name: "created_at")
   updatedAt           DateTime  @updatedAt @map(name: "updated_at")
   @@map(name: "gestures")
@@ -91,6 +80,18 @@ model Epic {
   @@map(name: "epics")
 }
 
+model EstimationEpic {
+  id            String       @default(uuid()) @id
+  name          String
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  estimationId  String
+  estimation    Estimation @relation(fields: [estimationId], references: [id])
+  epic          Epic?
+  features      EstimationFeature[]
+  @@map(name: "estimation_epics")
+}
+
 model Feature {
   id                  String       @default(uuid()) @id
   name                String
@@ -100,6 +101,7 @@ model Feature {
   tickets             Ticket[]
   estimationFeature   EstimationFeature @relation(fields: [estimationFeatureId], references: [id])
   estimationFeatureId String
+  gestures            Gesture[]
   createdAt           DateTime  @default(now()) @map(name: "created_at")
   updatedAt           DateTime  @updatedAt @map(name: "updated_at")
   @@map(name: "features")

@@ -16,11 +16,16 @@ const defaultTechniqueGestures = [
   { label: "POST API et gestion d'erreur", value: "post" },
 ];
 
+interface Props extends DatasheetCellProps {
+  options: { label: string; value: string }[];
+}
+
 export const SelectCell = ({
   updateMyData,
+  options = defaultTechniqueGestures,
   column,
   row,
-}: DatasheetCellProps) => {
+}: Props) => {
   const onChange: (
     newValue: MultiValue<{
       value: string;
@@ -39,7 +44,7 @@ export const SelectCell = ({
   };
   return (
     <ReactSelect
-      options={defaultTechniqueGestures}
+      options={options}
       isMulti
       name="colors"
       className="basic-multi-select"
