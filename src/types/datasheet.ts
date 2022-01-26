@@ -1,6 +1,7 @@
 import { FeatureType } from "@prisma/client";
 
 export type EstimatedRow = {
+  id?: string;
   type: FeatureType;
   epic: string;
   feature: string;

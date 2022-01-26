@@ -1,22 +1,20 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
 import {
+  Row as RowType,
   useBlockLayout,
   useResizeColumns,
   useRowSelect,
   useTable,
 } from "react-table";
 import { Datasheet } from "../../../src/modules/estimation/Datasheet";
-import { estimationColumns } from "../../../src/constants/columns";
+import { columnWiths, estimationColumns } from "../../../src/constants/columns";
 import { InputCell } from "../../../src/modules/estimation/Datasheet/InputCell";
 import { GetServerSideProps } from "next";
-import {
-  EstimationWithEpicsAndFeatures,
-  ProjectWithEstimation,
-} from "../../../src/types/relations";
+import { EstimationWithEpicsAndFeatures } from "../../../src/types/relations";
 import { EstimatedRow } from "../../../src/types/datasheet";
 import { Epic, Estimation, Gesture } from "@prisma/client";
-
+import { Delete, Plus } from "react-iconly";
 import {
   Button,
   Container,
@@ -111,6 +109,10 @@ const createEmptyData = (rowsNumber: number = 10): EstimatedRow[] => {
   }
 
   return data;
+};
+
+const DeleteButton = ({ onClick }: { onClick: () => void }) => {
+  return <Button auto onClick={onClick} icon={<Delete />} />;
 };
 
 export default function Database({ estimation, gestures, epics }: Props) {
@@ -214,7 +216,19 @@ export default function Database({ estimation, gestures, epics }: Props) {
     },
     useResizeColumns,
     useBlockLayout,
-    useRowSelect
+    useRowSelect,
+    (hooks) => {
+      hooks.visibleColumns.push((columns) => [
+        {
+          id: "remove",
+          Cell: ({ row }: { row: RowType }) => (
+            <DeleteButton onClick={() => removeRow(row.index)} />
+          ),
+          width: columnWiths.s,
+        },
+        ...columns,
+      ]);
+    }
   );
 
   const estimationMin = Math.round(
@@ -253,8 +267,23 @@ export default function Database({ estimation, gestures, epics }: Props) {
     }
   };
 
+  const addRow = () => {
+    setData((oldData) => oldData.concat(defaultRow));
+  };
+
+  const removeRow = async (index: number) => {
+    const removedRow = data[index];
+    const newData = data.slice(0, index).concat(data.slice(index + 1));
+    if (removedRow.id) {
+      await wretch(
+        `${ROOT_URL}/estimations/features/${removedRow.id}`
+      ).delete();
+    }
+    setData(newData);
+  };
+
   return (
-    <Container>
+    <Container style={{ paddingBottom: 48 }}>
       <Header>
         <h2>Estimator</h2>
         <Spacer x={3} />
@@ -273,6 +302,8 @@ export default function Database({ estimation, gestures, epics }: Props) {
       </Header>
 
       <Datasheet {...tableInstance} gestures={gestures} />
+
+      <Button auto icon={<Plus />} onClick={addRow} title="" />
     </Container>
   );
 }

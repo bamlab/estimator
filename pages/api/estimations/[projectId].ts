@@ -1,4 +1,4 @@
-import { Estimation, EstimationFeature } from "@prisma/client";
+import { Estimation, EstimationFeature, GestureType } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../src/lib/prisma";
 import {
@@ -67,7 +67,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       const makeData = (
         row: EstimatedRow & { id: string }
-      ): Omit<EstimationFeature, "id" | "createdAt" | "updatedAt"> => ({
+      ): Omit<
+        EstimationFeature,
+        "id" | "createdAt" | "updatedAt" | "estimationEpicId"
+      > => ({
         name: row.feature,
         batch: row.batch ? row.batch : 1,
         dependencies: row.dependencies || "",
@@ -75,24 +78,48 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         exclude: row.exclude || "",
         saasOrPackage: row.saasOrPackage,
         type: row.type,
-        estimationEpicId: row.epic,
       });
 
       try {
         await prisma.$transaction(
-          rows.map((feature) =>
-            prisma.estimationFeature.upsert({
-              where: {
-                id: feature.id,
-              },
-              create: makeData(feature),
-              update: {
-                gestures: {
-                  set: feature.gestures.map((gesture) => ({ id: gesture })),
+          rows
+            .filter((feature) => Boolean(feature.id))
+            .map((feature) =>
+              prisma.estimationFeature.upsert({
+                where: {
+                  id: feature.id,
                 },
-              },
-            })
-          )
+                create: {
+                  ...makeData(feature),
+                  estimationEpicId: feature.epic,
+                },
+                update: {
+                  ...makeData(feature),
+                  gestures: {
+                    set: feature.gestures.map((gesture) => ({ id: gesture })),
+                  },
+                },
+              })
+            )
+        );
+        await prisma.$transaction(
+          rows
+            .filter((feature) => !feature.id)
+            .map((feature) =>
+              prisma.estimationFeature.create({
+                data: {
+                  ...makeData(feature),
+                  estimationEpic: {
+                    connect: { id: feature.epic },
+                  },
+                  gestures: {
+                    connect: feature.gestures.map((gesture) => ({
+                      id: gesture,
+                    })),
+                  },
+                },
+              })
+            )
         );
       } catch (e) {
         return res
