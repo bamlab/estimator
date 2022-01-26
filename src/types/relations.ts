@@ -6,6 +6,7 @@ import {
   Feature,
   Gesture,
   Project,
+  Ticket,
 } from "@prisma/client";
 
 export interface ProjectWithEstimation extends Project {
@@ -20,4 +21,8 @@ interface EpicWithFeature extends EstimationEpic {
 }
 export interface EstimationWithEpicsAndFeatures extends Estimation {
   epics: EpicWithFeature[];
+}
+
+export interface FullProject extends Project {
+  epics: Array<Epic & { features: Array<Feature & { tickets: Ticket[] }> }>;
 }

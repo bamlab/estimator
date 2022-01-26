@@ -42,6 +42,7 @@ export default function ProjectPage({ project }: Props) {
         <h2>{project.name}</h2>
       </Header>
       <Link href={`/projects/${project.id}/estimation`}>Estimation</Link>
+      <Link href={`/projects/${project.id}/board`}>Board de production</Link>
     </Container>
   );
 }
