@@ -16,6 +16,7 @@ import {
   Button,
   Container,
   Input,
+  Loading,
   Row,
   Spacer,
   Text,
@@ -36,6 +37,8 @@ import {
   EstimationPageProps,
   getServerSideProps as _getServerSideProps,
 } from "../../../src/modules/estimation/infra/getServerSideProps";
+import { createTickets } from "../../../src/modules/estimation/useCases/createTickets";
+import { toast } from "react-toastify";
 
 const DeleteButton = ({ onClick }: { onClick: () => void }) => {
   return <Button auto onClick={onClick} icon={<Delete />} />;
@@ -49,6 +52,7 @@ export default function Database({
   epics,
 }: EstimationPageProps) {
   const [data, setData] = useState<EstimatedRow[]>(initializeData(estimation));
+  const [isLoading, setIsLoading] = useState(false);
 
   const [epicList, setEpicList] = useState(() =>
     epics.map((epic) => ({
@@ -98,6 +102,10 @@ export default function Database({
     );
   };
 
+  const gestureList = gestures.map((gesture) => ({
+    label: gesture.name,
+    value: gesture.id,
+  }));
   const { ...tableInstance } = useTable(
     {
       columns: estimationColumns,
@@ -112,10 +120,7 @@ export default function Database({
       // That way we can call this function from our
       // cell renderer!
       updateMyData,
-      options: gestures.map((gesture) => ({
-        label: gesture.name,
-        value: gesture.id,
-      })),
+      options: gestureList,
       epicList,
       setEpicList,
       estimationId: estimation.id,
@@ -177,6 +182,23 @@ export default function Database({
           <Spacer x={5} />
           <Button onClick={() => saveEstimation(estimation, data, cMin, cMax)}>
             Enregistrer
+          </Button>
+          <Button
+            style={{ marginLeft: 20 }}
+            color={"gradient"}
+            onClick={async () => {
+              setIsLoading(true);
+              await createTickets(estimation, data, epicList, gestureList);
+              toast("Tous les tickets ont été créés", { type: "success" });
+              setIsLoading(false);
+            }}
+            clickable={!isLoading}
+          >
+            {isLoading ? (
+              <Loading type="points-opacity" color="white" size="sm" />
+            ) : (
+              "Générer les Tickets"
+            )}
           </Button>
         </Row>
       </Header>

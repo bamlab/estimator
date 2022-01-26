@@ -69,13 +69,13 @@ model Gesture {
 
 model Epic {
   id                String       @default(uuid()) @id
-  name              String
+  name              String  @unique
   createdAt         DateTime  @default(now()) @map(name: "created_at")
   updatedAt         DateTime  @updatedAt @map(name: "updated_at")
   project           Project @relation(fields: [projectId], references: [id])
   projectId         String
   features          Feature[]
-  estimationEpic    EstimationEpic @relation(fields: [estimationEpicId], references: [id])
+  estimationEpic    EstimationEpic? @relation(fields: [estimationEpicId], references: [id])
   estimationEpicId  String
   @@map(name: "epics")
 }
@@ -94,7 +94,7 @@ model EstimationEpic {
 
 model Feature {
   id                  String       @default(uuid()) @id
-  name                String
+  name                String  @unique
   currentStep         FeatureStep
   epic                Epic @relation(fields: [epicId], references: [id])
   epicId              String
