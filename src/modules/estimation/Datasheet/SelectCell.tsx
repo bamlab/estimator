@@ -25,6 +25,7 @@ export const SelectCell = ({
   options = defaultTechniqueGestures,
   column,
   row,
+  value,
 }: Props) => {
   const onChange: (
     newValue: MultiValue<{
@@ -50,6 +51,7 @@ export const SelectCell = ({
       className="basic-multi-select"
       classNamePrefix="select"
       onChange={onChange}
+      defaultValue={options.filter((option) => value.includes(option.value))}
     />
   );
 };

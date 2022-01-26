@@ -6,7 +6,7 @@ export const createEpic = async (
   epic: Omit<EstimationEpic, "id" | "createdAt" | "updatedAt">
 ): Promise<EstimationEpic> => {
   const epicWithId: EstimationEpic = await wretch(
-    `${ROOT_URL}/estimation/epics`
+    `${ROOT_URL}/estimations/epics`
   ).post({
     epic,
   });

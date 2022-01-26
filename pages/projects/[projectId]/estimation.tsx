@@ -10,7 +10,10 @@ import { Datasheet } from "../../../src/modules/estimation/Datasheet";
 import { estimationColumns } from "../../../src/constants/columns";
 import { InputCell } from "../../../src/modules/estimation/Datasheet/InputCell";
 import { GetServerSideProps } from "next";
-import { ProjectWithEstimation } from "../../../src/types/relations";
+import {
+  EstimationWithEpicsAndFeatures,
+  ProjectWithEstimation,
+} from "../../../src/types/relations";
 import { EstimatedRow } from "../../../src/types/datasheet";
 import { Epic, Estimation, Gesture } from "@prisma/client";
 
@@ -25,10 +28,14 @@ import {
 } from "@nextui-org/react";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../src/constants";
+import { toast } from "react-toastify";
+import {
+  CELERITE_MAX,
+  CELERITE_MIN,
+} from "../../../src/modules/estimation/constants";
 
 type Props = {
-  project: ProjectWithEstimation;
-  estimation: Estimation;
+  estimation: EstimationWithEpicsAndFeatures;
   gestures: Gesture[];
   epics: Epic[];
 };
@@ -49,38 +56,40 @@ export const getServerSideProps: GetServerSideProps<
   }
 
   const gestures: Gesture[] = await wretch(`${ROOT_URL}/gestures`).get().json();
-  const epics: Epic[] = await wretch(`${ROOT_URL}/estimation/epics`)
+  const epics: Epic[] = await wretch(`${ROOT_URL}/estimations/epics`)
     .get()
     .json();
 
   const { projectId } = params;
 
-  const project: ProjectWithEstimation = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/estimation/${projectId}`
-  ).then((res) => res.json());
+  const estimation: EstimationWithEpicsAndFeatures = await wretch(
+    `${process.env.NEXT_PUBLIC_API_URL}/estimations/${projectId}`
+  )
+    .get()
+    .json();
 
-  if (!project.estimation) {
-    const estimation: Estimation = await wretch(
-      `${process.env.NEXT_PUBLIC_API_URL}/estimation/${projectId}`
+  if (!estimation) {
+    const estimation: EstimationWithEpicsAndFeatures = await wretch(
+      `${process.env.NEXT_PUBLIC_API_URL}/estimations/${projectId}`
     )
       .post()
       .json();
     return {
       props: {
-        project,
         estimation,
         gestures,
         epics,
       },
     };
   }
+
   return {
-    props: { project, estimation: project.estimation, gestures, epics },
+    props: { estimation, gestures, epics },
   };
 };
 
 const defaultRow: EstimatedRow = {
-  batch: "",
+  batch: 1,
   dependencies: "",
   details: "",
   epic: "",
@@ -104,13 +113,33 @@ const createEmptyData = (rowsNumber: number = 10): EstimatedRow[] => {
   return data;
 };
 
-export default function Database({
-  project,
-  estimation,
-  gestures,
-  epics,
-}: Props) {
-  const [data, setData] = useState(() => createEmptyData());
+export default function Database({ estimation, gestures, epics }: Props) {
+  const [data, setData] = useState<EstimatedRow[]>(() => {
+    if (estimation && estimation.epics) {
+      const rows: EstimatedRow[] = [];
+      estimation.epics.forEach((epic) => {
+        epic.features.forEach((feature) => {
+          rows.push({
+            ...feature,
+            epic: epic.id,
+            feature: feature.name,
+            estimationFrontMin: parseFloat(
+              (feature.gestures.length * estimation.minSpeed).toFixed(2)
+            ),
+            estimationFrontMax: parseFloat(
+              (feature.gestures.length * estimation.minSpeed).toFixed(2)
+            ),
+            estimationBackMax: 0,
+            estimationBackMin: 0,
+            gestures: feature.gestures.map((gesture) => gesture.id),
+          });
+        });
+      });
+
+      return rows;
+    }
+    return createEmptyData();
+  });
 
   const [epicList, setEpicList] = useState(() =>
     epics.map((epic) => ({
@@ -119,8 +148,16 @@ export default function Database({
     }))
   );
 
-  const { value: cMin } = useInput(estimation.minSpeed.toString());
-  const { value: cMax } = useInput(estimation.maxSpeed.toString());
+  const { value: cMin } = useInput(
+    estimation.minSpeed
+      ? estimation.minSpeed.toString()
+      : CELERITE_MIN.toString()
+  );
+  const { value: cMax } = useInput(
+    estimation.maxSpeed
+      ? estimation.maxSpeed.toString()
+      : CELERITE_MAX.toString()
+  );
 
   const updateMyData = (
     rowIndex: number,
@@ -142,6 +179,7 @@ export default function Database({
               (base["gestures"].length * estimation.maxSpeed).toFixed(2)
             );
           }
+
           return {
             ...base,
           };
@@ -197,11 +235,22 @@ export default function Database({
         maxSpeed: parseFloat(cMax),
         minSpeed: parseFloat(cMin),
         sales: "",
-        projectId: project.id,
+        projectId: estimation.projectId,
       },
       rows: data,
     };
-    await wretch(`${ROOT_URL}/estimation/${project.id}`).post(newEstimation);
+    try {
+      const result = await wretch(
+        `${ROOT_URL}/estimations/${estimation.projectId}`
+      ).post(newEstimation);
+      if (result) {
+        toast("Estimation enregistrée", { type: "success" });
+      } else {
+        toast("Une erreur s'est produite", { type: "error" });
+      }
+    } catch (e) {
+      toast("Une erreur s'est produite", { type: "error" });
+    }
   };
 
   return (

@@ -26,7 +26,9 @@ export const getServerSideProps: GetServerSideProps<
 
   const { projectId } = params;
 
-  const project = await wretch(`${ROOT_URL}/project/${projectId}`).get().json();
+  const project = await wretch(`${ROOT_URL}/projects/${projectId}`)
+    .get()
+    .json();
 
   return {
     props: { project },

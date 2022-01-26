@@ -13,5 +13,5 @@ export type EstimatedRow = {
   estimationBackMin: number;
   estimationBackMax: number;
   dependencies: string | null;
-  batch: string;
+  batch: number;
 };

@@ -24,6 +24,7 @@ export const SelectEpicCell = ({
   row,
   estimationId,
   setEpicList,
+  value,
 }: Props) => {
   const onChange: (
     newValue: SingleValue<{
@@ -53,6 +54,7 @@ export const SelectEpicCell = ({
         break;
     }
   };
+
   return (
     <ReactSelect
       options={epicList}
@@ -60,6 +62,7 @@ export const SelectEpicCell = ({
       className="basic-multi-select"
       classNamePrefix="select"
       onChange={onChange}
+      defaultValue={epicList.find((epic) => epic.value === value)}
     />
   );
 };
