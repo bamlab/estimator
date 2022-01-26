@@ -31,6 +31,11 @@ import {
   CELERITE_MAX,
   CELERITE_MIN,
 } from "../../../src/modules/estimation/constants";
+import { saveEstimation } from "../../../src/modules/estimation/useCases/saveEstimation";
+import {
+  defaultRow,
+  initializeData,
+} from "../../../src/modules/estimation/useCases/initializeData";
 
 type Props = {
   estimation: EstimationWithEpicsAndFeatures;
@@ -86,61 +91,10 @@ export const getServerSideProps: GetServerSideProps<
   };
 };
 
-const defaultRow: EstimatedRow = {
-  batch: 1,
-  dependencies: "",
-  details: "",
-  epic: "",
-  gestures: [],
-  estimationBackMax: 0,
-  estimationBackMin: 0,
-  estimationFrontMax: 0,
-  estimationFrontMin: 0,
-  exclude: "",
-  feature: "",
-  saasOrPackage: "",
-  type: "A",
-};
-
-const createEmptyData = (rowsNumber: number = 10): EstimatedRow[] => {
-  const data = [];
-  for (let i = 1; i < rowsNumber; i++) {
-    data.push(defaultRow);
-  }
-
-  return data;
-};
-
 const DeleteButton = ({ onClick }: { onClick: () => void }) => {
   return <Button auto onClick={onClick} icon={<Delete />} />;
 };
 
-const initializeData = (estimation: Props["estimation"]) => {
-  if (estimation && estimation.epics) {
-    const rows: EstimatedRow[] = [];
-    estimation.epics.forEach((epic) => {
-      epic.features.forEach((feature) => {
-        rows.push({
-          ...feature,
-          epic: epic.id,
-          feature: feature.name,
-          estimationFrontMin: parseFloat(
-            (feature.gestures.length / estimation.maxSpeed).toFixed(2)
-          ),
-          estimationFrontMax: parseFloat(
-            (feature.gestures.length / estimation.minSpeed).toFixed(2)
-          ),
-          estimationBackMax: 0,
-          estimationBackMin: 0,
-          gestures: feature.gestures.map((gesture) => gesture.id),
-        });
-      });
-    });
-
-    return rows;
-  }
-  return createEmptyData();
-};
 export default function Database({ estimation, gestures, epics }: Props) {
   const [data, setData] = useState<EstimatedRow[]>(initializeData(estimation));
 
@@ -239,35 +193,6 @@ export default function Database({ estimation, gestures, epics }: Props) {
     data.reduce((prev, row) => prev + row["estimationFrontMax"], 0)
   );
 
-  const saveEstimation = async (rows: EstimatedRow[]) => {
-    const newEstimation: {
-      estimation: Omit<Estimation, "createdAt" | "updatedAt">;
-      rows: EstimatedRow[];
-    } = {
-      estimation: {
-        id: estimation.id,
-        archi: "",
-        maxSpeed: parseFloat(cMax),
-        minSpeed: parseFloat(cMin),
-        sales: "",
-        projectId: estimation.projectId,
-      },
-      rows,
-    };
-    try {
-      const result = await wretch(
-        `${ROOT_URL}/estimations/${estimation.projectId}`
-      ).post(newEstimation);
-      if (result) {
-        toast("Estimation enregistrée", { type: "success" });
-      } else {
-        toast("Une erreur s'est produite", { type: "error" });
-      }
-    } catch (e) {
-      toast("Une erreur s'est produite", { type: "error" });
-    }
-  };
-
   const addRow = () => {
     setData((oldData) => oldData.concat(defaultRow));
   };
@@ -298,7 +223,9 @@ export default function Database({ estimation, gestures, epics }: Props) {
           <Spacer x={1} />
           <Text>{`Estimation max: ${estimationMax}`}</Text>
           <Spacer x={5} />
-          <Button onClick={() => saveEstimation(data)}>Enregistrer</Button>
+          <Button onClick={() => saveEstimation(estimation, data, cMin, cMax)}>
+            Enregistrer
+          </Button>
         </Row>
       </Header>
 
