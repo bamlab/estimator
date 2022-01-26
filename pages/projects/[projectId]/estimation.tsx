@@ -125,10 +125,10 @@ const initializeData = (estimation: Props["estimation"]) => {
           epic: epic.id,
           feature: feature.name,
           estimationFrontMin: parseFloat(
-            (feature.gestures.length * estimation.minSpeed).toFixed(2)
+            (feature.gestures.length / estimation.maxSpeed).toFixed(2)
           ),
           estimationFrontMax: parseFloat(
-            (feature.gestures.length * estimation.minSpeed).toFixed(2)
+            (feature.gestures.length / estimation.minSpeed).toFixed(2)
           ),
           estimationBackMax: 0,
           estimationBackMin: 0,
@@ -176,10 +176,10 @@ export default function Database({ estimation, gestures, epics }: Props) {
           };
           if (columnId === "gestures") {
             base["estimationFrontMin"] = parseFloat(
-              (base["gestures"].length * estimation.minSpeed).toFixed(2)
+              (base["gestures"].length / estimation.maxSpeed).toFixed(2)
             );
             base["estimationFrontMax"] = parseFloat(
-              (base["gestures"].length * estimation.maxSpeed).toFixed(2)
+              (base["gestures"].length / estimation.minSpeed).toFixed(2)
             );
           }
 
@@ -252,7 +252,7 @@ export default function Database({ estimation, gestures, epics }: Props) {
         sales: "",
         projectId: estimation.projectId,
       },
-      rows: data,
+      rows,
     };
     try {
       const result = await wretch(
@@ -290,9 +290,9 @@ export default function Database({ estimation, gestures, epics }: Props) {
         <Spacer x={3} />
 
         <Row align="flex-end">
-          <Input label="Célérité min" type="number" {...cMinBindings} />
+          <Input label="Productivité min" type="number" {...cMinBindings} />
           <Spacer x={1} />
-          <Input label="Célérité max" type="number" {...cMaxBindings} />
+          <Input label="Productivité max" type="number" {...cMaxBindings} />
           <Spacer x={2} />
           <Text>{`Estimation min: ${estimationMin}`}</Text>
           <Spacer x={1} />
