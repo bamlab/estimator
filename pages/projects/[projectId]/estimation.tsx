@@ -10,10 +10,7 @@ import {
 import { Datasheet } from "../../../src/modules/estimation/Datasheet";
 import { columnWiths, estimationColumns } from "../../../src/constants/columns";
 import { InputCell } from "../../../src/modules/estimation/Datasheet/InputCell";
-import { GetServerSideProps } from "next";
-import { EstimationWithEpicsAndFeatures } from "../../../src/types/relations";
 import { EstimatedRow } from "../../../src/types/datasheet";
-import { Epic, Estimation, Gesture } from "@prisma/client";
 import { Delete, Plus } from "react-iconly";
 import {
   Button,
@@ -26,7 +23,6 @@ import {
 } from "@nextui-org/react";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../src/constants";
-import { toast } from "react-toastify";
 import {
   CELERITE_MAX,
   CELERITE_MIN,
@@ -36,66 +32,22 @@ import {
   defaultRow,
   initializeData,
 } from "../../../src/modules/estimation/useCases/initializeData";
-
-type Props = {
-  estimation: EstimationWithEpicsAndFeatures;
-  gestures: Gesture[];
-  epics: Epic[];
-};
-
-type Params = {
-  projectId: string;
-};
-
-export const getServerSideProps: GetServerSideProps<
-  Props | { props: null },
-  Params
-> = async ({ params }) => {
-  if (!params || !params.projectId) {
-    return {
-      redirect: "/projects",
-      props: { props: null },
-    };
-  }
-
-  const gestures: Gesture[] = await wretch(`${ROOT_URL}/gestures`).get().json();
-  const epics: Epic[] = await wretch(`${ROOT_URL}/estimations/epics`)
-    .get()
-    .json();
-
-  const { projectId } = params;
-
-  const estimation: EstimationWithEpicsAndFeatures = await wretch(
-    `${process.env.NEXT_PUBLIC_API_URL}/estimations/${projectId}`
-  )
-    .get()
-    .json();
-
-  if (!estimation) {
-    const estimation: EstimationWithEpicsAndFeatures = await wretch(
-      `${process.env.NEXT_PUBLIC_API_URL}/estimations/${projectId}`
-    )
-      .post()
-      .json();
-    return {
-      props: {
-        estimation,
-        gestures,
-        epics,
-      },
-    };
-  }
-
-  return {
-    props: { estimation, gestures, epics },
-  };
-};
+import {
+  EstimationPageProps,
+  getServerSideProps as _getServerSideProps,
+} from "../../../src/modules/estimation/infra/getServerSideProps";
 
 const DeleteButton = ({ onClick }: { onClick: () => void }) => {
   return <Button auto onClick={onClick} icon={<Delete />} />;
 };
 
-export default function Database({ estimation, gestures, epics }: Props) {
+export const getServerSideProps = _getServerSideProps;
+
+export default function Database({
+  estimation,
+  gestures,
+  epics,
+}: EstimationPageProps) {
   const [data, setData] = useState<EstimatedRow[]>(initializeData(estimation));
 
   const [epicList, setEpicList] = useState(() =>
