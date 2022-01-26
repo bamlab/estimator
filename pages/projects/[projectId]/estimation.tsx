@@ -115,33 +115,34 @@ const DeleteButton = ({ onClick }: { onClick: () => void }) => {
   return <Button auto onClick={onClick} icon={<Delete />} />;
 };
 
-export default function Database({ estimation, gestures, epics }: Props) {
-  const [data, setData] = useState<EstimatedRow[]>(() => {
-    if (estimation && estimation.epics) {
-      const rows: EstimatedRow[] = [];
-      estimation.epics.forEach((epic) => {
-        epic.features.forEach((feature) => {
-          rows.push({
-            ...feature,
-            epic: epic.id,
-            feature: feature.name,
-            estimationFrontMin: parseFloat(
-              (feature.gestures.length * estimation.minSpeed).toFixed(2)
-            ),
-            estimationFrontMax: parseFloat(
-              (feature.gestures.length * estimation.minSpeed).toFixed(2)
-            ),
-            estimationBackMax: 0,
-            estimationBackMin: 0,
-            gestures: feature.gestures.map((gesture) => gesture.id),
-          });
+const initializeData = (estimation: Props["estimation"]) => {
+  if (estimation && estimation.epics) {
+    const rows: EstimatedRow[] = [];
+    estimation.epics.forEach((epic) => {
+      epic.features.forEach((feature) => {
+        rows.push({
+          ...feature,
+          epic: epic.id,
+          feature: feature.name,
+          estimationFrontMin: parseFloat(
+            (feature.gestures.length * estimation.minSpeed).toFixed(2)
+          ),
+          estimationFrontMax: parseFloat(
+            (feature.gestures.length * estimation.minSpeed).toFixed(2)
+          ),
+          estimationBackMax: 0,
+          estimationBackMin: 0,
+          gestures: feature.gestures.map((gesture) => gesture.id),
         });
       });
+    });
 
-      return rows;
-    }
-    return createEmptyData();
-  });
+    return rows;
+  }
+  return createEmptyData();
+};
+export default function Database({ estimation, gestures, epics }: Props) {
+  const [data, setData] = useState<EstimatedRow[]>(initializeData(estimation));
 
   const [epicList, setEpicList] = useState(() =>
     epics.map((epic) => ({
@@ -150,12 +151,12 @@ export default function Database({ estimation, gestures, epics }: Props) {
     }))
   );
 
-  const { value: cMin } = useInput(
+  const { value: cMin, bindings: cMinBindings } = useInput(
     estimation.minSpeed
       ? estimation.minSpeed.toString()
       : CELERITE_MIN.toString()
   );
-  const { value: cMax } = useInput(
+  const { value: cMax, bindings: cMaxBindings } = useInput(
     estimation.maxSpeed
       ? estimation.maxSpeed.toString()
       : CELERITE_MAX.toString()
@@ -289,9 +290,9 @@ export default function Database({ estimation, gestures, epics }: Props) {
         <Spacer x={3} />
 
         <Row align="flex-end">
-          <Input label="Célérité min" type="number" value={cMin} />
+          <Input label="Célérité min" type="number" {...cMinBindings} />
           <Spacer x={1} />
-          <Input label="Célérité max" type="number" value={cMax} />
+          <Input label="Célérité max" type="number" {...cMaxBindings} />
           <Spacer x={2} />
           <Text>{`Estimation min: ${estimationMin}`}</Text>
           <Spacer x={1} />

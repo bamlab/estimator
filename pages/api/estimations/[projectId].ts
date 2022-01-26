@@ -81,6 +81,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       });
 
       try {
+        await prisma.estimation.update({
+          where: { id: estimation.id },
+          data: estimation,
+        });
         await prisma.$transaction(
           rows
             .filter((feature) => Boolean(feature.id))
