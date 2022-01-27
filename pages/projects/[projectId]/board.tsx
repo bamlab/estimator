@@ -5,6 +5,8 @@ import { GetServerSideProps } from "next";
 import { Ticket } from ".prisma/client";
 import { ticketsToLane } from "../../../src/modules/gantt/adapter";
 import { FullProject } from "../../../src/types/relations";
+import wretch from "wretch";
+import { ROOT_URL } from "../../../src/constants";
 
 type Props = { project: FullProject | null };
 
@@ -65,10 +67,11 @@ export default function BoardPage({ project }: Props) {
     card: ReactTrello.DraggableCard,
     laneId: string
   ) => {
-    await fetch("/api/ticket", {
-      method: "POST",
-      body: JSON.stringify({ card, laneId, feature: tickets[0].featureId }),
-    }).catch((e) => alert("Erreur" + JSON.stringify(e)));
+    await wretch(`${ROOT_URL}/tickets`).post({
+      card,
+      laneId,
+      feature: tickets[0].featureId,
+    });
     alert("Ticket créé");
   };
 

@@ -1,6 +1,6 @@
 import { Estimation } from "@prisma/client";
 import { toast } from "react-toastify";
-import { TicketToCreate } from "../../../../pages/api/tickets/[projectId]";
+import { TicketToCreate } from "../../../../pages/api/projects/[projectId]/tickets";
 import { EstimatedRow } from "../../../types/datasheet";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../constants";
@@ -36,5 +36,7 @@ export const createTickets = async (
     });
   });
 
-  await wretch(`${ROOT_URL}/tickets/${estimation.projectId}`).post({ tickets });
+  await wretch(`${ROOT_URL}/projects/${estimation.projectId}/tickets`).post({
+    tickets,
+  });
 };

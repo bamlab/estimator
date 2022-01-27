@@ -1,6 +1,6 @@
 import { FeatureStep, TicketStep } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "../../../src/lib/prisma";
+import { prisma } from "../../../../src/lib/prisma";
 
 export type TicketToCreate = {
   name: string;
