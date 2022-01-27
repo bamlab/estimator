@@ -8,6 +8,7 @@ import { FullProject } from "../../../src/types/relations";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../src/constants";
 import { toast } from "react-toastify";
+import { Card } from "../../../src/modules/board/views/Card";
 
 type Props = { project: FullProject | null };
 
@@ -43,6 +44,21 @@ export const getServerSideProps: GetServerSideProps<
 };
 
 export default function BoardPage({ project }: Props) {
+  const updateCard = async (card: {
+    title?: string;
+    label?: string;
+    description?: string;
+    id: string;
+  }) => {
+    const updatedTicket: Partial<Ticket> = {
+      name: card.title,
+      points: parseInt(card.label || ""),
+    };
+    await wretch(`${ROOT_URL}/tickets/${card.id}`).put({
+      ticket: updatedTicket,
+    });
+  };
+
   const tickets: Ticket[] = useMemo(() => {
     if (!project) {
       return [];
@@ -93,6 +109,9 @@ export default function BoardPage({ project }: Props) {
         onCardAdd={createNewTicket}
         editable
         handleDragEnd={moveTicket}
+        components={{
+          Card: (props: any) => <Card {...props} onUpdate={updateCard} />,
+        }}
       />
     </div>
   );

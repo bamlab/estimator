@@ -16,6 +16,7 @@
     "@nextui-org/react": "^1.0.2-alpha.2",
     "@prisma/client": "^3.8.1",
     "airtable": "^0.11.1",
+    "autosize": "^5.0.1",
     "match-sorter": "^6.3.0",
     "next": "11.1.0",
     "prisma": "^3.8.1",
@@ -28,6 +29,7 @@
     "react-table": "^7.7.0",
     "react-toastify": "^8.1.0",
     "react-trello": "^2.2.11",
+    "recharts": "^2.1.8",
     "wretch": "^1.7.7"
   },
   "devDependencies": {
@@ -36,6 +38,7 @@
     "@babel/preset-typescript": "^7.15.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.1.0",
+    "@types/autosize": "^4.0.1",
     "@types/jest": "^27.0.2",
     "@types/react": "17.0.17",
     "@types/react-table": "^7.7.2",
