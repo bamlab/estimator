@@ -7,6 +7,7 @@ import { ticketsToLane } from "../../../src/modules/gantt/adapter";
 import { FullProject } from "../../../src/types/relations";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../src/constants";
+import { toast } from "react-toastify";
 
 type Props = { project: FullProject | null };
 
@@ -68,16 +69,31 @@ export default function BoardPage({ project }: Props) {
     laneId: string
   ) => {
     await wretch(`${ROOT_URL}/tickets`).post({
-      card,
-      laneId,
-      feature: tickets[0].featureId,
+      name: card.title,
+      currentStep: laneId,
     });
-    alert("Ticket créé");
+    toast("Ticket créé", { type: "success" });
+  };
+
+  const moveTicket = async (
+    cardId: string,
+    _sourceLaneId: string,
+    targetLaneId: string,
+    _position: number
+  ) => {
+    await wretch(`${ROOT_URL}/tickets/${cardId}`).put({
+      ticket: { currentStep: targetLaneId },
+    });
   };
 
   return (
     <div>
-      <Board data={data} onCardAdd={createNewTicket} editable />
+      <Board
+        data={data}
+        onCardAdd={createNewTicket}
+        editable
+        handleDragEnd={moveTicket}
+      />
     </div>
   );
 }

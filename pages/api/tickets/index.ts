@@ -1,23 +1,18 @@
-import { Prisma, Ticket, TicketStep } from ".prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../src/lib/prisma";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
-    const { card, laneId, featureId } = JSON.parse(req.body);
+    const { name, currentStep } = req.body;
 
-    const ticket = {
-      name: card.title,
-      points: card.label ? parseInt(card.label) : 0,
-      currentStep: laneId as TicketStep,
-    };
-
-    prisma.feature.update({
-      where: { id: featureId },
+    if (!name || !currentStep) {
+      return res.status(401).send("name or currenStep is missing");
+    }
+    prisma.ticket.create({
       data: {
-        tickets: {
-          create: [ticket],
-        },
+        currentStep,
+        name,
+        points: 0,
       },
     });
 

@@ -15,6 +15,7 @@ model Project {
   name        String
   epics       Epic[]
   estimation  Estimation?
+  batches     Batch[]
   estimatedAt DateTime?
   signedAt    DateTime?
   startAt     DateTime?
@@ -110,14 +111,56 @@ model Feature {
 model Ticket {
   id              String       @default(uuid()) @id
   name            String
-  feature         Feature @relation(fields: [featureId], references: [id])
-  featureId       String
+  feature         Feature? @relation(fields: [featureId], references: [id])
+  featureId       String?
   dependencies    Ticket[] @relation("Dependency")
   dependencyFor   Ticket? @relation("Dependency", fields: [dependencyForId], references: [id])
   dependencyForId String?
   points          Int
   currentStep     TicketStep
+  batchId         String?
+  batch           Batch? @relation(fields: [batchId], references: [id])
+  doneAt          DateTime?
   @@map(name: "tickets")
+}
+
+model Batch {
+  id        String       @default(uuid()) @id
+  name      String
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+  tickets   Ticket[]
+  capacity  Int // in points
+  length    Int // in days
+  team      Team @relation(fields: [teamId], references: [id])
+  teamId    String
+  @@map(name: "batches")
+}
+
+model Team {
+  id          String       @default(uuid()) @id
+  developers  Developer[]
+  batch       Batch[]
+  @@map(name: "teams")
+}
+
+model Developer {
+  id        String       @default(uuid()) @id
+  teamId    String
+  team      Team @relation(fields: [teamId], references: [id])
+  capacity  Int // in points
+  @@map(name: "developers")
+}
+
+model Changelog {
+  id          String @default(uuid()) @id
+  author      String @default("")
+  createdAt   DateTime  @default(now()) @map(name: "created_at")
+  type        ChangelogType
+  targetId    String
+  to          String
+  toString    String
+  @@map(name: "changelog")
 }
 
 enum FeatureStep {
@@ -144,4 +187,8 @@ enum FeatureType {
 enum GestureType {
   FRONT
   BACK
+}
+
+enum ChangelogType {
+  UPDATE_TICKET_STEP
 }
