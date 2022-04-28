@@ -10,16 +10,68 @@ generator client {
   provider = "prisma-client-js"
 }
 
+
+
 model Project {
-  id          String     @default(uuid()) @id
-  name        String
-  epics       Epic[]
-  estimation  Estimation?
-  batches     Batch[]
-  estimatedAt DateTime?
-  signedAt    DateTime?
-  startAt     DateTime?
+  id            String     @default(uuid()) @id
+  name          String
+  epics         Epic[]
+  estimation    Estimation?
+  batches       Batch[]
+  estimatedAt   DateTime?
+  signedAt      DateTime?
+  startAt       DateTime?
+  endAt         DateTime?
+  unit          UnitType
+  productivity  Int @default(1)
+  ressources    Ressource[]
+  versions      Version[]
   @@map(name: "projects")
+}
+
+model People {
+  id            String @default(uuid()) @id
+  name          String
+  ressourceId   String 
+  ressource     Ressource @relation(fields: [ressourceId], references: [id])
+}
+
+model Ressource {
+  id            String @default(uuid()) @id
+  developers    People[]
+  date          DateTime
+  availability  Float
+  projectId     String
+  project       Project @relation(fields: [projectId], references: [id])
+}
+
+model Version {
+  id            String @default(uuid()) @id
+  name          String
+  startDate     DateTime
+  scope         String
+  volume        Int
+  releases      Release[]
+  projectId     String
+  project       Project @relation(fields: [projectId], references: [id])
+}
+
+model Release {
+  id              String @default(uuid()) @id
+  forecastEndDate DateTime
+  volume          Int
+  comment         String
+  versionId       String
+  version         Version @relation(fields: [versionId], references: [id])
+  productions     Production[]
+}
+
+model Production {
+  id            String @default(uuid()) @id
+  done          Int
+  date          DateTime
+  releaseId     String
+  release       Release @relation(fields: [releaseId], references: [id])
 }
 
 model Estimation {
@@ -35,8 +87,6 @@ model Estimation {
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   @@map(name: "estimations")
 }
-
-
 
 model EstimationFeature {
   id                String       @default(uuid()) @id
@@ -191,4 +241,9 @@ enum GestureType {
 
 enum ChangelogType {
   UPDATE_TICKET_STEP
+}
+
+enum UnitType {
+  TICKET
+  POINT
 }
