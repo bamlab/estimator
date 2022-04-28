@@ -2,10 +2,11 @@ import React from "react";
 import styled from "@emotion/styled";
 import { GetServerSideProps } from "next";
 import { Project, Release, Version } from "@prisma/client";
-import { Container, Link, Spacer } from "@nextui-org/react";
+import { Container } from "@nextui-org/react";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../../../../src/constants";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { makeReleaseChartData } from "../../../../../../src/modules/bdc/makeReleaseChartData";
 
 type Props = {
   release: Release & { version: Version & { project: Project } };
@@ -37,35 +38,16 @@ export const getServerSideProps: GetServerSideProps<
   };
 };
 
-const DATA = [
-  {
-    name: "Lun",
-    done: 12,
-    standard: 12,
-  },
-  {
-    name: "Mar",
-    done: 9,
-    standard: 10,
-  },
-  {
-    name: "Mer",
-    done: 10,
-    standard: 6,
-  },
-  {
-    name: "Jeu",
-    done: 3,
-    standard: 3,
-  },
-  {
-    name: "Ven",
-    done: 2,
-    standard: 0,
-  },
-];
-
 export default function ReleasePage({ release }: Props) {
+  const data = makeReleaseChartData({
+    celerite: release.version.project.productivity,
+    endDate: new Date(release.forecastEndDate),
+    startDate: new Date(release.version.startDate),
+    volume: release.volume,
+  });
+
+  console.log("data", data);
+
   return (
     <Container>
       <Header>
@@ -79,7 +61,7 @@ export default function ReleasePage({ release }: Props) {
         ).toLocaleDateString()}`}
       </p>
 
-      <LineChart width={700} height={400} data={DATA}>
+      <LineChart width={700} height={400} data={data}>
         <Line type="monotone" stroke="#0059ff" dataKey="done" />
         <Line type="monotone" stroke="#ff0000" dataKey="standard" />
         <CartesianGrid stroke="#ccc" />

@@ -9,6 +9,7 @@ import { Container } from "@nextui-org/react";
 import { add } from "date-fns";
 import sumBy from "lodash/sumBy";
 import { formatDate } from "../../../src/utils/formatDate";
+import { ChartPoint } from "../../../src/types/charts";
 
 type Props = { project: FullProject | null };
 
@@ -42,8 +43,6 @@ export const getServerSideProps: GetServerSideProps<
     props: { project: JSON.parse(JSON.stringify(project)) },
   };
 };
-
-type ChartPoint = { name: string; done: number; standard: number };
 
 const makeSprint = (tickets: Ticket[]): ChartPoint[] => {
   const monday = new Date(2022, 0, 24);
