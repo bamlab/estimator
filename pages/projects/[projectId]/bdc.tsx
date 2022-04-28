@@ -8,6 +8,7 @@ import groupBy from "lodash/groupBy";
 import { Container } from "@nextui-org/react";
 import { add } from "date-fns";
 import sumBy from "lodash/sumBy";
+import { formatDate } from "../../../src/utils/formatDate";
 
 type Props = { project: FullProject | null };
 
@@ -40,18 +41,6 @@ export const getServerSideProps: GetServerSideProps<
   return {
     props: { project: JSON.parse(JSON.stringify(project)) },
   };
-};
-
-const formatTwoDigit = (nb: number): string => {
-  if (nb < 10 && nb >= 0) {
-    return `0${nb}`;
-  }
-  return nb.toString();
-};
-const formatDate = (date: Date): string => {
-  return `${formatTwoDigit(date.getDate())}/${formatTwoDigit(
-    date.getMonth() + 1
-  )}`;
 };
 
 type ChartPoint = { name: string; done: number; standard: number };
