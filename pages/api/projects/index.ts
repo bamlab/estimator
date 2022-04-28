@@ -7,12 +7,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     res.status(200).json({ projects });
   } else if (req.method === "POST") {
-    const { name } = req.body;
+    const { name, unit, startDate, endDate, productivity } = req.body;
     if (!name) {
       return res.status(400).send("No name provided");
     }
     const project = await prisma.project.create({
-      data: { name: req.body.name },
+      data: {
+        name: req.body.name,
+        unit: unit.toLowerCase() === "ticket" ? "TICKET" : "POINT",
+        productivity: parseInt(productivity),
+        endAt: new Date(endDate),
+        startAt: new Date(startDate),
+      },
     });
     res.status(200).json({ project });
   } else {

@@ -31,17 +31,25 @@ type Props = { projects: Project[] };
 export default function ProjectsPage({ projects }: Props) {
   const [projectId, setProjectId] = useState("");
   const router = useRouter();
-  const { bindings, value } = useInput("");
+  const { bindings: projectNameBindings, value: projectName } = useInput("");
+  const { bindings: startDateBindings, value: startDate } = useInput("");
+  const { bindings: endDateBindings, value: endDate } = useInput("");
+  const { bindings: unitBindings, value: unit } = useInput("");
+  const { bindings: productivityBindings, value: productivity } = useInput("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const createNewProject = async () => {
-    if (!value) {
-      setErrorMessage("Choisis le nom du projet");
+    if (!projectName || !startDate || !endDate || !unit || !productivity) {
+      setErrorMessage("Remplis tous les champs");
       return;
     }
     const response = await wretch(`${ROOT_URL}/projects`)
       .post({
-        name: value,
+        name: projectName,
+        startDate,
+        endDate,
+        unit,
+        productivity,
       })
       .json();
 
@@ -65,7 +73,7 @@ export default function ProjectsPage({ projects }: Props) {
   return (
     <Container>
       <Header>
-        <h2>Projects page</h2>
+        <h1>Les Projets M33</h1>
       </Header>
 
       <h2>Choisir un projet</h2>
@@ -81,14 +89,39 @@ export default function ProjectsPage({ projects }: Props) {
       <Link href={`/projects/${projectId}`}>
         <Button>{"C'est parti !"}</Button>
       </Link>
-      <Spacer y={1} />
+      <Spacer y={2} />
+      <h2>Créer un projet</h2>
+
       <Row align="flex-end">
         <Input
           label="Nom du projet"
           placeholder="Yomoni"
-          {...bindings}
+          {...projectNameBindings}
           color={errorMessage ? "error" : "default"}
           status={errorMessage ? "error" : "default"}
+        />
+        <Spacer x={3} />
+        <Input
+          label="Date de début"
+          placeholder="28/04/2022"
+          type="date"
+          {...startDateBindings}
+        />
+        <Spacer x={3} />
+        <Input
+          label="Date de fin"
+          placeholder="28/04/2022"
+          type="date"
+          {...endDateBindings}
+        />
+        <Spacer x={3} />
+        <Input label="Unité" placeholder="Ticket" {...unitBindings} />
+        <Spacer x={3} />
+        <Input
+          label="Productivité initiale"
+          placeholder="1"
+          type="number"
+          {...productivityBindings}
         />
         <Spacer x={3} />
         <Button onClick={createNewProject} color={"success"}>
