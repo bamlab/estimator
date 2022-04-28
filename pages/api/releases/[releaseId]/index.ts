@@ -3,16 +3,18 @@ import { prisma } from "../../../../src/lib/prisma";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
-    const { versionId } = req.query;
-    if (typeof versionId === "string") {
-      const version = await prisma.version.findUnique({
-        where: { id: versionId },
+    const { releaseId } = req.query;
+    if (typeof releaseId === "string") {
+      const release = await prisma.release.findUnique({
+        where: { id: releaseId },
         include: {
-          releases: true,
+          version: {
+            include: { project: true },
+          },
         },
       });
 
-      res.status(200).json(version);
+      res.status(200).json(release);
     } else {
       res.status(400).send("multiple query params");
     }

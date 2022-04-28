@@ -76,8 +76,6 @@ export default function VersionPage({ versions, project }: Props) {
       })
       .json();
 
-    console.log(" version", version);
-
     if (version) {
       toast(`La version ${version.name} a bien été crée`);
       router.push(`/projects/${project.id}/versions/${version.id}`);

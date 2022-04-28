@@ -1,14 +1,14 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { GetServerSideProps } from "next";
-import { Project, Version } from "@prisma/client";
-import { Container, Spacer } from "@nextui-org/react";
+import { Project, Release, Version } from "@prisma/client";
+import { Container, Link, Spacer } from "@nextui-org/react";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../../../src/constants";
 
 type Props = {
   project: Project;
-  version: Version;
+  version: Version & { releases: Release[] };
 };
 
 type Params = {
@@ -49,6 +49,15 @@ export default function VersionPage({ project, version }: Props) {
         <h2>{project.name}</h2>
         <h3>Version {version.name}</h3>
       </Header>
+
+      {version.releases.map((release, index) => (
+        <>
+          <Link
+            href={`/projects/${project.id}/versions/${version.id}/rc/${release.id}`}
+          >{`RC${index + 1}`}</Link>
+          <Spacer y={3} />
+        </>
+      ))}
     </Container>
   );
 }
