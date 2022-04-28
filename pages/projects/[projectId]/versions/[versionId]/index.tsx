@@ -1,16 +1,19 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { GetServerSideProps } from "next";
-import { Project } from "@prisma/client";
-import { Container, Link, Spacer } from "@nextui-org/react";
-import { ROOT_URL } from "../../../src/constants";
+import { Project, Version } from "@prisma/client";
+import { Container, Spacer } from "@nextui-org/react";
 import wretch from "wretch";
+import { ROOT_URL } from "../../../../../src/constants";
+
 type Props = {
   project: Project;
+  version: Version;
 };
 
 type Params = {
   projectId: string;
+  versionId: string;
 };
 
 export const getServerSideProps: GetServerSideProps<
@@ -24,34 +27,32 @@ export const getServerSideProps: GetServerSideProps<
     };
   }
 
-  const { projectId } = params;
+  const { projectId, versionId } = params;
 
   const project = await wretch(`${ROOT_URL}/projects/${projectId}`)
     .get()
     .json();
 
+  const version = await wretch(`${ROOT_URL}/versions/${versionId}`)
+    .get()
+    .json();
+
   return {
-    props: { project },
+    props: { project, version },
   };
 };
 
-export default function ProjectPage({ project }: Props) {
+export default function VersionPage({ project, version }: Props) {
   return (
     <Container>
       <Header>
         <h2>{project.name}</h2>
+        <h3>Version {version.name}</h3>
       </Header>
-      <Link href={`/projects/${project.id}/estimation`}>Estimation</Link>
-      <Spacer y={3} />
-      <Link href={`/projects/${project.id}/board`}>Board de production</Link>
-      <Spacer y={3} />
-      <Link href={`/projects/${project.id}/versions`}>Versions</Link>
     </Container>
   );
 }
 
 const Header = styled.div`
   margin-left: 1rem;
-  display: flex;
-  flex-direction: row;
 `;
