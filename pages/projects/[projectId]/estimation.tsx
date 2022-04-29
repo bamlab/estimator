@@ -192,7 +192,7 @@ export default function Database({
               toast("Tous les tickets ont été créés", { type: "success" });
               setIsLoading(false);
             }}
-            clickable={!isLoading}
+            disabled={!isLoading}
           >
             {isLoading ? (
               <Loading type="points-opacity" color="white" size="sm" />

@@ -7,7 +7,6 @@ import {
   Col,
   Container,
   Input,
-  Row,
   Spacer,
   Textarea,
   useInput,
@@ -97,46 +96,48 @@ export default function VersionPage({ versions, project }: Props) {
 
   return (
     <Container>
-      <Header>
-        <h1>{project.name}</h1>
-      </Header>
-
-      <h2>Choisir une version</h2>
-      <Select
-        options={options}
-        onChange={(option) => {
-          if (option) {
-            setVersionId(option.value);
-          }
-        }}
-      />
-      <Spacer y={1} />
-      <Link href={`/projects/${project.id}/versions/${versionId}`}>
-        <Button>{"Suivant"}</Button>
-      </Link>
-      <Spacer y={2} />
-      <h2>Créer une version</h2>
-
       <Col>
-        <Input
-          label="Nom de la version"
-          placeholder="Version 1"
-          {...versionNameBindings}
-          color={errorMessage ? "error" : "default"}
-          status={errorMessage ? "error" : "default"}
+        <Header>
+          <h1>{project.name}</h1>
+        </Header>
+
+        <h2>Choisir une version</h2>
+        <Select
+          options={options}
+          onChange={(option) => {
+            if (option) {
+              setVersionId(option.value);
+            }
+          }}
         />
         <Spacer y={1} />
-        <Input label="Date de début" type="date" {...startDateBindings} />
-        <Spacer y={1} />
-        <Textarea label="Scope" {...scopeBindings} />
-        <Spacer y={1} />
-        <Input label="Volume" type="number" {...volumeBindings} />
-        <Spacer y={1} />
-
-        <Button onClick={createNewVersion} color={"success"}>
-          Créer une nouvelle version
-        </Button>
+        <Link href={`/projects/${project.id}/versions/${versionId}`}>
+          <Button>{"Suivant"}</Button>
+        </Link>
         <Spacer y={2} />
+        <h2>Créer une version</h2>
+
+        <Col>
+          <Input
+            label="Nom de la version"
+            placeholder="Version 1"
+            {...versionNameBindings}
+            color={errorMessage ? "error" : "default"}
+            status={errorMessage ? "error" : "default"}
+          />
+          <Spacer y={1} />
+          <Input label="Date de début" type="date" {...startDateBindings} />
+          <Spacer y={1} />
+          <Textarea label="Scope" {...scopeBindings} />
+          <Spacer y={1} />
+          <Input label="Volume" type="number" {...volumeBindings} />
+          <Spacer y={1} />
+
+          <Button onClick={createNewVersion} color={"success"}>
+            Créer une nouvelle version
+          </Button>
+          <Spacer y={2} />
+        </Col>
       </Col>
     </Container>
   );
