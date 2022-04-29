@@ -42,9 +42,11 @@ export const getServerSideProps: GetServerSideProps<
     `${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}`
   ).then((res) => res.json());
 
-  const versions: Version[] = await fetch(
+  const versions: Version[] = await wretch(
     `${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/versions`
-  ).then((res) => res.json());
+  )
+    .get()
+    .json();
 
   return {
     props: { versions, project },

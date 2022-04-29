@@ -10,11 +10,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     const { projectId } = req.query;
     if (typeof projectId === "string") {
-      const project = await prisma.version.findMany({
-        where: { id: projectId },
+      const versions = await prisma.version.findMany({
+        where: { projectId },
       });
 
-      res.status(200).json(project);
+      res.status(200).json(versions);
     } else {
       res.status(400).send("multiple query params");
     }
