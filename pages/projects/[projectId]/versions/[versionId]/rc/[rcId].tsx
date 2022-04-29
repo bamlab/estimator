@@ -2,7 +2,15 @@ import React, { useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { GetServerSideProps } from "next";
 import { Production, Project, Release, Version } from "@prisma/client";
-import { Container, FormElement, Input, Row, Spacer } from "@nextui-org/react";
+import {
+  Col,
+  Container,
+  FormElement,
+  Input,
+  Link,
+  Row,
+  Spacer,
+} from "@nextui-org/react";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../../../../src/constants";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
@@ -111,78 +119,101 @@ export default function ReleasePage({ release }: Props) {
 
   return (
     <Container>
-      <Header>
-        <h2>{release.version.project.name}</h2>
-        <h3>{`Version ${release.version.name}, RC ${release.id}`}</h3>
-      </Header>
-
-      <p>
-        {`Date de fin de jalon : ${formatDate(
-          new Date(release.forecastEndDate)
-        )}`}
-      </p>
-
       <Row>
-        <LineChart width={800} height={400} data={data} id="bdc">
-          <Line type="monotone" stroke="#0059ff" dataKey="done" />
-          <Line type="monotone" stroke="#ff0000" dataKey="standard" />
-          <CartesianGrid stroke="#ccc" />
-          <XAxis dataKey="name" />
-          <YAxis />
-        </LineChart>
+        <Col
+          span={1}
+          style={{
+            borderRadius: 10,
+            backgroundColor: "#CBECFE",
+            padding: "1rem",
+            marginTop: "2rem",
+          }}
+        >
+          <Link href="/projects">Projets</Link>
+          <Spacer y={1} />
+          <Link href={`/projects/${release.version.projectId}/versions`}>
+            Versions
+          </Link>
+        </Col>
+        <Spacer x={2} />
+        <Col span={12}>
+          <Header>
+            <h2>{release.version.project.name}</h2>
+            <h3>{`Version ${release.version.name}, RC ${release.id}`}</h3>
+          </Header>
+          <p>
+            {`Date de fin de jalon : ${formatDate(
+              new Date(release.forecastEndDate)
+            )}`}
+          </p>
 
-        <Spacer x={3} />
+          <Row>
+            <LineChart width={800} height={400} data={data} id="bdc">
+              <Line type="monotone" stroke="#0059ff" dataKey="done" />
+              <Line type="monotone" stroke="#ff0000" dataKey="standard" />
+              <CartesianGrid stroke="#ccc" />
+              <XAxis dataKey="name" />
+              <YAxis />
+            </LineChart>
 
-        <table>
-          <thead>
-            <tr>
-              <th>{"Jour"}</th>
-              <th>{"Done"}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dates.map((day) => {
-              const doneThisDay =
-                done[formatDate(day)] !== undefined
-                  ? {
-                      id: done[formatDate(day)].id,
-                      value: done[formatDate(day)].value.toString(),
-                    }
-                  : { value: "", id: "" };
+            <Spacer x={3} />
 
-              const changeLocalInputValue = (
-                e: React.ChangeEvent<FormElement>
-              ) => {
-                setDone({
-                  ...done,
-                  [formatDate(day)]: {
-                    id: doneThisDay.id,
-                    value: parseInt(e.target.value),
-                  },
-                });
-              };
-
-              return (
-                <tr key={day.toString()}>
-                  <td>{formatDate(day)}</td>
-                  <td>
-                    <Input
-                      type="number"
-                      aria-label="done"
-                      value={doneThisDay.value}
-                      onChange={changeLocalInputValue}
-                      onBlur={(e) => {
-                        setProductionDay(doneThisDay.id, day, e.target.value);
-                      }}
-                    />
-                  </td>
+            <table>
+              <thead>
+                <tr>
+                  <th>{"Jour"}</th>
+                  <th>{"Done"}</th>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {dates.map((day) => {
+                  const doneThisDay =
+                    done[formatDate(day)] !== undefined
+                      ? {
+                          id: done[formatDate(day)].id,
+                          value: done[formatDate(day)].value.toString(),
+                        }
+                      : { value: "", id: "" };
 
-        <Spacer y={3} />
+                  const changeLocalInputValue = (
+                    e: React.ChangeEvent<FormElement>
+                  ) => {
+                    setDone({
+                      ...done,
+                      [formatDate(day)]: {
+                        id: doneThisDay.id,
+                        value: parseInt(e.target.value),
+                      },
+                    });
+                  };
+
+                  return (
+                    <tr key={day.toString()}>
+                      <td>{formatDate(day)}</td>
+                      <td>
+                        <Input
+                          type="number"
+                          aria-label="done"
+                          value={doneThisDay.value}
+                          onChange={changeLocalInputValue}
+                          onBlur={(e) => {
+                            setProductionDay(
+                              doneThisDay.id,
+                              day,
+                              e.target.value
+                            );
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+
+            <Spacer y={3} />
+          </Row>
+        </Col>
       </Row>
     </Container>
   );
