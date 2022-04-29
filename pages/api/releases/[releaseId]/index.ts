@@ -1,7 +1,8 @@
+import { withSentry } from "@sentry/nextjs";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../../src/lib/prisma";
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     const { releaseId } = req.query;
     if (typeof releaseId === "string") {
@@ -53,4 +54,4 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   } else {
     res.status(404).end();
   }
-};
+});

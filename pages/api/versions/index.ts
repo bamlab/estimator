@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/nextjs";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { addToDate } from "../../../src/components/Gantt/helpers/date-helper";
 import { prisma } from "../../../src/lib/prisma";
@@ -6,7 +7,7 @@ export type VersionToCreate = {
   name: string;
 };
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     const { projectId } = req.query;
     if (typeof projectId === "string") {
@@ -62,4 +63,4 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   } else {
     res.status(404).end();
   }
-};
+});
