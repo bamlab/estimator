@@ -123,7 +123,7 @@ export default function ReleasePage({ release }: Props) {
       </p>
 
       <Row>
-        <LineChart width={700} height={400} data={data} id="bdc">
+        <LineChart width={800} height={400} data={data} id="bdc">
           <Line type="monotone" stroke="#0059ff" dataKey="done" />
           <Line type="monotone" stroke="#ff0000" dataKey="standard" />
           <CartesianGrid stroke="#ccc" />
