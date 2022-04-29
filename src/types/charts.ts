@@ -1,1 +1,5 @@
-export type ChartPoint = { name: string; done: number; standard: number };
+export type ChartPoint = {
+  name: string;
+  done: number;
+  standard: number;
+};

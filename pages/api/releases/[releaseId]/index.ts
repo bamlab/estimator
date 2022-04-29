@@ -8,6 +8,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       const release = await prisma.release.findUnique({
         where: { id: releaseId },
         include: {
+          productions: true,
           version: {
             include: { project: true },
           },
@@ -18,6 +19,29 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     } else {
       res.status(400).send("multiple query params");
     }
+  } else if (req.method === "POST") {
+    const { releaseId } = req.query;
+    const { date, done, id } = req.body as {
+      date: string;
+      done: string;
+      id: string;
+    };
+
+    if (typeof releaseId !== "string") {
+      return res.status(400).send("multiple query params");
+    }
+
+    const production = await prisma.production.upsert({
+      create: {
+        date: new Date(date),
+        done: done ? parseInt(done) : 0,
+        releaseId,
+      },
+      update: { done: done ? parseInt(done) : 0 },
+      where: { id },
+    });
+
+    res.status(200).json(production);
   } else {
     res.status(404).end();
   }
