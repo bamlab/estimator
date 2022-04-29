@@ -31,17 +31,25 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(400).send("multiple query params");
     }
 
-    const production = await prisma.production.upsert({
-      create: {
-        date: new Date(date),
-        done: done ? parseInt(done) : 0,
-        releaseId,
-      },
-      update: { done: done ? parseInt(done) : 0 },
-      where: { id },
-    });
-
-    res.status(200).json(production);
+    if (!done) {
+      const production = await prisma.production.delete({
+        where: {
+          id,
+        },
+      });
+      return res.status(200).json(production);
+    } else {
+      const production = await prisma.production.upsert({
+        create: {
+          date: new Date(date),
+          done: done ? parseInt(done) : 0,
+          releaseId,
+        },
+        update: { done: done ? parseInt(done) : 0 },
+        where: { id },
+      });
+      return res.status(200).json(production);
+    }
   } else {
     res.status(404).end();
   }
