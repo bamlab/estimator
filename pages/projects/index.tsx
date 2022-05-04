@@ -7,7 +7,6 @@ import {
   Col,
   Container,
   Input,
-  Row,
   Spacer,
   useInput,
 } from "@nextui-org/react";
@@ -35,8 +34,8 @@ export default function ProjectsPage({ projects }: Props) {
   const { bindings: projectNameBindings, value: projectName } = useInput("");
   const { bindings: startDateBindings, value: startDate } = useInput("");
   const { bindings: endDateBindings, value: endDate } = useInput("");
-  const { bindings: unitBindings, value: unit } = useInput("");
-  const { bindings: productivityBindings, value: productivity } = useInput("");
+  const { bindings: unitBindings, value: unit } = useInput("ticket");
+  const { bindings: productivityBindings, value: productivity } = useInput("1");
   const [errorMessage, setErrorMessage] = useState("");
 
   const createNewProject = async () => {
@@ -94,7 +93,7 @@ export default function ProjectsPage({ projects }: Props) {
         <Spacer y={2} />
         <h2>Créer un projet</h2>
 
-        <Row align="flex-end">
+        <Col>
           <Input
             label="Nom du projet"
             placeholder="Yomoni"
@@ -117,7 +116,11 @@ export default function ProjectsPage({ projects }: Props) {
             {...endDateBindings}
           />
           <Spacer x={3} />
-          <Input label="Unité" placeholder="Ticket" {...unitBindings} />
+          <Input
+            label="Unité (ticket ou points)"
+            placeholder="Ticket"
+            {...unitBindings}
+          />
           <Spacer x={3} />
           <Input
             label="Productivité initiale"
@@ -129,7 +132,8 @@ export default function ProjectsPage({ projects }: Props) {
           <Button onClick={createNewProject} color={"success"}>
             Créer un nouveau projet
           </Button>
-        </Row>
+          <Spacer x={3} />
+        </Col>
       </Col>
     </Container>
   );
