@@ -26,14 +26,14 @@ export const makeReleaseChartData = ({
 
     const production = productions[formatDate(previousDay)];
 
-    // use NaN to stop the line to render from the date which has no done filled
-    doneSum += production ? production.value : NaN;
-
     data.push({
       done: i === 0 ? volume : volume - doneSum,
       standard: volume - i * standardCelerite,
       name: formatDate(currentDay),
     });
+
+    // use NaN to stop the line to render from the date which has no done filled
+    doneSum += production ? production.value : NaN;
   }
 
   return data;
