@@ -47,16 +47,18 @@ export default function VersionPage({ project, version }: Props) {
     <Container>
       <Header>
         <h2>{project.name}</h2>
-        <h3>Version {version.name}</h3>
+        <h3>{version.name}</h3>
       </Header>
 
-      {version.releases.map((release, index) => (
-        <>
+      {version.releases.map((release) => (
+        <div key={release.id}>
           <Link
             href={`/projects/${project.id}/versions/${version.id}/rc/${release.id}`}
-          >{`RC${index + 1}`}</Link>
+          >
+            {release.name}
+          </Link>
           <Spacer y={3} />
-        </>
+        </div>
       ))}
     </Container>
   );
