@@ -26,6 +26,8 @@ model Project {
   productivity  Int @default(1)
   ressources    Ressource[]
   versions      Version[]
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   @@map(name: "projects")
 }
 
@@ -34,6 +36,8 @@ model People {
   name          String
   ressourceId   String 
   ressource     Ressource @relation(fields: [ressourceId], references: [id])
+  @@map(name: "people")
+
 }
 
 model Ressource {
@@ -43,6 +47,7 @@ model Ressource {
   availability  Float
   projectId     String
   project       Project @relation(fields: [projectId], references: [id])
+  @@map(name: "ressources")
 }
 
 model Version {
@@ -54,16 +59,24 @@ model Version {
   releases      Release[]
   projectId     String
   project       Project @relation(fields: [projectId], references: [id])
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  @@map(name: "versions")
 }
 
 model Release {
   id              String @default(uuid()) @id
+  name            String
   forecastEndDate DateTime
   volume          Int
   comment         String
   versionId       String
   version         Version @relation(fields: [versionId], references: [id])
   productions     Production[]
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  @@map(name: "releases")
+
 }
 
 model Production {
@@ -72,6 +85,8 @@ model Production {
   date          DateTime
   releaseId     String
   release       Release @relation(fields: [releaseId], references: [id])
+  @@map(name: "productions")
+
 }
 
 model Estimation {

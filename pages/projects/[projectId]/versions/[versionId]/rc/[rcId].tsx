@@ -139,7 +139,7 @@ export default function ReleasePage({ release }: Props) {
         <Col span={12}>
           <Header>
             <h2>{release.version.project.name}</h2>
-            <h3>{`Version ${release.version.name}, RC ${release.id}`}</h3>
+            <h3>{`Version ${release.version.name}, RC ${release.name}`}</h3>
           </Header>
           <p>
             {`Date de fin de jalon : ${formatDate(
