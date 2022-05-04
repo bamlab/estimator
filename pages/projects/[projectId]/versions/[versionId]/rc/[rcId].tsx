@@ -3,13 +3,18 @@ import styled from "@emotion/styled";
 import { GetServerSideProps } from "next";
 import { Production, Project, Release, Version } from "@prisma/client";
 import {
+  Button,
   Col,
   Container,
   FormElement,
   Input,
   Link,
+  Modal,
   Row,
   Spacer,
+  Text,
+  Textarea,
+  useInput,
 } from "@nextui-org/react";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../../../../src/constants";
@@ -17,6 +22,9 @@ import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { makeReleaseChartData } from "../../../../../../src/modules/bdc/makeReleaseChartData";
 import { addBusinessDays, differenceInBusinessDays, parseISO } from "date-fns";
 import { formatDate } from "../../../../../../src/utils/formatDate";
+import { CREATE_RELEASE_DTO } from "../../../../../api/releases";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 type Props = {
   release: Omit<Release, "forecastEndDate"> & {
@@ -48,7 +56,21 @@ export const getServerSideProps: GetServerSideProps<
 
   const { rcId } = params;
 
-  const release = await wretch(`${ROOT_URL}/releases/${rcId}`).get().json();
+  const release = await wretch(`${ROOT_URL}/releases/${rcId}`)
+    .get()
+    .json<Release>();
+
+  if (!release.id) {
+    return {
+      redirect: {
+        destination: "/projects",
+        permanent: false,
+      },
+      props: {
+        release: {},
+      },
+    };
+  }
 
   return {
     props: {
@@ -62,6 +84,21 @@ export default function ReleasePage({ release }: Props) {
     Record<string, { id: string; value: number }>
   >({});
 
+  const [isReleaseModalVisible, setIsReleaseModalVisible] = useState(false);
+  const {
+    value: comment,
+    bindings: commentBindings,
+    setValue: setComment,
+  } = useInput("");
+  const { value: volume, bindings: volumeBindings } = useInput(
+    release.volume.toString()
+  );
+  const { value: endDate, bindings: endDateBindings } = useInput(
+    release.forecastEndDate
+  );
+  const [isError, setIsError] = useState(false);
+
+  const router = useRouter();
   const startDate = parseISO(release.version.startDate);
 
   const data = useMemo(
@@ -117,6 +154,48 @@ export default function ReleasePage({ release }: Props) {
     });
   };
 
+  const createNewRelease = ({
+    comment,
+    forecastEndDate,
+    volume,
+  }: {
+    volume: number;
+    comment: string;
+    forecastEndDate: Date;
+  }) => {
+    const data: CREATE_RELEASE_DTO = {
+      comment,
+      forecastEndDate: forecastEndDate.toISOString(),
+      name: "RC" + (parseInt(release.name.split("RC")[1]) + 1),
+      versionId: release.version.id,
+      volume,
+    };
+    return wretch(`${ROOT_URL}/releases`).post(data).json<Release>();
+  };
+
+  const closeReleaseModal = () => {
+    setComment("");
+    setIsError(false);
+    setIsReleaseModalVisible(false);
+  };
+
+  const handleCreateNewRelease = async () => {
+    if (!comment) {
+      setIsError(true);
+      return;
+    }
+    const newRelease = await createNewRelease({
+      comment,
+      forecastEndDate: new Date(endDate),
+      volume: parseInt(volume),
+    });
+    closeReleaseModal();
+    toast("Nouvelle release créée", { type: "success" });
+    router.push(
+      `/projects/${release.version.projectId}/versions/${release.versionId}/rc/${newRelease.id}`
+    );
+  };
+
   return (
     <Container>
       <Row>
@@ -141,6 +220,7 @@ export default function ReleasePage({ release }: Props) {
             <h2>{release.version.project.name}</h2>
             <h3>{`Version ${release.version.name}, RC ${release.name}`}</h3>
           </Header>
+
           <p>
             {`Date de fin de jalon : ${formatDate(
               new Date(release.forecastEndDate)
@@ -148,14 +228,19 @@ export default function ReleasePage({ release }: Props) {
           </p>
 
           <Row>
-            <LineChart width={800} height={400} data={data} id="bdc">
-              <Line type="monotone" stroke="#0059ff" dataKey="done" />
-              <Line type="monotone" stroke="#ff0000" dataKey="standard" />
-              <CartesianGrid stroke="#ccc" />
-              <XAxis dataKey="name" />
-              <YAxis />
-            </LineChart>
-
+            <Col>
+              <LineChart width={800} height={400} data={data} id="bdc">
+                <Line type="monotone" stroke="#0059ff" dataKey="done" />
+                <Line type="monotone" stroke="#ff0000" dataKey="standard" />
+                <CartesianGrid stroke="#ccc" />
+                <XAxis dataKey="name" />
+                <YAxis />
+              </LineChart>
+              <Spacer y={3} />
+              <Button onPress={() => setIsReleaseModalVisible(true)}>
+                Créer une nouvelle release
+              </Button>
+            </Col>
             <Spacer x={3} />
 
             <table>
@@ -215,6 +300,41 @@ export default function ReleasePage({ release }: Props) {
           </Row>
         </Col>
       </Row>
+
+      <Modal
+        closeButton
+        aria-labelledby="modal-title"
+        open={isReleaseModalVisible}
+        onClose={() => {
+          setIsReleaseModalVisible(false);
+        }}
+      >
+        <Modal.Header>
+          <Text id="modal-title" size={18}>
+            Nouvelle release
+          </Text>
+        </Modal.Header>
+        <Modal.Body>
+          <Input
+            fullWidth
+            type="date"
+            label="Nouvelle date de fin prévisionnelle"
+            {...endDateBindings}
+          />
+          <Input fullWidth label="Nouveau volume" {...volumeBindings} />
+          <Textarea
+            fullWidth
+            label="Commentaire"
+            status={isError ? "error" : undefined}
+            {...commentBindings}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button auto onClick={handleCreateNewRelease}>
+            Créer la nouvelle release
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }
