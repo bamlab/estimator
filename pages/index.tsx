@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
@@ -17,15 +18,19 @@ export default function Home() {
         </h1>
 
         <div className={styles.grid}>
-          <a href="/db" className={styles.card}>
-            <h2>Estimation database &rarr;</h2>
-            <p>Find all estimated features to prepare a project</p>
-          </a>
+          <Link href="/db">
+            <div className={styles.card}>
+              <h2>Estimation database &rarr;</h2>
+              <p>Find all estimated features to prepare a project</p>
+            </div>
+          </Link>
 
-          <a href="/projects" className={styles.card}>
-            <h2>Projects &rarr;</h2>
-            <p>Start here to have a project visual management</p>
-          </a>
+          <Link href="/projects">
+            <div className={styles.card}>
+              <h2>Projects &rarr;</h2>
+              <p>Start here to have a project visual management</p>
+            </div>
+          </Link>
         </div>
       </main>
 

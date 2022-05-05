@@ -47,6 +47,8 @@
     "@types/react": "17.0.17",
     "@types/react-table": "^7.7.2",
     "babel-jest": "^27.2.1",
+    "eslint": "8.14.0",
+    "eslint-config-next": "12.1.6",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.2.1",
     "react-test-renderer": "^17.0.2",

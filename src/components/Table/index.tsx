@@ -30,9 +30,15 @@ export const Table = ({
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <tr
+              {...headerGroup.getHeaderGroupProps()}
+              key={headerGroup.getHeaderGroupProps().key}
+            >
               {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>
+                <th
+                  {...column.getHeaderProps()}
+                  key={column.getHeaderProps().key}
+                >
                   {column.render("Header")}
                   <div>
                     {column.defaultCanFilter ? column.render("Filter") : null}
@@ -46,10 +52,12 @@ export const Table = ({
           {rows.map((row, i) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()}>
+              <tr {...row.getRowProps()} key={row.getRowProps().key}>
                 {row.cells.map((cell) => {
                   return (
-                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                    <td {...cell.getCellProps()} key={cell.getCellProps().key}>
+                      {cell.render("Cell")}
+                    </td>
                   );
                 })}
               </tr>

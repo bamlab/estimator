@@ -1,5 +1,6 @@
 import React from "react";
 
+// eslint-disable-next-line react/display-name
 export const IndeterminateCheckbox = React.forwardRef(
   // @ts-ignore
   ({ indeterminate, ...rest }, ref) => {
