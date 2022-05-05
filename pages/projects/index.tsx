@@ -8,6 +8,7 @@ import {
   Container,
   Input,
   Spacer,
+  Text,
   useInput,
 } from "@nextui-org/react";
 import Link from "next/link";
@@ -34,7 +35,7 @@ export default function ProjectsPage({ projects }: Props) {
   const { bindings: projectNameBindings, value: projectName } = useInput("");
   const { bindings: startDateBindings, value: startDate } = useInput("");
   const { bindings: endDateBindings, value: endDate } = useInput("");
-  const { bindings: unitBindings, value: unit } = useInput("ticket");
+  const { setValue: setUnit, value: unit } = useInput("ticket");
   const { bindings: productivityBindings, value: productivity } = useInput("1");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -67,6 +68,14 @@ export default function ProjectsPage({ projects }: Props) {
             label: project.name,
           }))
         : [],
+    []
+  );
+
+  const unitOptions = useMemo(
+    () => [
+      { label: "Ticket", value: "ticket" },
+      { label: "Point", value: "point" },
+    ],
     []
   );
 
@@ -116,11 +125,16 @@ export default function ProjectsPage({ projects }: Props) {
             {...endDateBindings}
           />
           <Spacer x={3} />
-          <Input
-            label="Unité (ticket ou points)"
-            placeholder="Ticket"
-            {...unitBindings}
-          />
+          <Text>Unité (ticket ou points)</Text>
+          <div style={{ width: 200 }}>
+            <Select
+              // @ts-ignore
+              options={unitOptions}
+              defaultValue="ticket"
+              onChange={(e) => setUnit(e ?? "ticket")}
+              value={unit}
+            />
+          </div>
           <Spacer x={3} />
           <Input
             label="Productivité initiale"

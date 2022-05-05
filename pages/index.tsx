@@ -19,17 +19,17 @@ export default function Home() {
 
         <div className={styles.grid}>
           <Link href="/db">
-            <div className={styles.card}>
+            <a className={styles.card}>
               <h2>Estimation database &rarr;</h2>
               <p>Find all estimated features to prepare a project</p>
-            </div>
+            </a>
           </Link>
 
           <Link href="/projects">
-            <div className={styles.card}>
+            <a className={styles.card}>
               <h2>Projects &rarr;</h2>
               <p>Start here to have a project visual management</p>
-            </div>
+            </a>
           </Link>
         </div>
       </main>
