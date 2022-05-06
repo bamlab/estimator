@@ -11,7 +11,7 @@ import { Datasheet } from "../../../src/modules/estimation/Datasheet";
 import { columnWiths, estimationColumns } from "../../../src/constants/columns";
 import { InputCell } from "../../../src/modules/estimation/Datasheet/InputCell";
 import { EstimatedRow } from "../../../src/types/datasheet";
-import { Delete, Plus } from "react-iconly";
+import { Plus } from "react-iconly";
 import {
   Button,
   Container,
@@ -39,10 +39,7 @@ import {
 } from "../../../src/modules/estimation/infra/getServerSideProps";
 import { createTickets } from "../../../src/modules/estimation/useCases/createTickets";
 import { toast } from "react-toastify";
-
-const DeleteButton = ({ onClick }: { onClick: () => void }) => {
-  return <Button auto onClick={onClick} icon={<Delete />} />;
-};
+import { DeleteButton } from "../../../src/modules/estimation/Datasheet/DeleteButton";
 
 export const getServerSideProps = _getServerSideProps;
 
