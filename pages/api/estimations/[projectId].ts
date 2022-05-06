@@ -29,7 +29,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    return res.status(200).json(estimation);
+    return res.status(200).json(estimation || {});
   } else if (req.method === "POST") {
     if (!req.body) {
       const estimation = await prisma.estimation.create({
