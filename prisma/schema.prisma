@@ -24,30 +24,20 @@ model Project {
   endAt         DateTime?
   unit          UnitType
   productivity  Int @default(1)
-  ressources    Ressource[]
+  teams         Team[]
   versions      Version[]
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   @@map(name: "projects")
 }
 
-model People {
-  id            String @default(uuid()) @id
-  name          String
-  ressourceId   String 
-  ressource     Ressource @relation(fields: [ressourceId], references: [id])
-  @@map(name: "people")
 
-}
-
-model Ressource {
-  id            String @default(uuid()) @id
-  developers    People[]
-  date          DateTime
-  availability  Float
-  projectId     String
-  project       Project @relation(fields: [projectId], references: [id])
-  @@map(name: "ressources")
+model Staffing {
+  id    String @default(uuid()) @id
+  date  DateTime
+  value Float
+  developer  Developer @relation(fields: [developerId], references: [id])
+  developerId  String
 }
 
 model Version {
@@ -203,9 +193,11 @@ model Batch {
 }
 
 model Team {
-  id          String       @default(uuid()) @id
-  developers  Developer[]
-  batch       Batch[]
+  id            String @default(uuid()) @id
+  developers    Developer[]
+  projectId     String
+  project       Project @relation(fields: [projectId], references: [id])
+  batch         Batch[]
   @@map(name: "teams")
 }
 
@@ -213,6 +205,7 @@ model Developer {
   id        String       @default(uuid()) @id
   teamId    String
   team      Team @relation(fields: [teamId], references: [id])
+  staffing  Staffing[]
   capacity  Int // in points
   @@map(name: "developers")
 }
