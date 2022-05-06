@@ -33,14 +33,14 @@ export const getServerSideProps: GetServerSideProps<
   const { projectId } = params;
 
   const estimation: EstimationWithEpicsAndFeatures = await wretch(
-    `${process.env.NEXT_PUBLIC_API_URL}/estimations/${projectId}`
+    `${ROOT_URL}/estimations/${projectId}`
   )
     .get()
     .json();
 
   if (!estimation) {
     const estimation: EstimationWithEpicsAndFeatures = await wretch(
-      `${process.env.NEXT_PUBLIC_API_URL}/estimations/${projectId}`
+      `${ROOT_URL}/estimations/${projectId}`
     )
       .post()
       .json();
