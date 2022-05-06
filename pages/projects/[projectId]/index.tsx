@@ -46,6 +46,8 @@ export default function ProjectPage({ project }: Props) {
       <Link href={`/projects/${project.id}/board`}>Board de production</Link>
       <Spacer y={3} />
       <Link href={`/projects/${project.id}/versions`}>Versions</Link>
+      <Spacer y={3} />
+      <Link href={`/projects/${project.id}/ressources`}>Ressources</Link>
     </Container>
   );
 }

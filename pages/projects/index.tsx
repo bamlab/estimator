@@ -35,7 +35,7 @@ export default function ProjectsPage({ projects }: Props) {
   const { bindings: projectNameBindings, value: projectName } = useInput("");
   const { bindings: startDateBindings, value: startDate } = useInput("");
   const { bindings: endDateBindings, value: endDate } = useInput("");
-  const { setValue: setUnit, value: unit } = useInput("ticket");
+  const [unit, setUnit] = useState("ticket");
   const { bindings: productivityBindings, value: productivity } = useInput("1");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -49,7 +49,7 @@ export default function ProjectsPage({ projects }: Props) {
         name: projectName,
         startDate,
         endDate,
-        unit,
+        unit: unit,
         productivity,
       })
       .json();
@@ -68,7 +68,7 @@ export default function ProjectsPage({ projects }: Props) {
             label: project.name,
           }))
         : [],
-    []
+    [projects]
   );
 
   const unitOptions = useMemo(
@@ -130,9 +130,9 @@ export default function ProjectsPage({ projects }: Props) {
             <Select
               // @ts-ignore
               options={unitOptions}
-              defaultValue="ticket"
-              onChange={(e) => setUnit(e ?? "ticket")}
-              value={unit}
+              onChange={(e) => {
+                setUnit(e?.value ?? "ticket");
+              }}
             />
           </div>
           <Spacer x={3} />
