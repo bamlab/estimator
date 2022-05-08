@@ -137,7 +137,7 @@ export default function ProjectsPage({ projects }: Props) {
           </div>
           <Spacer x={3} />
           <Input
-            label="Productivité initiale"
+            label="Productivité initiale (/jour/dev)"
             placeholder="1"
             type="number"
             {...productivityBindings}
