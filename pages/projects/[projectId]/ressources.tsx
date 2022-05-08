@@ -156,9 +156,7 @@ export default function RessourcesPage({ project }: Props) {
     const removedRow = data[index];
     const newData = data.slice(0, index).concat(data.slice(index + 1));
     if (removedRow.id) {
-      await wretch(
-        `${ROOT_URL}/estimations/features/${removedRow.id}`
-      ).delete();
+      await wretch(`${ROOT_URL}/developers/${removedRow.id}`).delete();
     }
     setData(newData);
   };
