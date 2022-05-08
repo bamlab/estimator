@@ -7,16 +7,21 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
     const { projectId } = req.query;
     if (typeof projectId === "string") {
       const project = await prisma.project.findUnique({
-        where: { id: projectId },
+        where: {
+          id: projectId,
+        },
         include: {
           team: {
             include: {
-              developers: true,
+              developers: {
+                include: {
+                  staffing: true,
+                },
+              },
             },
           },
         },
       });
-
       res.status(200).json(project);
     } else {
       res.status(400).send("multiple query params");

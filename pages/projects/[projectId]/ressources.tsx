@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { GetServerSideProps } from "next";
-import { Button, Container } from "@nextui-org/react";
+import { Button, Container, Row, Spacer } from "@nextui-org/react";
 import { ROOT_URL } from "../../../src/constants";
 import wretch from "wretch";
 import { Datasheet } from "../../../src/modules/estimation/Datasheet";
@@ -9,16 +9,19 @@ import { Column, Row as RowType, useBlockLayout, useTable } from "react-table";
 import { InputCell } from "../../../src/modules/estimation/Datasheet/InputCell";
 import {
   initializeRessourcesData,
+  ProjectWithDevelopersAndStaffingDTO,
   RessourceRow,
 } from "../../../src/modules/ressources/initializeRessourcesData";
 import { Plus } from "react-iconly";
-import { ProjectDTO } from "../../../src/modules/project/types";
 import { addBusinessDays, differenceInBusinessDays, parseISO } from "date-fns";
 import { formatDate } from "../../../src/utils/formatDate";
 import { DeleteButton } from "../../../src/modules/estimation/Datasheet/DeleteButton";
+import { Developer } from "@prisma/client";
+import { toast } from "react-toastify";
+import { CREATE_DEVELOPER_DTO } from "../../api/developers";
 
 type Props = {
-  project: ProjectDTO;
+  project: ProjectWithDevelopersAndStaffingDTO;
 };
 
 type Params = {
@@ -38,13 +41,12 @@ export const getServerSideProps: GetServerSideProps<
 
   const { projectId } = params;
 
-  const project = await wretch(`${ROOT_URL}/projects/${projectId}`)
+  const project: ProjectWithDevelopersAndStaffingDTO = await wretch(
+    `${ROOT_URL}/projects/${projectId}/full`
+  )
     .get()
     .json();
-
-  return {
-    props: { project },
-  };
+  return { props: { project } };
 };
 
 export default function RessourcesPage({ project }: Props) {
@@ -52,11 +54,24 @@ export default function RessourcesPage({ project }: Props) {
     initializeRessourcesData(project)
   );
 
-  const updateMyData = (
+  const updateMyData = async (
     rowIndex: number,
     columnId: string,
-    value: string | string[]
+    value: string
   ) => {
+    const developerId = data[rowIndex].id;
+
+    const year = new Date(project.startAt).getFullYear();
+    const month = parseInt(columnId.split("/")[1]) - 1;
+    const day = parseInt(columnId.split("/")[0]) + 1;
+
+    const body = {
+      date: new Date(year, month, day).toISOString(),
+      value: parseInt(value),
+    };
+
+    await wretch(`${ROOT_URL}/staffing/${developerId}`).post(body);
+
     setData((old) =>
       old.map((row, index) => {
         if (index === rowIndex) {
@@ -96,18 +111,45 @@ export default function RessourcesPage({ project }: Props) {
     return headers;
   }, [project]);
 
-  const addRow = () => {
+  const addRow = async () => {
+    if (!project.team) {
+      toast("Aucune team n'a été crée", { type: "error" });
+      return;
+    }
     const startDate = parseISO(project.startAt);
     const days = differenceInBusinessDays(parseISO(project.endAt), startDate);
 
     const dates: Record<string, number> = {};
+    const datesWithISOFormat: Record<string, number> = {};
 
     for (let i = 0; i <= days; i++) {
       const currentDay = addBusinessDays(startDate, i);
       dates[formatDate(currentDay)] = 1;
+      datesWithISOFormat[currentDay.toISOString()] = 1;
     }
 
-    setData((oldData) => [...oldData, { name: "Développeur", ...dates }]);
+    const datesList = Object.keys(datesWithISOFormat).map((date) => ({
+      date,
+      value: datesWithISOFormat[date],
+    }));
+
+    const body: CREATE_DEVELOPER_DTO = {
+      teamId: project.team.id,
+      name: "Développeur",
+      staffingData: datesList,
+    };
+    const result: { developer: Developer } = await wretch(
+      `${ROOT_URL}/developers`
+    )
+      .post(body)
+      .json();
+
+    console.log("result", result);
+
+    setData((oldData) => [
+      ...oldData,
+      { id: result.developer.id, name: "Développeur", ...dates },
+    ]);
   };
 
   const removeRow = async (index: number) => {

@@ -24,7 +24,7 @@ model Project {
   endAt         DateTime?
   unit          UnitType
   productivity  Int @default(1)
-  teams         Team[]
+  team          Team?
   versions      Version[]
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
@@ -196,13 +196,14 @@ model Team {
   id            String @default(uuid()) @id
   developers    Developer[]
   projectId     String
-  project       Project @relation(fields: [projectId], references: [id])
+  project       Project? @relation(fields: [projectId], references: [id])
   batch         Batch[]
   @@map(name: "teams")
 }
 
 model Developer {
   id        String       @default(uuid()) @id
+  name      String
   teamId    String
   team      Team @relation(fields: [teamId], references: [id])
   staffing  Staffing[]

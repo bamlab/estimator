@@ -19,6 +19,16 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
         productivity: parseInt(productivity),
         endAt: new Date(endDate),
         startAt: new Date(startDate),
+        team: {
+          create: {
+            developers: {
+              create: {
+                capacity: 6,
+                name: "Dévelopeur 1",
+              },
+            },
+          },
+        },
       },
     });
     res.status(200).json({ project });
