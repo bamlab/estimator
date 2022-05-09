@@ -2,13 +2,12 @@ import { addBusinessDays, differenceInBusinessDays } from "date-fns";
 import { ChartPoint } from "../../types/charts";
 import { formatDate } from "../../utils/formatDate";
 
-const PRODUCITVITY = 3; // TODO : change by the real value
-
 export const makeReleaseChartData = ({
   volume,
   startDate,
   endDate,
   productions,
+  productivity,
 }: {
   volume: number;
   startDate: Date;
@@ -48,7 +47,7 @@ export const makeReleaseChartData = ({
 
     const forecastIndex = lastDoneIndex ? i - lastDoneIndex - 1 : i;
     if (isNaN(done)) {
-      forecast = volumeBeforeForecast - forecastIndex * PRODUCITVITY;
+      forecast = volumeBeforeForecast - forecastIndex * productivity;
     } else {
       forecast = done;
     }

@@ -1,7 +1,15 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { GetServerSideProps } from "next";
-import { Production, Project, Release, Version } from "@prisma/client";
+import {
+  Developer,
+  Production,
+  Project,
+  Release,
+  Staffing,
+  Team,
+  Version,
+} from "@prisma/client";
 import {
   Button,
   Col,
@@ -25,7 +33,11 @@ import { formatDate } from "../../../../../../src/utils/formatDate";
 import { CREATE_RELEASE_DTO } from "../../../../../api/releases";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import mean from "lodash/mean";
 
+type FULL_TEAM_DTO = Team & {
+  developers: (Developer & { staffing: Staffing[] })[];
+};
 type Props = {
   release: Omit<Release, "forecastEndDate"> & {
     version: Omit<Version, "starDate"> & {
@@ -35,6 +47,7 @@ type Props = {
     productions: (Omit<Production, "date"> & { date: string })[];
     forecastEndDate: string;
   };
+  team: FULL_TEAM_DTO;
 };
 
 type Params = {
@@ -54,11 +67,15 @@ export const getServerSideProps: GetServerSideProps<
     };
   }
 
-  const { rcId } = params;
+  const { rcId, projectId } = params;
 
   const release = await wretch(`${ROOT_URL}/releases/${rcId}`)
     .get()
     .json<Release>();
+
+  const team = await wretch(`${ROOT_URL}/projects/${projectId}/ressources`)
+    .get()
+    .json<FULL_TEAM_DTO>();
 
   if (!release.id) {
     return {
@@ -68,6 +85,7 @@ export const getServerSideProps: GetServerSideProps<
       },
       props: {
         release: {},
+        team: {},
       },
     };
   }
@@ -75,14 +93,24 @@ export const getServerSideProps: GetServerSideProps<
   return {
     props: {
       release,
+      team,
     },
   };
 };
 
-export default function ReleasePage({ release }: Props) {
+export default function ReleasePage({ release, team }: Props) {
   const [done, setDone] = useState<
     Record<string, { id: string; value: number }>
   >({});
+
+  const productivityMean = useMemo(() => {
+    const developersCount = team.developers.length;
+    const productivities = Object.values(done).map(
+      (doneThisDay) => doneThisDay.value / developersCount
+    );
+
+    return mean(productivities);
+  }, [team, done]);
 
   const [isReleaseModalVisible, setIsReleaseModalVisible] = useState(false);
   const {
@@ -104,13 +132,13 @@ export default function ReleasePage({ release }: Props) {
   const data = useMemo(
     () =>
       makeReleaseChartData({
-        productivity: release.version.project.productivity,
+        productivity: productivityMean,
         endDate: parseISO(release.forecastEndDate),
         startDate,
         volume: release.volume,
         productions: done,
       }),
-    [release, done]
+    [release, done, productivityMean]
   );
 
   const dates = Array.from(
