@@ -2,6 +2,7 @@ import { withSentry } from "@sentry/nextjs";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../src/lib/prisma";
 import { createNewVersion } from "../../../src/modules/version/infra/createNewVersion";
+import { CREATE_VERSION_DTO } from "../projects/[projectId]/versions";
 
 export type VersionToCreate = {
   name: string;
@@ -20,13 +21,8 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(400).send("multiple query params");
     }
   } else if (req.method === "POST") {
-    const { name, startDate, volume, scope, projectId } = req.body as {
-      projectId: string;
-      volume: string;
-      scope: string;
-      startDate: string;
-      name: string;
-    };
+    const { name, startDate, volume, scope, projectId, endDate } =
+      req.body as CREATE_VERSION_DTO;
     if (!projectId) {
       return res.status(400).send("no projectId provided");
     }
@@ -35,6 +31,7 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
       projectId,
       scope,
       startDate,
+      endDate,
       volume,
     });
     res.status(200).json(version);

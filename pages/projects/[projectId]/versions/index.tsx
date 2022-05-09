@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../../src/constants";
 import { GetServerSideProps } from "next";
+import { CREATE_VERSION_DTO } from "../../../api/projects/[projectId]/versions";
 
 type Props = {
   project: Project;
@@ -61,6 +62,7 @@ export default function VersionPage({ versions, project }: Props) {
   const router = useRouter();
   const { bindings: versionNameBindings, value: versionName } = useInput("");
   const { bindings: startDateBindings, value: startDate } = useInput("");
+  const { bindings: endDateBindings, value: endDate } = useInput("");
   const { bindings: scopeBindings, value: scope } = useInput("");
   const { bindings: volumeBindings, value: volume } = useInput("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -71,16 +73,21 @@ export default function VersionPage({ versions, project }: Props) {
       setErrorMessage("Remplis tous les champs");
       return;
     }
+
+    const body: CREATE_VERSION_DTO = {
+      projectId: project.id,
+      name: versionName,
+      startDate,
+      endDate,
+      scope,
+      volume,
+    };
+    console.log("body", body);
+
     const version: Version & { releases: Release[] } = await wretch(
       `${ROOT_URL}/versions`
     )
-      .post({
-        projectId: project.id,
-        name: versionName,
-        startDate,
-        scope,
-        volume,
-      })
+      .post(body)
       .json();
 
     setIsVersionModalVisible(false);
@@ -148,6 +155,12 @@ export default function VersionPage({ versions, project }: Props) {
             />
             <Spacer y={1} />
             <Input label="Date de début" type="date" {...startDateBindings} />
+            <Spacer y={1} />
+            <Input
+              label="Date de fin prévue"
+              type="date"
+              {...endDateBindings}
+            />
             <Spacer y={1} />
             <Textarea label="Scope" {...scopeBindings} />
             <Spacer y={1} />

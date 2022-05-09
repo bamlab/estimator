@@ -1,4 +1,3 @@
-import { addToDate } from "../../../components/Gantt/helpers/date-helper";
 import { prisma } from "../../../lib/prisma";
 
 export const createNewVersion = async ({
@@ -7,15 +6,15 @@ export const createNewVersion = async ({
   name,
   projectId,
   startDate,
+  endDate,
 }: {
   projectId: string;
   volume: string;
   scope: string;
   startDate: string;
+  endDate: string;
   name: string;
 }) => {
-  const CELERITE = 3; // todo: fetch calculate this
-
   const parsedVolume = parseInt(volume);
   const version = await prisma.version.create({
     data: {
@@ -28,11 +27,7 @@ export const createNewVersion = async ({
         create: {
           name: "RC1",
           comment: "",
-          forecastEndDate: addToDate(
-            new Date(startDate),
-            parsedVolume / CELERITE,
-            "day"
-          ),
+          forecastEndDate: new Date(endDate),
           volume: parsedVolume,
         },
       },

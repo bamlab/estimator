@@ -6,6 +6,14 @@ export type VersionToCreate = {
   name: string;
 };
 
+export type CREATE_VERSION_DTO = {
+  projectId: string;
+  volume: string;
+  scope: string;
+  startDate: string;
+  endDate: string;
+  name: string;
+};
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     const { projectId } = req.query;
@@ -20,13 +28,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(400).send("multiple query params");
     }
   } else if (req.method === "POST") {
-    const { name, startDate, volume, scope } = req.body as {
-      projectId: string;
-      volume: string;
-      scope: string;
-      startDate: string;
-      name: string;
-    };
+    const { name, startDate, volume, scope, endDate } =
+      req.body as CREATE_VERSION_DTO;
     const { projectId } = req.query;
 
     if (!projectId || typeof projectId !== "string") {
@@ -39,6 +42,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       scope,
       startDate,
       volume,
+      endDate,
     });
 
     res.status(200).json(version);
