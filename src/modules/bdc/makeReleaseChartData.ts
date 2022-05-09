@@ -26,8 +26,17 @@ export const makeReleaseChartData = ({
 
     const production = productions[formatDate(previousDay)];
 
+    let done;
+    if (i === 0) {
+      done = volume;
+    } else if (i === days && production) {
+      done = volume - doneSum - production.value;
+    } else {
+      done = volume - doneSum;
+    }
+
     data.push({
-      done: i === 0 ? volume : volume - doneSum,
+      done,
       standard: volume - i * standardCelerite,
       name: formatDate(currentDay),
     });
