@@ -230,8 +230,14 @@ export default function ReleasePage({ release }: Props) {
           <Row>
             <Col>
               <LineChart width={800} height={400} data={data} id="bdc">
-                <Line type="monotone" stroke="#0059ff" dataKey="done" />
-                <Line type="monotone" stroke="#ff0000" dataKey="standard" />
+                <Line type="linear" stroke="#0059ff" dataKey="done" />
+                <Line
+                  type="linear"
+                  stroke="#0059ff"
+                  dataKey="forecast"
+                  strokeDasharray="5 5"
+                />
+                <Line type="linear" stroke="#ff0000" dataKey="standard" />
                 <CartesianGrid stroke="#ccc" />
                 <XAxis dataKey="name" />
                 <YAxis />

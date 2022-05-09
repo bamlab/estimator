@@ -2,6 +2,8 @@ import { addBusinessDays, differenceInBusinessDays } from "date-fns";
 import { ChartPoint } from "../../types/charts";
 import { formatDate } from "../../utils/formatDate";
 
+const PRODUCITVITY = 3; // TODO : change by the real value
+
 export const makeReleaseChartData = ({
   volume,
   startDate,
@@ -20,12 +22,15 @@ export const makeReleaseChartData = ({
   const standardCelerite = volume / days;
 
   let doneSum = 0;
+
+  let lastDoneIndex = null;
+  let volumeBeforeForecast = 0;
+
   for (let i = 0; i <= days; i++) {
     const currentDay = addBusinessDays(startDate, i);
     const previousDay = addBusinessDays(startDate, i);
 
     const production = productions[formatDate(previousDay)];
-
     let done;
     if (i === 0) {
       done = volume;
@@ -35,8 +40,22 @@ export const makeReleaseChartData = ({
       done = volume - doneSum;
     }
 
+    let forecast;
+    if ((!production || isNaN(production.value)) && lastDoneIndex === null) {
+      lastDoneIndex = i - 1;
+      volumeBeforeForecast = done;
+    }
+
+    const forecastIndex = lastDoneIndex ? i - lastDoneIndex - 1 : i;
+    if (isNaN(done)) {
+      forecast = volumeBeforeForecast - forecastIndex * PRODUCITVITY;
+    } else {
+      forecast = done;
+    }
+
     data.push({
       done,
+      forecast,
       standard: volume - i * standardCelerite,
       name: formatDate(currentDay),
     });

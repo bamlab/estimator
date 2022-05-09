@@ -70,6 +70,7 @@ const makeSprint = (tickets: Ticket[]): ChartPoint[] => {
     sprint.push({
       name: formatedDate,
       done: totalPoints - done,
+      forecast: totalPoints - done,
       standard: totalPoints - i * speed,
     });
   }
