@@ -12,6 +12,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (typeof projectId === "string") {
       const versions = await prisma.version.findMany({
         where: { projectId },
+        include: { releases: true },
       });
 
       res.status(200).json(versions);
