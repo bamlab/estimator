@@ -26,7 +26,14 @@ import {
 } from "@nextui-org/react";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../../../../src/constants";
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ReferenceLine,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { makeReleaseChartData } from "../../../../../../src/modules/bdc/makeReleaseChartData";
 import { addBusinessDays, differenceInBusinessDays, parseISO } from "date-fns";
 import { formatDate } from "../../../../../../src/utils/formatDate";
@@ -48,6 +55,12 @@ type Props = {
     forecastEndDate: string;
   };
   team: FULL_TEAM_DTO;
+  version: Version & {
+    releases: (Omit<Release, "createdAt" | "forecastEndDate"> & {
+      createdAt: string;
+      forecastEndDate: string;
+    })[];
+  };
 };
 
 type Params = {
@@ -73,6 +86,12 @@ export const getServerSideProps: GetServerSideProps<
     .get()
     .json<Release>();
 
+  const version = await wretch(
+    `${ROOT_URL}/versions/${release.versionId}/releases`
+  )
+    .get()
+    .json<Version>();
+
   const team = await wretch(`${ROOT_URL}/projects/${projectId}/ressources`)
     .get()
     .json<FULL_TEAM_DTO>();
@@ -94,11 +113,12 @@ export const getServerSideProps: GetServerSideProps<
     props: {
       release,
       team,
+      version,
     },
   };
 };
 
-export default function ReleasePage({ release, team }: Props) {
+export default function ReleasePage({ release, team, version }: Props) {
   const [done, setDone] = useState<
     Record<string, { id: string; value: number }>
   >({});
@@ -133,12 +153,11 @@ export default function ReleasePage({ release, team }: Props) {
     () =>
       makeReleaseChartData({
         productivity: productivityMean,
-        endDate: parseISO(release.forecastEndDate),
         startDate,
-        volume: release.volume,
         productions: done,
+        releases: version.releases,
       }),
-    [release, done, productivityMean]
+    [done, productivityMean, version, startDate]
   );
 
   const dates = Array.from(
@@ -225,6 +244,15 @@ export default function ReleasePage({ release, team }: Props) {
     );
   };
 
+  const sortedReleases = useMemo(
+    () =>
+      version.releases.sort(
+        (r1, r2) =>
+          parseISO(r1.createdAt).getTime() - parseISO(r2.createdAt).getTime()
+      ),
+    [version]
+  );
+
   return (
     <Container>
       <Row>
@@ -259,17 +287,31 @@ export default function ReleasePage({ release, team }: Props) {
           <Row>
             <Col>
               <LineChart width={800} height={400} data={data} id="bdc">
+                <XAxis dataKey="name" />
+                <YAxis />
+                <CartesianGrid stroke="#ccc" />
+
                 <Line type="linear" stroke="#0059ff" dataKey="done" />
                 <Line
                   type="linear"
-                  stroke="#0059ff"
+                  stroke={"#0059ff"}
                   dataKey="forecast"
                   strokeDasharray="5 5"
                 />
                 <Line type="linear" stroke="#ff0000" dataKey="standard" />
-                <CartesianGrid stroke="#ccc" />
-                <XAxis dataKey="name" />
-                <YAxis />
+                {sortedReleases.map((release, index) => {
+                  if (index !== 0) {
+                    return (
+                      <ReferenceLine
+                        x={formatDate(parseISO(release.createdAt))}
+                        stroke={"#0059ff"}
+                        key={release.id}
+                        label={release.name}
+                        strokeDasharray="5 5"
+                      />
+                    );
+                  }
+                })}
               </LineChart>
               <Spacer y={3} />
               <Button onPress={() => setIsReleaseModalVisible(true)}>
