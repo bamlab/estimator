@@ -49,6 +49,7 @@ model Version {
   releases      Release[]
   projectId     String
   project       Project @relation(fields: [projectId], references: [id])
+  productions   Production[]
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   @@map(name: "versions")
@@ -62,7 +63,6 @@ model Release {
   comment         String
   versionId       String
   version         Version @relation(fields: [versionId], references: [id])
-  productions     Production[]
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   @@map(name: "releases")
@@ -73,8 +73,8 @@ model Production {
   id            String @default(uuid()) @id
   done          Int
   date          DateTime
-  releaseId     String
-  release       Release @relation(fields: [releaseId], references: [id])
+  versionId     String
+  release       Version @relation(fields: [versionId], references: [id])
   @@map(name: "productions")
 
 }

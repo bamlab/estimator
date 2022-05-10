@@ -9,9 +9,8 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
       const release = await prisma.release.findUnique({
         where: { id: releaseId },
         include: {
-          productions: true,
           version: {
-            include: { project: true },
+            include: { project: true, productions: true },
           },
         },
       });
@@ -24,36 +23,7 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(400).send("multiple query params");
     }
   } else if (req.method === "POST") {
-    const { releaseId } = req.query;
-    const { date, done, id } = req.body as {
-      date: string;
-      done: string;
-      id: string;
-    };
-
-    if (typeof releaseId !== "string") {
-      return res.status(400).send("multiple query params");
-    }
-
-    if (!done) {
-      const production = await prisma.production.delete({
-        where: {
-          id,
-        },
-      });
-      return res.status(200).json(production);
-    } else {
-      const production = await prisma.production.upsert({
-        create: {
-          date: new Date(date),
-          done: done ? parseInt(done) : 0,
-          releaseId,
-        },
-        update: { done: done ? parseInt(done) : 0 },
-        where: { id },
-      });
-      return res.status(200).json(production);
-    }
+    return res.status(400).send("wrong route");
   } else {
     res.status(404).end();
   }

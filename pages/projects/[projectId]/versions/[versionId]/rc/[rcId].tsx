@@ -43,8 +43,8 @@ type Props = {
     version: Omit<Version, "starDate"> & {
       project: Project;
       startDate: string;
+      productions: (Omit<Production, "date"> & { date: string })[];
     };
-    productions: (Omit<Production, "date"> & { date: string })[];
     forecastEndDate: string;
   };
   team: FULL_TEAM_DTO;
@@ -150,7 +150,7 @@ export default function ReleasePage({ release, team }: Props) {
   useEffect(() => {
     const tmp: Record<string, { id: string; value: number }> = {};
 
-    release.productions.forEach((production) => {
+    release.version.productions.forEach((production) => {
       tmp[formatDate(new Date(production.date))] = {
         id: production.id,
         value: production.done,
@@ -165,11 +165,12 @@ export default function ReleasePage({ release, team }: Props) {
     date: Date,
     value: string
   ) => {
-    const production = await wretch(`${ROOT_URL}/releases/${release.id}`)
+    const production = await wretch(`${ROOT_URL}/productions`)
       .post({
         id,
         date,
         done: value,
+        versionId: release.version.id,
       })
       .json();
 
