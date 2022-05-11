@@ -68,11 +68,11 @@ export const makeReleaseChartData = ({
     const forecastIndex = lastDoneIndex ? i - lastDoneIndex - 1 : i;
 
     if (isNaN(done)) {
+      const ressourceCount =
+        ressourcesGroupByDate[formatDate(currentDay)]?.length ?? 1;
+
       forecast =
-        volumeBeforeForecast -
-        forecastIndex *
-          productivity *
-          ressourcesGroupByDate[formatDate(currentDay)].length;
+        volumeBeforeForecast - forecastIndex * productivity * ressourceCount;
     } else {
       forecast = done;
     }

@@ -1,6 +1,8 @@
 import { withSentry } from "@sentry/nextjs";
+import { parseISO } from "date-fns";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../src/lib/prisma";
+import { createStaffingList } from "../../../src/modules/ressources/createStaffingList";
 
 export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
@@ -12,6 +14,11 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
     if (!name) {
       return res.status(400).send("No name provided");
     }
+    const staffingList = createStaffingList(
+      parseISO(startDate),
+      parseISO(endDate)
+    );
+
     const project = await prisma.project.create({
       data: {
         name: req.body.name,
@@ -25,6 +32,9 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
               create: {
                 capacity: 6,
                 name: "Dévelopeur 1",
+                staffing: {
+                  createMany: { data: staffingList.datesList },
+                },
               },
             },
           },

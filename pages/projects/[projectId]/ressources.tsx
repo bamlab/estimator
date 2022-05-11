@@ -20,6 +20,7 @@ import { Developer } from "@prisma/client";
 import { toast } from "react-toastify";
 import { CREATE_DEVELOPER_DTO } from "../../api/developers";
 import { useRouter } from "next/router";
+import { createStaffingList } from "../../../src/modules/ressources/createStaffingList";
 
 type Props = {
   project: ProjectWithDevelopersAndStaffingDTO;
@@ -125,22 +126,10 @@ export default function RessourcesPage({ project }: Props) {
       toast("Aucune team n'a été crée", { type: "error" });
       return;
     }
-    const startDate = parseISO(project.startAt);
-    const days = differenceInBusinessDays(parseISO(project.endAt), startDate);
-
-    const dates: Record<string, number> = {};
-    const datesWithISOFormat: Record<string, number> = {};
-
-    for (let i = 0; i <= days; i++) {
-      const currentDay = addBusinessDays(startDate, i);
-      dates[formatDate(currentDay)] = 1;
-      datesWithISOFormat[currentDay.toISOString()] = 1;
-    }
-
-    const datesList = Object.keys(datesWithISOFormat).map((date) => ({
-      date,
-      value: datesWithISOFormat[date],
-    }));
+    const { datesList, dates } = createStaffingList(
+      parseISO(project.startAt),
+      parseISO(project.endAt)
+    );
 
     const body: CREATE_DEVELOPER_DTO = {
       teamId: project.team.id,
