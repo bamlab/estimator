@@ -41,6 +41,7 @@ import { CREATE_RELEASE_DTO } from "../../../../../api/releases";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import mean from "lodash/mean";
+import { NavBar } from "../../../../../../src/components/NavBar/NavBar";
 
 type FULL_TEAM_DTO = Team & {
   developers: (Developer & { staffing: Staffing[] })[];
@@ -256,21 +257,7 @@ export default function ReleasePage({ release, team, version }: Props) {
   return (
     <Container>
       <Row>
-        <Col
-          span={1}
-          style={{
-            borderRadius: 10,
-            backgroundColor: "#CBECFE",
-            padding: "1rem",
-            marginTop: "2rem",
-          }}
-        >
-          <Link href="/projects">Projets</Link>
-          <Spacer y={1} />
-          <Link href={`/projects/${release.version.projectId}/versions`}>
-            Versions
-          </Link>
-        </Col>
+        <NavBar projectId={release.version.projectId} />
         <Spacer x={2} />
         <Col span={12}>
           <Header>
