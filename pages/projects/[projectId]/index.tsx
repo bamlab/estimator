@@ -2,9 +2,10 @@ import React from "react";
 import styled from "@emotion/styled";
 import { GetServerSideProps } from "next";
 import { Project } from "@prisma/client";
-import { Container, Link, Spacer } from "@nextui-org/react";
+import { Button, Container, Link, Spacer } from "@nextui-org/react";
 import { ROOT_URL } from "../../../src/constants";
 import wretch from "wretch";
+import { Chart, People } from "react-iconly";
 type Props = {
   project: Project;
 };
@@ -41,13 +42,14 @@ export default function ProjectPage({ project }: Props) {
       <Header>
         <h2>{project.name}</h2>
       </Header>
-      <Link href={`/projects/${project.id}/estimation`}>Estimation</Link>
-      <Spacer y={3} />
-      <Link href={`/projects/${project.id}/board`}>Board de production</Link>
-      <Spacer y={3} />
-      <Link href={`/projects/${project.id}/versions`}>Versions</Link>
-      <Spacer y={3} />
-      <Link href={`/projects/${project.id}/ressources`}>Ressources</Link>
+
+      <Link href={`/projects/${project.id}/versions`}>
+        <Button icon={<Chart />}>Versions</Button>
+      </Link>
+      <Spacer y={1} />
+      <Link href={`/projects/${project.id}/ressources`}>
+        <Button icon={<People />}>Ressources</Button>
+      </Link>
     </Container>
   );
 }
