@@ -64,16 +64,22 @@ export default function RessourcesPage({ project }: Props) {
   ) => {
     const developerId = data[rowIndex].id;
 
-    const year = new Date(project.startAt).getFullYear();
-    const month = parseInt(columnId.split("/")[1]) - 1;
-    const day = parseInt(columnId.split("/")[0]) + 1;
+    if (columnId === "name") {
+      await wretch(`${ROOT_URL}/developers/${developerId}`).post({
+        name: value,
+      });
+    } else {
+      const year = new Date(project.startAt).getFullYear();
+      const month = parseInt(columnId.split("/")[1]) - 1;
+      const day = parseInt(columnId.split("/")[0]) + 1;
 
-    const body = {
-      date: new Date(year, month, day).toISOString(),
-      value: parseInt(value),
-    };
+      const body = {
+        date: new Date(year, month, day).toISOString(),
+        value: parseInt(value),
+      };
 
-    await wretch(`${ROOT_URL}/staffing/${developerId}`).post(body);
+      await wretch(`${ROOT_URL}/staffing/${developerId}`).post(body);
+    }
 
     setData((old) =>
       old.map((row, index) => {
@@ -82,7 +88,7 @@ export default function RessourcesPage({ project }: Props) {
             return { ...old[rowIndex] };
           }
 
-          if (columnId === "dev") {
+          if (columnId === "name") {
             return {
               ...old[rowIndex],
               [columnId]: value,
