@@ -1,5 +1,6 @@
-import { Release } from "@prisma/client";
+import { Developer, Release, Staffing } from "@prisma/client";
 import { addBusinessDays, differenceInBusinessDays, parseISO } from "date-fns";
+import { groupBy } from "lodash";
 import { ChartPoint } from "../../types/charts";
 import { formatDate } from "../../utils/formatDate";
 
@@ -8,6 +9,7 @@ export const makeReleaseChartData = ({
   productions,
   productivity,
   releases,
+  ressources,
 }: {
   startDate: Date;
   productions: Record<string, { id: string; value: number }>;
@@ -15,6 +17,9 @@ export const makeReleaseChartData = ({
   releases: (Omit<Release, "createdAt" | "forecastEndDate"> & {
     createdAt: string;
     forecastEndDate: string;
+  })[];
+  ressources: (Developer & {
+    staffing: (Omit<Staffing, "date"> & { date: string })[];
   })[];
 }): ChartPoint[] => {
   const sortedReleases = releases.sort(
@@ -33,6 +38,11 @@ export const makeReleaseChartData = ({
   let lastDoneIndex = null;
   let volumeBeforeForecast = 0;
   let standard = volume;
+
+  const staffingList = ressources.map((ressource) => ressource.staffing).flat();
+  const ressourcesGroupByDate = groupBy(staffingList, (staffing) =>
+    formatDate(parseISO(staffing.date))
+  );
 
   for (let i = 0; i <= days; i++) {
     const currentDay = addBusinessDays(startDate, i);
@@ -56,8 +66,13 @@ export const makeReleaseChartData = ({
     }
 
     const forecastIndex = lastDoneIndex ? i - lastDoneIndex - 1 : i;
+
     if (isNaN(done)) {
-      forecast = volumeBeforeForecast - forecastIndex * productivity;
+      forecast =
+        volumeBeforeForecast -
+        forecastIndex *
+          productivity *
+          ressourcesGroupByDate[formatDate(currentDay)].length;
     } else {
       forecast = done;
     }

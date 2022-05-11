@@ -45,7 +45,9 @@ import { NavBar } from "../../../../../../src/components/NavBar/NavBar";
 import { MainLayout } from "../../../../../../src/components/Layouts/MainLayout";
 
 type FULL_TEAM_DTO = Team & {
-  developers: (Developer & { staffing: Staffing[] })[];
+  developers: (Developer & {
+    staffing: (Omit<Staffing, "date"> & { date: string })[];
+  })[];
 };
 type Props = {
   release: Omit<Release, "forecastEndDate"> & {
@@ -158,8 +160,9 @@ export default function ReleasePage({ release, team, version }: Props) {
         startDate,
         productions: done,
         releases: version.releases,
+        ressources: team.developers,
       }),
-    [done, productivityMean, version, startDate]
+    [done, productivityMean, version, startDate, team.developers]
   );
 
   const dates = Array.from(
