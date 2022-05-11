@@ -56,7 +56,7 @@ export default function ProjectsPage({ projects }: Props) {
 
     if (response.project) {
       toast("Super ! C'est parti pour une nouvelle aventure 🚀");
-      router.push(`/projects/${response.project.id}/versions`);
+      router.push(`/projects/${response.project.id}/ressources`);
     }
   };
 

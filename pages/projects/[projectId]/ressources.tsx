@@ -12,13 +12,14 @@ import {
   ProjectWithDevelopersAndStaffingDTO,
   RessourceRow,
 } from "../../../src/modules/ressources/initializeRessourcesData";
-import { Plus } from "react-iconly";
+import { ArrowRight, Plus } from "react-iconly";
 import { addBusinessDays, differenceInBusinessDays, parseISO } from "date-fns";
 import { formatDate } from "../../../src/utils/formatDate";
 import { DeleteButton } from "../../../src/modules/estimation/Datasheet/DeleteButton";
 import { Developer } from "@prisma/client";
 import { toast } from "react-toastify";
 import { CREATE_DEVELOPER_DTO } from "../../api/developers";
+import { useRouter } from "next/router";
 
 type Props = {
   project: ProjectWithDevelopersAndStaffingDTO;
@@ -53,6 +54,8 @@ export default function RessourcesPage({ project }: Props) {
   const [data, setData] = useState<RessourceRow[]>(
     initializeRessourcesData(project)
   );
+
+  const router = useRouter();
 
   const updateMyData = async (
     rowIndex: number,
@@ -144,8 +147,6 @@ export default function RessourcesPage({ project }: Props) {
       .post(body)
       .json();
 
-    console.log("result", result);
-
     setData((oldData) => [
       ...oldData,
       { id: result.developer.id, name: "Développeur", ...dates },
@@ -159,6 +160,10 @@ export default function RessourcesPage({ project }: Props) {
       await wretch(`${ROOT_URL}/developers/${removedRow.id}`).delete();
     }
     setData(newData);
+  };
+
+  const goToVersions = () => {
+    router.push(`/projects/${project.id}/versions`);
   };
 
   const { ...tableInstance } = useTable(
@@ -198,7 +203,12 @@ export default function RessourcesPage({ project }: Props) {
       </Header>
 
       <Datasheet {...tableInstance} />
-      <Button auto icon={<Plus />} onClick={addRow} title="" />
+      <Row style={{ justifyContent: "space-between" }}>
+        <Button auto icon={<Plus />} onClick={addRow} title="" />
+        <Button onClick={goToVersions} icon={<ArrowRight />}>
+          Etape Suivante
+        </Button>
+      </Row>
     </Container>
   );
 }
