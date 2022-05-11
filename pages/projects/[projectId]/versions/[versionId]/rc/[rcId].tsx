@@ -42,6 +42,7 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import mean from "lodash/mean";
 import { NavBar } from "../../../../../../src/components/NavBar/NavBar";
+import { MainLayout } from "../../../../../../src/components/Layouts/MainLayout";
 
 type FULL_TEAM_DTO = Team & {
   developers: (Developer & { staffing: Staffing[] })[];
@@ -255,115 +256,107 @@ export default function ReleasePage({ release, team, version }: Props) {
   );
 
   return (
-    <Container>
-      <Row>
-        <NavBar projectId={release.version.projectId} />
-        <Spacer x={2} />
-        <Col span={12}>
-          <Header>
-            <h2>{release.version.project.name}</h2>
-            <h3>{`${release.version.name} (${release.name})`}</h3>
-          </Header>
+    <MainLayout projectId={release.version.projectId}>
+      <Col span={12}>
+        <Header>
+          <h2>{release.version.project.name}</h2>
+          <h3>{`${release.version.name} (${release.name})`}</h3>
+        </Header>
 
-          <p>
-            {`Date de fin de jalon : ${formatDate(
-              new Date(release.forecastEndDate)
-            )}`}
-          </p>
+        <p>
+          {`Date de fin de jalon : ${formatDate(
+            new Date(release.forecastEndDate)
+          )}`}
+        </p>
 
-          <Row>
-            <Col>
-              <LineChart width={800} height={400} data={data} id="bdc">
-                <XAxis dataKey="name" />
-                <YAxis />
-                <CartesianGrid stroke="#ccc" />
+        <Row>
+          <Col>
+            <LineChart width={800} height={400} data={data} id="bdc">
+              <XAxis dataKey="name" />
+              <YAxis />
+              <CartesianGrid stroke="#ccc" />
 
-                <Line type="linear" stroke="#0059ff" dataKey="done" />
-                <Line
-                  type="linear"
-                  stroke={"#0059ff"}
-                  dataKey="forecast"
-                  strokeDasharray="5 5"
-                />
-                <Line type="linear" stroke="#ff0000" dataKey="standard" />
-                {sortedReleases.map((release, index) => {
-                  if (index !== 0) {
-                    return (
-                      <ReferenceLine
-                        x={formatDate(parseISO(release.createdAt))}
-                        stroke={"#0059ff"}
-                        key={release.id}
-                        label={release.name}
-                        strokeDasharray="5 5"
-                      />
-                    );
-                  }
-                })}
-              </LineChart>
-              <Spacer y={3} />
-              <Button onPress={() => setIsReleaseModalVisible(true)}>
-                Créer une nouvelle release
-              </Button>
-            </Col>
-            <Spacer x={3} />
-
-            <table>
-              <thead>
-                <tr>
-                  <th>{"Jour"}</th>
-                  <th>{"Done"}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dates.map((day) => {
-                  const doneThisDay =
-                    done[formatDate(day)] !== undefined
-                      ? {
-                          id: done[formatDate(day)].id,
-                          value: done[formatDate(day)].value.toString(),
-                        }
-                      : { value: "", id: "" };
-
-                  const changeLocalInputValue = (
-                    e: React.ChangeEvent<FormElement>
-                  ) => {
-                    setDone({
-                      ...done,
-                      [formatDate(day)]: {
-                        id: doneThisDay.id,
-                        value: parseInt(e.target.value),
-                      },
-                    });
-                  };
-
+              <Line type="linear" stroke="#0059ff" dataKey="done" />
+              <Line
+                type="linear"
+                stroke={"#0059ff"}
+                dataKey="forecast"
+                strokeDasharray="5 5"
+              />
+              <Line type="linear" stroke="#ff0000" dataKey="standard" />
+              {sortedReleases.map((release, index) => {
+                if (index !== 0) {
                   return (
-                    <tr key={day.toString()}>
-                      <td>{formatDate(day)}</td>
-                      <td>
-                        <Input
-                          type="number"
-                          aria-label="done"
-                          value={doneThisDay.value}
-                          onChange={changeLocalInputValue}
-                          onBlur={(e) => {
-                            setProductionDay(
-                              doneThisDay.id,
-                              day,
-                              e.target.value
-                            );
-                          }}
-                        />
-                      </td>
-                    </tr>
+                    <ReferenceLine
+                      x={formatDate(parseISO(release.createdAt))}
+                      stroke={"#0059ff"}
+                      key={release.id}
+                      label={release.name}
+                      strokeDasharray="5 5"
+                    />
                   );
-                })}
-              </tbody>
-            </table>
-
+                }
+              })}
+            </LineChart>
             <Spacer y={3} />
-          </Row>
-        </Col>
-      </Row>
+            <Button onPress={() => setIsReleaseModalVisible(true)}>
+              Créer une nouvelle release
+            </Button>
+          </Col>
+          <Spacer x={3} />
+
+          <table>
+            <thead>
+              <tr>
+                <th>{"Jour"}</th>
+                <th>{"Done"}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dates.map((day) => {
+                const doneThisDay =
+                  done[formatDate(day)] !== undefined
+                    ? {
+                        id: done[formatDate(day)].id,
+                        value: done[formatDate(day)].value.toString(),
+                      }
+                    : { value: "", id: "" };
+
+                const changeLocalInputValue = (
+                  e: React.ChangeEvent<FormElement>
+                ) => {
+                  setDone({
+                    ...done,
+                    [formatDate(day)]: {
+                      id: doneThisDay.id,
+                      value: parseInt(e.target.value),
+                    },
+                  });
+                };
+
+                return (
+                  <tr key={day.toString()}>
+                    <td>{formatDate(day)}</td>
+                    <td>
+                      <Input
+                        type="number"
+                        aria-label="done"
+                        value={doneThisDay.value}
+                        onChange={changeLocalInputValue}
+                        onBlur={(e) => {
+                          setProductionDay(doneThisDay.id, day, e.target.value);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          <Spacer y={3} />
+        </Row>
+      </Col>
 
       <Modal
         closeButton
@@ -399,7 +392,7 @@ export default function ReleasePage({ release, team, version }: Props) {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Container>
+    </MainLayout>
   );
 }
 
