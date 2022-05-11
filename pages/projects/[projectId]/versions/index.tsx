@@ -20,6 +20,7 @@ import wretch from "wretch";
 import { ROOT_URL } from "../../../../src/constants";
 import { GetServerSideProps } from "next";
 import { CREATE_VERSION_DTO } from "../../../api/projects/[projectId]/versions";
+import { MainLayout } from "../../../../src/components/Layouts/MainLayout";
 
 type Props = {
   project: Project;
@@ -102,7 +103,7 @@ export default function VersionPage({ versions, project }: Props) {
   };
 
   return (
-    <Container>
+    <MainLayout projectId={project.id}>
       <Col>
         <Header>
           <h1>{project.name}</h1>
@@ -174,7 +175,7 @@ export default function VersionPage({ versions, project }: Props) {
           </Modal.Body>
         </Modal>
       </Col>
-    </Container>
+    </MainLayout>
   );
 }
 
