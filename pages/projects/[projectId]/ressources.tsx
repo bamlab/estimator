@@ -183,7 +183,9 @@ export default function RessourcesPage({ project }: Props) {
         {
           id: "remove",
           Cell: ({ row }: { row: RowType }) => (
-            <DeleteButton onClick={() => removeRow(row.index)} />
+            <CenterDiv>
+              <DeleteButton onClick={() => removeRow(row.index)} />
+            </CenterDiv>
           ),
         },
         ...columns,
@@ -212,4 +214,11 @@ const Header = styled.div`
   margin-left: 1rem;
   display: flex;
   flex-direction: row;
+`;
+
+const CenterDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 `;
