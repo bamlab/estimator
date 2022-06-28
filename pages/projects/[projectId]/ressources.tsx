@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { GetServerSideProps } from "next";
-import { Button, Row } from "@nextui-org/react";
+import { Button, Row, Spacer } from "@nextui-org/react";
 import { ROOT_URL } from "../../../src/constants";
 import wretch from "wretch";
 import { Datasheet } from "../../../src/modules/estimation/Datasheet";
@@ -217,6 +217,7 @@ export default function RessourcesPage({ project }: Props) {
       </Header>
 
       <Datasheet {...tableInstance} />
+      <Spacer />
       <StickyRow>
         <Button auto icon={<Plus />} onClick={addRow} title="" />
         <Button onClick={goToVersions} icon={<ArrowRight />}>
@@ -230,10 +231,10 @@ export default function RessourcesPage({ project }: Props) {
 const Container = styled.div`
   overflow: auto;
   margin-left: 20px;
+  padding: 20px;
 `;
 
 const Header = styled.div`
-  margin-left: 1rem;
   position: sticky;
   left: 0;
 `;
