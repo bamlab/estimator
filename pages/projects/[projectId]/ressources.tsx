@@ -217,12 +217,12 @@ export default function RessourcesPage({ project }: Props) {
       </Header>
 
       <Datasheet {...tableInstance} />
-      <Row style={{ justifyContent: "space-between" }}>
+      <StickyRow>
         <Button auto icon={<Plus />} onClick={addRow} title="" />
         <Button onClick={goToVersions} icon={<ArrowRight />}>
           Etape Suivante
         </Button>
-      </Row>
+      </StickyRow>
     </Container>
   );
 }
@@ -251,4 +251,10 @@ const CenterDiv = styled.div`
   justify-content: center;
   align-items: center;
   height: 100%;
+`;
+
+const StickyRow = styled(Row)`
+  justify-content: space-between;
+  position: sticky;
+  left: 0;
 `;
