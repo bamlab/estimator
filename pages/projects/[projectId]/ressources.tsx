@@ -197,6 +197,23 @@ export default function RessourcesPage({ project }: Props) {
     <Container>
       <Header>
         <h2>{project.name}</h2>
+        <span>
+          Renseigner ici vos ressources de production disponibles sur le projet
+          :
+        </span>
+        <Ul>
+          <li>Ajouter autant de ligne que de ressources de production</li>
+          <li>
+            Remplacer &quot;Développeur&quot; par le nom des membres de votre
+            équipe
+          </li>
+          <li>
+            Renseignez la disponibilité de ces ressources en <Bold>jour</Bold>{" "}
+            (entrer une valeur comprise entre 0 et 1). Exemple : Renseignez 1 si
+            la personne est à plein sur le projet sur le jour indiqué, 0,5 si la
+            personne est à 50%.
+          </li>
+        </Ul>
       </Header>
 
       <Datasheet {...tableInstance} />
@@ -212,8 +229,14 @@ export default function RessourcesPage({ project }: Props) {
 
 const Header = styled.div`
   margin-left: 1rem;
-  display: flex;
-  flex-direction: row;
+ `;
+
+const Ul = styled.ul`
+  list-style-type: disc;
+`; // Les cercles noirs ne s'affichent pas sans ça même si c'est la valeur par défaut
+
+const Bold = styled.span`
+  font-weight: bold;
 `;
 
 const CenterDiv = styled.div`
