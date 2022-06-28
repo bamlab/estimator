@@ -202,16 +202,16 @@ export default function RessourcesPage({ project }: Props) {
           :
         </span>
         <Ul>
-          <li>Ajouter autant de ligne que de ressources de production</li>
+          <li>Ajouter autant de lignes que de ressources de production</li>
           <li>
             Remplacer &quot;Développeur&quot; par le nom des membres de votre
             équipe
           </li>
           <li>
-            Renseignez la disponibilité de ces ressources en <Bold>jour</Bold>{" "}
-            (entrer une valeur comprise entre 0 et 1). Exemple : Renseignez 1 si
-            la personne est à plein sur le projet sur le jour indiqué, 0,5 si la
-            personne est à 50%.
+            Renseigner la disponibilité de ces ressources en <Bold>jour</Bold>{" "}
+            (entrer une valeur comprise entre 0 et 1). Exemple : Renseigner 1 si
+            la personne est à plein temps sur le projet sur le jour indiqué, 0,5
+            si la personne est à 50%.
           </li>
         </Ul>
       </Header>
