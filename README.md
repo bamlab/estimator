@@ -24,7 +24,6 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
   - Open up a terminal in VS Code at the root of the project
   - Run `yarn` or `npm install` (from there I'm gonna assume that you're using yarn)
   - Run `yarn prisma:generate`
-  - Load the env to your terminal by running `export $(grep -v '^#' .env | xargs)`
   - Run `yarn prisma:push`(Careful! Be sure that you're .env is setup to use the local database or you will erase the production database)
 <br/><br/>
 
