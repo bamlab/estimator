@@ -1,6 +1,6 @@
 import { Project } from "@prisma/client";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import {
@@ -14,6 +14,9 @@ import {
 import { HelperText } from "./HelperText";
 import { validateStartDate } from "../helpers/validateStartDate";
 import { createNewVersion } from "../usecases/createNewVersion";
+import { computeProjectMeanProductivity } from "../helpers/computeProjectMeanProductivity";
+import { computeVolumeEstimationFromTimePeriod } from "../helpers/computeVolumeEstimationFromTimePeriod";
+import { parseISO } from "date-fns";
 
 const REQUIRED_FIELD_ERROR_TEXT = "Ce champ est requis";
 
@@ -41,6 +44,7 @@ export const VersionFormModal: React.FC<Props> = ({
     control,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<VersionFormData>({
     defaultValues: {
       versionName: "",
@@ -50,6 +54,26 @@ export const VersionFormModal: React.FC<Props> = ({
       volume: "",
     },
   });
+
+  const startDate = watch("startDate");
+  const endDate = watch("endDate");
+  const [volumeEstimation, setVolumeEstimation] = useState<number | string>("");
+
+  useEffect(() => {
+    const meanProductivity = computeProjectMeanProductivity(
+      [], // TODO : Replace with project productions after prisma migration (currently productions are stored in each versions which is not ideal)
+      project.productivity
+    );
+    setVolumeEstimation(
+      startDate &&
+        endDate &&
+        computeVolumeEstimationFromTimePeriod(
+          meanProductivity,
+          parseISO(startDate),
+          parseISO(endDate)
+        )
+    );
+  }, [startDate, endDate, project.productivity]);
 
   const onSubmit = async (formData: VersionFormData) => {
     return createNewVersion(formData, project)
@@ -154,6 +178,12 @@ export const VersionFormModal: React.FC<Props> = ({
               />
             )}
           />
+          {volumeEstimation && (
+            <HelperText
+              color={"primary"}
+              text={`Volume recommandé pour la période renseignée : ${volumeEstimation} ${project.unit.toLocaleLowerCase()}s `}
+            />
+          )}
           <Spacer y={1} />
 
           <Button color={"success"} type="submit">
