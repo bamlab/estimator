@@ -93,7 +93,7 @@ export const VersionFormModal: React.FC<Props> = ({
   };
 
   return (
-    <Modal open={isVisible}>
+    <Modal open={isVisible} onClose={() => setIsVisible(false)}>
       <Modal.Header>
         <Text id="modal-title" size={18}>
           Créer une nouvelle version
