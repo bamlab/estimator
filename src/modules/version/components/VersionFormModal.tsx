@@ -16,6 +16,7 @@ import {
 } from "@nextui-org/react";
 import { HelperText } from "./HelperText";
 import { validateStartDate } from "../helpers/validateStartDate";
+import { createNewVersion } from "../usecases/createNewVersion";
 
 const REQUIRED_FIELD_ERROR_TEXT = "Ce champ est requis";
 
@@ -54,34 +55,20 @@ export const VersionFormModal: React.FC<Props> = ({
   });
 
   const onSubmit = async (formData: VersionFormData) => {
-    const { versionName, startDate, endDate, scope, volume } = formData;
+    return createNewVersion(formData, project)
+      .then((version) => {
+        setIsVisible(false);
 
-    const body: CREATE_VERSION_DTO = {
-      projectId: project.id,
-      name: versionName,
-      startDate,
-      endDate,
-      scope,
-      volume,
-    };
-    console.log("body", body);
-
-    const version: Version & { releases: Release[] } = await wretch(
-      `${ROOT_URL}/versions`
-    )
-      .post(body)
-      .json();
-
-    setIsVisible(false);
-
-    if (version) {
-      toast(`La version ${version.name} a bien été crée`);
-      router.push(
-        `/projects/${project.id}/versions/${version.id}/rc/${version.releases[0].id}`
-      );
-    } else {
-      toast(`Une erreur s'est porduite`, { type: "error" });
-    }
+        if (version) {
+          toast(`La version ${version.name} a bien été crée`);
+          router.push(
+            `/projects/${project.id}/versions/${version.id}/rc/${version.releases[0].id}`
+          );
+        } else {
+          toast(`Une erreur s'est porduite`, { type: "error" });
+        }
+      })
+      .catch((e) => console.log(e));
   };
 
   return (
