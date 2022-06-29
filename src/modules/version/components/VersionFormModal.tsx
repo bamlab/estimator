@@ -1,11 +1,8 @@
-import { Project, Release, Version } from "@prisma/client";
+import { Project } from "@prisma/client";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { CREATE_VERSION_DTO } from "../../../../pages/api/projects/[projectId]/versions";
-import { ROOT_URL } from "../../../constants";
-import wretch from "wretch";
 import {
   Button,
   Input,
