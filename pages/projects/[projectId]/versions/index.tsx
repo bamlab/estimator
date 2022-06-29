@@ -22,6 +22,9 @@ import { GetServerSideProps } from "next";
 import { CREATE_VERSION_DTO } from "../../../api/projects/[projectId]/versions";
 import { MainLayout } from "../../../../src/components/Layouts/MainLayout";
 import { Controller, useForm } from "react-hook-form";
+import { HelperText } from "../../../../src/modules/version/components/HelperText";
+
+const REQUIRED_FIELD_ERROR_TEXT = "Ce champ est requis";
 
 type Props = {
   project: Project;
@@ -167,7 +170,7 @@ export default function VersionPage({ versions, project }: Props) {
               <Controller
                 name="versionName"
                 control={control}
-                rules={{ required: "Ce champ est requis" }}
+                rules={{ required: REQUIRED_FIELD_ERROR_TEXT }}
                 render={({ field: { onChange, value } }) => (
                   <Input
                     onChange={onChange}
@@ -175,11 +178,13 @@ export default function VersionPage({ versions, project }: Props) {
                     label="Nom de la version"
                     placeholder="Version 1"
                     color={errors.versionName ? "error" : "default"}
-                    helperColor={errors.versionName ? "error" : "default"}
                     status={errors.versionName ? "error" : "default"}
-                    helperText={errors.versionName?.message}
                   />
                 )}
+              />
+              <HelperText
+                color={errors.versionName ? "error" : "default"}
+                text={errors.versionName?.message}
               />
               <Spacer y={1} />
               <Controller
