@@ -21,6 +21,7 @@ import { ROOT_URL } from "../../../../src/constants";
 import { GetServerSideProps } from "next";
 import { CREATE_VERSION_DTO } from "../../../api/projects/[projectId]/versions";
 import { MainLayout } from "../../../../src/components/Layouts/MainLayout";
+import { Controller, useForm } from "react-hook-form";
 
 type Props = {
   project: Project;
@@ -29,6 +30,14 @@ type Props = {
 
 type Params = {
   projectId: string;
+};
+
+type FormData = {
+  versionName: string;
+  startDate: string;
+  endDate: string;
+  scope: string;
+  volume: string;
 };
 
 export const getServerSideProps: GetServerSideProps<
@@ -61,15 +70,22 @@ export const getServerSideProps: GetServerSideProps<
 
 export default function VersionPage({ versions, project }: Props) {
   const router = useRouter();
-  const { bindings: versionNameBindings, value: versionName } = useInput("");
-  const { bindings: startDateBindings, value: startDate } = useInput("");
-  const { bindings: endDateBindings, value: endDate } = useInput("");
-  const { bindings: scopeBindings, value: scope } = useInput("");
-  const { bindings: volumeBindings, value: volume } = useInput("");
+  const { control, handleSubmit } = useForm<FormData>({
+    defaultValues: {
+      versionName: "",
+      startDate: "",
+      endDate: "",
+      scope: "",
+      volume: "",
+    },
+  });
+  const onSubmit = handleSubmit((data) => createNewVersion(data));
+
   const [errorMessage, setErrorMessage] = useState("");
   const [isVersionModalVisible, setIsVersionModalVisible] = useState(false);
 
-  const createNewVersion = async () => {
+  const createNewVersion = async (formData: FormData) => {
+    const { versionName, startDate, endDate, scope, volume } = formData;
     if (!versionName) {
       setErrorMessage("Remplis tous les champs");
       return;
@@ -147,31 +163,75 @@ export default function VersionPage({ versions, project }: Props) {
           </Modal.Header>
 
           <Modal.Body>
-            <Input
-              label="Nom de la version"
-              placeholder="Version 1"
-              {...versionNameBindings}
-              color={errorMessage ? "error" : "default"}
-              status={errorMessage ? "error" : "default"}
-            />
-            <Spacer y={1} />
-            <Input label="Date de début" type="date" {...startDateBindings} />
-            <Spacer y={1} />
-            <Input
-              label="Date de fin prévue"
-              type="date"
-              {...endDateBindings}
-            />
-            <Spacer y={1} />
-            <Textarea label="Scope" {...scopeBindings} />
-            <Spacer y={1} />
-            <Input label="Volume" type="number" {...volumeBindings} />
-            <Spacer y={1} />
+            <form onSubmit={onSubmit}>
+              <Controller
+                name="versionName"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    onChange={onChange}
+                    value={value}
+                    label="Nom de la version"
+                    placeholder="Version 1"
+                    color={errorMessage ? "error" : "default"}
+                    status={errorMessage ? "error" : "default"}
+                  />
+                )}
+              />
+              <Spacer y={1} />
+              <Controller
+                name="startDate"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    onChange={onChange}
+                    value={value}
+                    label="Date de début"
+                    type="date"
+                  />
+                )}
+              />
+              <Spacer y={1} />
+              <Controller
+                name="endDate"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    onChange={onChange}
+                    value={value}
+                    label="Date de fin prévue"
+                    type="date"
+                  />
+                )}
+              />
+              <Spacer y={1} />
+              <Controller
+                name="scope"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Textarea onChange={onChange} value={value} label="Scope" />
+                )}
+              />
+              <Spacer y={1} />
+              <Controller
+                name="volume"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    onChange={onChange}
+                    value={value}
+                    label="Volume"
+                    type="number"
+                  />
+                )}
+              />
+              <Spacer y={1} />
 
-            <Button onClick={createNewVersion} color={"success"}>
-              Créer une nouvelle version
-            </Button>
-            <Spacer y={2} />
+              <Button color={"success"} type="submit">
+                Créer une nouvelle version
+              </Button>
+              <Spacer y={2} />
+            </form>
           </Modal.Body>
         </Modal>
       </Col>
