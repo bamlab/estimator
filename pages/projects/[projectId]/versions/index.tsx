@@ -24,8 +24,7 @@ import { MainLayout } from "../../../../src/components/Layouts/MainLayout";
 import { Controller, useForm } from "react-hook-form";
 import { validateStartDate } from "../../../../src/modules/version/helpers/validateStartDate";
 import { HelperText } from "../../../../src/modules/version/components/HelperText";
-
-const REQUIRED_FIELD_ERROR_TEXT = "Ce champ est requis";
+import { VersionFormModal } from "../../../../src/modules/version/components/VersionFormModal";
 
 type Props = {
   project: Project;
@@ -34,14 +33,6 @@ type Props = {
 
 type Params = {
   projectId: string;
-};
-
-type FormData = {
-  versionName: string;
-  startDate: string;
-  endDate: string;
-  scope: string;
-  volume: string;
 };
 
 export const getServerSideProps: GetServerSideProps<
@@ -73,54 +64,7 @@ export const getServerSideProps: GetServerSideProps<
 };
 
 export default function VersionPage({ versions, project }: Props) {
-  const router = useRouter();
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
-    defaultValues: {
-      versionName: "",
-      startDate: "",
-      endDate: "",
-      scope: "",
-      volume: "",
-    },
-  });
-  const onSubmit = handleSubmit((data) => createNewVersion(data));
-
   const [isVersionModalVisible, setIsVersionModalVisible] = useState(false);
-
-  const createNewVersion = async (formData: FormData) => {
-    const { versionName, startDate, endDate, scope, volume } = formData;
-
-    const body: CREATE_VERSION_DTO = {
-      projectId: project.id,
-      name: versionName,
-      startDate,
-      endDate,
-      scope,
-      volume,
-    };
-    console.log("body", body);
-
-    const version: Version & { releases: Release[] } = await wretch(
-      `${ROOT_URL}/versions`
-    )
-      .post(body)
-      .json();
-
-    setIsVersionModalVisible(false);
-
-    if (version) {
-      toast(`La version ${version.name} a bien été crée`);
-      router.push(
-        `/projects/${project.id}/versions/${version.id}/rc/${version.releases[0].id}`
-      );
-    } else {
-      toast(`Une erreur s'est porduite`, { type: "error" });
-    }
-  };
 
   return (
     <MainLayout projectId={project.id}>
@@ -159,101 +103,11 @@ export default function VersionPage({ versions, project }: Props) {
         </Button>
 
         <Spacer y={2} />
-        <Modal open={isVersionModalVisible}>
-          <Modal.Header>
-            <Text id="modal-title" size={18}>
-              Créer une nouvelle version
-            </Text>
-          </Modal.Header>
-
-          <Modal.Body>
-            <form onSubmit={onSubmit}>
-              <Controller
-                name="versionName"
-                control={control}
-                rules={{ required: REQUIRED_FIELD_ERROR_TEXT }}
-                render={({ field: { onChange, value } }) => (
-                  <Input
-                    onChange={onChange}
-                    value={value}
-                    label="Nom de la version"
-                    placeholder="Version 1"
-                    color={errors.versionName ? "error" : "default"}
-                    status={errors.versionName ? "error" : "default"}
-                  />
-                )}
-              />
-              <HelperText
-                color={errors.versionName ? "error" : "default"}
-                text={errors.versionName?.message}
-              />
-              <Spacer y={1} />
-              <Controller
-                name="startDate"
-                control={control}
-                rules={{
-                  required: REQUIRED_FIELD_ERROR_TEXT,
-                  validate: (startDate) =>
-                    validateStartDate(project, startDate),
-                }}
-                render={({ field: { onChange, value } }) => (
-                  <Input
-                    onChange={onChange}
-                    value={value}
-                    label="Date de début"
-                    type="date"
-                    color={errors.startDate ? "error" : "default"}
-                    status={errors.startDate ? "error" : "default"}
-                  />
-                )}
-              />
-              <HelperText
-                color={errors.startDate ? "error" : "default"}
-                text={errors.startDate?.message}
-              />
-              <Spacer y={1} />
-              <Controller
-                name="endDate"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <Input
-                    onChange={onChange}
-                    value={value}
-                    label="Date de fin prévue"
-                    type="date"
-                  />
-                )}
-              />
-              <Spacer y={1} />
-              <Controller
-                name="scope"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <Textarea onChange={onChange} value={value} label="Scope" />
-                )}
-              />
-              <Spacer y={1} />
-              <Controller
-                name="volume"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <Input
-                    onChange={onChange}
-                    value={value}
-                    label="Volume"
-                    type="number"
-                  />
-                )}
-              />
-              <Spacer y={1} />
-
-              <Button color={"success"} type="submit">
-                Créer une nouvelle version
-              </Button>
-              <Spacer y={2} />
-            </form>
-          </Modal.Body>
-        </Modal>
+        <VersionFormModal
+          project={project}
+          isVisible={isVersionModalVisible}
+          setIsVisible={setIsVersionModalVisible}
+        />
       </Col>
     </MainLayout>
   );
