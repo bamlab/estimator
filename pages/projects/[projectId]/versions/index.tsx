@@ -1,29 +1,10 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { Project, Release, Version } from "@prisma/client";
-import {
-  Button,
-  Col,
-  Container,
-  Input,
-  Link,
-  Modal,
-  Spacer,
-  Text,
-  Textarea,
-  useInput,
-} from "@nextui-org/react";
-import { useRouter } from "next/dist/client/router";
-
-import { toast } from "react-toastify";
+import { Button, Col, Link, Spacer } from "@nextui-org/react";
 import wretch from "wretch";
-import { ROOT_URL } from "../../../../src/constants";
 import { GetServerSideProps } from "next";
-import { CREATE_VERSION_DTO } from "../../../api/projects/[projectId]/versions";
 import { MainLayout } from "../../../../src/components/Layouts/MainLayout";
-import { Controller, useForm } from "react-hook-form";
-import { validateStartDate } from "../../../../src/modules/version/helpers/validateStartDate";
-import { HelperText } from "../../../../src/modules/version/components/HelperText";
 import { VersionFormModal } from "../../../../src/modules/version/components/VersionFormModal";
 
 type Props = {
