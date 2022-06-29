@@ -22,6 +22,7 @@ import { GetServerSideProps } from "next";
 import { CREATE_VERSION_DTO } from "../../../api/projects/[projectId]/versions";
 import { MainLayout } from "../../../../src/components/Layouts/MainLayout";
 import { Controller, useForm } from "react-hook-form";
+import { validateStartDate } from "../../../../src/modules/version/helpers/validateStartDate";
 import { HelperText } from "../../../../src/modules/version/components/HelperText";
 
 const REQUIRED_FIELD_ERROR_TEXT = "Ce champ est requis";
@@ -190,14 +191,25 @@ export default function VersionPage({ versions, project }: Props) {
               <Controller
                 name="startDate"
                 control={control}
+                rules={{
+                  required: REQUIRED_FIELD_ERROR_TEXT,
+                  validate: (startDate) =>
+                    validateStartDate(project, startDate),
+                }}
                 render={({ field: { onChange, value } }) => (
                   <Input
                     onChange={onChange}
                     value={value}
                     label="Date de début"
                     type="date"
+                    color={errors.startDate ? "error" : "default"}
+                    status={errors.startDate ? "error" : "default"}
                   />
                 )}
+              />
+              <HelperText
+                color={errors.startDate ? "error" : "default"}
+                text={errors.startDate?.message}
               />
               <Spacer y={1} />
               <Controller
