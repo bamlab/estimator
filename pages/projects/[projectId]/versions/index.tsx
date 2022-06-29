@@ -70,7 +70,11 @@ export const getServerSideProps: GetServerSideProps<
 
 export default function VersionPage({ versions, project }: Props) {
   const router = useRouter();
-  const { control, handleSubmit } = useForm<FormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       versionName: "",
       startDate: "",
@@ -81,15 +85,10 @@ export default function VersionPage({ versions, project }: Props) {
   });
   const onSubmit = handleSubmit((data) => createNewVersion(data));
 
-  const [errorMessage, setErrorMessage] = useState("");
   const [isVersionModalVisible, setIsVersionModalVisible] = useState(false);
 
   const createNewVersion = async (formData: FormData) => {
     const { versionName, startDate, endDate, scope, volume } = formData;
-    if (!versionName) {
-      setErrorMessage("Remplis tous les champs");
-      return;
-    }
 
     const body: CREATE_VERSION_DTO = {
       projectId: project.id,
@@ -108,6 +107,7 @@ export default function VersionPage({ versions, project }: Props) {
       .json();
 
     setIsVersionModalVisible(false);
+
     if (version) {
       toast(`La version ${version.name} a bien été crée`);
       router.push(
@@ -167,14 +167,17 @@ export default function VersionPage({ versions, project }: Props) {
               <Controller
                 name="versionName"
                 control={control}
+                rules={{ required: "Ce champ est requis" }}
                 render={({ field: { onChange, value } }) => (
                   <Input
                     onChange={onChange}
                     value={value}
                     label="Nom de la version"
                     placeholder="Version 1"
-                    color={errorMessage ? "error" : "default"}
-                    status={errorMessage ? "error" : "default"}
+                    color={errors.versionName ? "error" : "default"}
+                    helperColor={errors.versionName ? "error" : "default"}
+                    status={errors.versionName ? "error" : "default"}
+                    helperText={errors.versionName?.message}
                   />
                 )}
               />
