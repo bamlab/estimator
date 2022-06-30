@@ -31,6 +31,7 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
             developers: {
               create: {
                 capacity: 6,
+                defaultStaffingValue: 1,
                 name: "Dévelopeur 1",
                 staffing: {
                   createMany: { data: staffingList.datesList },

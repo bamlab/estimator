@@ -21,6 +21,7 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
     const developer = await prisma.developer.create({
       data: {
         capacity: 6,
+        defaultStaffingValue: 1,
         name,
         team: {
           connect: {
