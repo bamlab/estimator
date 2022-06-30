@@ -9,24 +9,19 @@ export type CREATE_DEVELOPER_DTO = {
 };
 
 export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method === "GET") {
-    const { developerId } = req.query;
-    if (typeof developerId !== "string") {
-      res.status(401).send("a feature id is required");
-      return;
-    }
+  const { developerId } = req.query;
+  if (typeof developerId !== "string") {
+    res.status(401).send("a feature id is required");
+    return;
+  }
 
+  if (req.method === "GET") {
     const developer = await prisma.developer.findUnique({
       where: { id: developerId },
     });
 
     res.status(200).json(developer);
   } else if (req.method === "POST") {
-    const { developerId } = req.query;
-    if (typeof developerId !== "string") {
-      res.status(401).send("a feature id is required");
-      return;
-    }
 
     const { name } = req.body as { name: string };
     const developer = await prisma.developer.update({
@@ -36,12 +31,6 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
 
     res.status(200).json(developer);
   } else if (req.method === "DELETE") {
-    const { developerId } = req.query;
-    if (typeof developerId !== "string") {
-      res.status(401).send("a feature id is required");
-      return;
-    }
-
     await prisma.staffing.deleteMany({
       where: {
         developerId: developerId,
