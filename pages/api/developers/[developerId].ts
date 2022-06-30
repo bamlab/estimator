@@ -22,10 +22,14 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
 
     res.status(200).json(developer);
   } else if (req.method === "POST") {
+    const { name, defaultStaffingValue } = req.body as {
+      name?: string;
+      defaultStaffingValue?: number;
+    };
+    const data = name ? { name } : { defaultStaffingValue };
 
-    const { name } = req.body as { name: string };
     const developer = await prisma.developer.update({
-      data: { name },
+      data: data,
       where: { id: developerId },
     });
 

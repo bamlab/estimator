@@ -144,7 +144,12 @@ export default function RessourcesPage({ project }: Props) {
 
     setData((oldData) => [
       ...oldData,
-      { id: result.developer.id, name: "Développeur", ...dates },
+      {
+        id: result.developer.id,
+        defaultStaffingValue: result.developer.defaultStaffingValue,
+        name: "Développeur",
+        ...dates,
+      },
     ]);
   };
 
@@ -155,6 +160,21 @@ export default function RessourcesPage({ project }: Props) {
       await wretch(`${ROOT_URL}/developers/${removedRow.id}`).delete();
     }
     setData(newData);
+  };
+
+  const changeDefaultStaffingValue = async (
+    e: React.FocusEvent<HTMLTextAreaElement>,
+    index: number
+  ) => {
+    if (!e.target.value) return;
+    const changedRow = data[index];
+    const developerId = changedRow.id;
+    if (developerId) {
+      const body = {
+        defaultStaffingValue: parseFloat(e.target.value),
+      };
+      await wretch(`${ROOT_URL}/developers/${developerId}`).post(body);
+    }
   };
 
   const goToVersions = () => {
@@ -185,6 +205,19 @@ export default function RessourcesPage({ project }: Props) {
           Cell: ({ row }: { row: RowType }) => (
             <CenterDiv>
               <DeleteButton onClick={() => removeRow(row.index)} />
+            </CenterDiv>
+          ),
+        },
+        {
+          id: "defaultStaffing",
+          Header: "Staffing par défaut",
+          Cell: ({ row }: { row: RowType }) => (
+            <CenterDiv>
+              <textarea
+                defaultValue={data[row.index].defaultStaffingValue}
+                onBlur={(e) => changeDefaultStaffingValue(e, row.index)}
+                style={{ width: 100, height: "100%", resize: "none" }}
+              />
             </CenterDiv>
           ),
         },

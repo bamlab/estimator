@@ -10,6 +10,7 @@ import { ProjectDTO } from "../project/types";
 
 export type RessourceRow = Record<string, number | string> & {
   name: string;
+  defaultStaffingValue: number;
 };
 
 export type ProjectWithDevelopersAndStaffingDTO = ProjectDTO & {
@@ -43,6 +44,11 @@ export const initializeRessourcesData = (
       dates[formatDate(addDays(parseISO(staffingValue.date), -1))] =
         staffingValue.value;
     });
-    return { id: dev.id, name: dev.name, ...dates };
+    return {
+      id: dev.id,
+      defaultStaffingValue: dev.defaultStaffingValue,
+      name: dev.name,
+      ...dates,
+    };
   });
 };
