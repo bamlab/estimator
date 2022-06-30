@@ -18,13 +18,21 @@ import {
 
 type ISODate = string;
 
-export const computeVolumeEstimation = (
-  meanProductivity: number,
-  team: TeamWithDevelopersAndStaffing,
-  defaultStaffing: number,
-  startDate: Date,
-  endDate: Date
-) => {
+interface Params {
+  meanProductivity: number;
+  team: TeamWithDevelopersAndStaffing;
+  defaultStaffing: number;
+  startDate: Date;
+  endDate: Date;
+}
+
+export const computeVolumeEstimation = ({
+  meanProductivity,
+  team,
+  defaultStaffing,
+  startDate,
+  endDate,
+}: Params) => {
   if (meanProductivity < 0) return 0;
 
   const isoDates: ISODate[] = [];
@@ -88,11 +96,11 @@ export const computeVolumeEstimationFromTimePeriod = (
     projectProductivity: project.productivity,
   });
 
-  return computeVolumeEstimation(
-    projectMeanProductivity,
-    teamEntity,
+  return computeVolumeEstimation({
+    meanProductivity: projectMeanProductivity,
+    team: teamEntity,
     defaultStaffing,
     startDate,
-    endDate
-  );
+    endDate,
+  });
 };
