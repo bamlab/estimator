@@ -70,13 +70,13 @@ export default function RessourcesPage({ project }: Props) {
         name: value,
       });
     } else {
-      const year = new Date(project.startAt).getFullYear();
+      const year = new Date(parseISO(project.startAt)).getFullYear(); // TODO : This will stop working between two years
       const month = parseInt(columnId.split("/")[1]) - 1;
       const day = parseInt(columnId.split("/")[0]) + 1;
 
       const body = {
         date: new Date(year, month, day).toISOString(),
-        value: parseInt(value),
+        value: parseFloat(value),
       };
 
       await wretch(`${ROOT_URL}/staffing/${developerId}`).post(body);
