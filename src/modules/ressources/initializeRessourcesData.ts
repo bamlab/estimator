@@ -12,15 +12,18 @@ export type RessourceRow = Record<string, number | string> & {
   name: string;
   defaultStaffingValue: number;
 };
+export type TeamWithDevelopersAndStaffing = Team & {
+  developers: (Developer & { staffing: Staffing[] })[];
+};
+
+export type TeamWithDevelopersAndStaffingDTO = Team & {
+  developers: (Developer & {
+    staffing: (Omit<Staffing, "date"> & { date: string })[];
+  })[];
+};
 
 export type ProjectWithDevelopersAndStaffingDTO = ProjectDTO & {
-  team:
-    | null
-    | (Team & {
-        developers: (Developer & {
-          staffing: (Omit<Staffing, "date"> & { date: string })[];
-        })[];
-      });
+  team: null | TeamWithDevelopersAndStaffingDTO;
 };
 
 export const initializeRessourcesData = (
