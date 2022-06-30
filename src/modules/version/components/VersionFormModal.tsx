@@ -17,11 +17,12 @@ import { createNewVersion } from "../usecases/createNewVersion";
 import { computeProjectMeanProductivity } from "../helpers/computeProjectMeanProductivity";
 import { computeVolumeEstimationFromTimePeriod } from "../helpers/computeVolumeEstimationFromTimePeriod";
 import { parseISO } from "date-fns";
+import { ProjectWithDevelopersAndStaffingDTO } from "../../ressources/initializeRessourcesData";
 
 const REQUIRED_FIELD_ERROR_TEXT = "Ce champ est requis";
 
 interface Props {
-  project: Project;
+  project: ProjectWithDevelopersAndStaffingDTO;
   isVisible: boolean;
   setIsVisible: Dispatch<SetStateAction<boolean>>;
 }
@@ -77,7 +78,7 @@ export const VersionFormModal: React.FC<Props> = ({
   }, [startDate, endDate, project.productivity]);
 
   const onSubmit = async (formData: VersionFormData) => {
-    return createNewVersion(formData, project)
+    return createNewVersion(formData, project.id)
       .then((version) => {
         setIsVisible(false);
 
@@ -128,7 +129,8 @@ export const VersionFormModal: React.FC<Props> = ({
             control={control}
             rules={{
               required: REQUIRED_FIELD_ERROR_TEXT,
-              validate: (startDate) => validateStartDate(project, startDate),
+              validate: (startDate) =>
+                validateStartDate(project.startAt, startDate),
             }}
             render={({ field: { onChange, value } }) => (
               <Input

@@ -6,9 +6,10 @@ import wretch from "wretch";
 import { GetServerSideProps } from "next";
 import { MainLayout } from "../../../../src/components/Layouts/MainLayout";
 import { VersionFormModal } from "../../../../src/modules/version/components/VersionFormModal";
+import { ProjectWithDevelopersAndStaffingDTO } from "../../../../src/modules/ressources/initializeRessourcesData";
 
 type Props = {
-  project: Project;
+  project: ProjectWithDevelopersAndStaffingDTO;
   versions: (Version & { releases: Release[] })[];
 };
 
@@ -30,7 +31,7 @@ export const getServerSideProps: GetServerSideProps<
   const { projectId } = params;
 
   const project = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}`
+    `${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/full`
   ).then((res) => res.json());
 
   const versions: Version[] = await wretch(

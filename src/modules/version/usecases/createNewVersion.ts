@@ -6,12 +6,12 @@ import { ROOT_URL } from "../../../constants";
 
 export const createNewVersion = async (
   formData: VersionFormData,
-  project: Project
+  projectID: string
 ): Promise<Version & { releases: Release[] }> => {
   const { versionName, startDate, endDate, scope, volume } = formData;
 
   const body: CREATE_VERSION_DTO = {
-    projectId: project.id,
+    projectId: projectID,
     name: versionName,
     startDate,
     endDate,
