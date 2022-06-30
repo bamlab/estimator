@@ -176,7 +176,7 @@ export const VersionFormModal: React.FC<Props> = ({
               />
             )}
           />
-          {volumeEstimation && (
+          {volumeEstimation !== "" && (
             <HelperText
               color={"primary"}
               text={`Volume recommandé pour la période renseignée : ${volumeEstimation} ${project.unit.toLocaleLowerCase()}s `}
