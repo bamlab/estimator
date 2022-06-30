@@ -61,21 +61,16 @@ export const VersionFormModal: React.FC<Props> = ({
   const [volumeEstimation, setVolumeEstimation] = useState<number | string>("");
 
   useEffect(() => {
-    const meanProductivity = computeProjectMeanProductivity(
-      [],
-      1, // TODO : Replace with project productions after prisma migration (currently productions are stored in each versions which is not ideal)
-      project.productivity
-    );
     setVolumeEstimation(
       startDate &&
         endDate &&
         computeVolumeEstimationFromTimePeriod(
-          meanProductivity,
           parseISO(startDate),
-          parseISO(endDate)
+          parseISO(endDate),
+          project
         )
     );
-  }, [startDate, endDate, project.productivity]);
+  }, [startDate, endDate, project]);
 
   const onSubmit = async (formData: VersionFormData) => {
     return createNewVersion(formData, project.id)

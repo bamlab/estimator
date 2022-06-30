@@ -1,13 +1,13 @@
 import { parseISO } from "date-fns";
 import { teamMock } from "../mocks/team.mock";
-import { computeVolumeEstimationFromTimePeriod } from "./computeVolumeEstimationFromTimePeriod";
+import { computeVolumeEstimation } from "./computeVolumeEstimationFromTimePeriod";
 
-describe("computeVolumeEstimationFromTimePeriod", () => {
+describe("computeVolumeEstimation", () => {
   it("should return meanProductivityParam if startDate is the same as endDate params", () => {
     const startDate = parseISO("2022-06-29T00:00:00+0000");
     const endDate = parseISO("2022-06-29T00:00:00+0000");
 
-    const actual = computeVolumeEstimationFromTimePeriod(
+    const actual = computeVolumeEstimation(
       1,
       teamMock,
       1.5,
@@ -20,7 +20,7 @@ describe("computeVolumeEstimationFromTimePeriod", () => {
     const startDate = parseISO("2022-06-29T00:00:00+0000");
     const endDate = parseISO("2022-07-01T00:00:00+0000");
 
-    const actual = computeVolumeEstimationFromTimePeriod(
+    const actual = computeVolumeEstimation(
       1,
       teamMock,
       1.5,
@@ -33,7 +33,7 @@ describe("computeVolumeEstimationFromTimePeriod", () => {
     const startDate = parseISO("2022-06-29T00:00:00+0000");
     const endDate = parseISO("2022-07-25T00:00:00+0000");
 
-    const actual = computeVolumeEstimationFromTimePeriod(
+    const actual = computeVolumeEstimation(
       3,
       teamMock,
       1.5,
@@ -46,7 +46,7 @@ describe("computeVolumeEstimationFromTimePeriod", () => {
     const startDate = parseISO("2022-06-29T00:00:00+0000");
     const endDate = parseISO("2022-06-24T00:00:00+0000");
 
-    const actual = computeVolumeEstimationFromTimePeriod(
+    const actual = computeVolumeEstimation(
       1,
       teamMock,
       1.5,
@@ -59,7 +59,7 @@ describe("computeVolumeEstimationFromTimePeriod", () => {
     const startDate = parseISO("2022-06-24T00:00:00+0000");
     const endDate = parseISO("2022-06-29T00:00:00+0000");
 
-    const actual = computeVolumeEstimationFromTimePeriod(
+    const actual = computeVolumeEstimation(
       -2,
       teamMock,
       1.5,
