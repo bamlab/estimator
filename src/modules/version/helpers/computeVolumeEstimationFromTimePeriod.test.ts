@@ -1,4 +1,5 @@
 import { parseISO } from "date-fns";
+import { teamMock } from "../mocks/team.mock";
 import { computeVolumeEstimationFromTimePeriod } from "./computeVolumeEstimationFromTimePeriod";
 
 describe("computeVolumeEstimationFromTimePeriod", () => {
@@ -6,28 +7,52 @@ describe("computeVolumeEstimationFromTimePeriod", () => {
     const startDate = parseISO("2022-06-29T00:00:00+0000");
     const endDate = parseISO("2022-06-29T00:00:00+0000");
 
-    const actual = computeVolumeEstimationFromTimePeriod(1, startDate, endDate);
+    const actual = computeVolumeEstimationFromTimePeriod(
+      1,
+      teamMock,
+      1.5,
+      startDate,
+      endDate
+    );
     expect(actual).toEqual(1);
   });
-  it("should return meanProductivity times number of business days between startDate and endDate included", () => {
+  it("should return meanProductivity times number of business days between startDate and endDate included for 3 days", () => {
     const startDate = parseISO("2022-06-29T00:00:00+0000");
     const endDate = parseISO("2022-07-01T00:00:00+0000");
 
-    const actual = computeVolumeEstimationFromTimePeriod(1, startDate, endDate);
+    const actual = computeVolumeEstimationFromTimePeriod(
+      1,
+      teamMock,
+      1.5,
+      startDate,
+      endDate
+    );
     expect(actual).toEqual(3);
   });
   it("should return meanProductivity times number of business days between startDate and endDate included when their are several weekends between the two dates", () => {
     const startDate = parseISO("2022-06-29T00:00:00+0000");
     const endDate = parseISO("2022-07-25T00:00:00+0000");
 
-    const actual = computeVolumeEstimationFromTimePeriod(1, startDate, endDate);
-    expect(actual).toEqual(19);
+    const actual = computeVolumeEstimationFromTimePeriod(
+      3,
+      teamMock,
+      1.5,
+      startDate,
+      endDate
+    );
+    expect(actual).toEqual(55);
   });
   it("should return 0 if endDate is before startDate", () => {
     const startDate = parseISO("2022-06-29T00:00:00+0000");
     const endDate = parseISO("2022-06-24T00:00:00+0000");
 
-    const actual = computeVolumeEstimationFromTimePeriod(1, startDate, endDate);
+    const actual = computeVolumeEstimationFromTimePeriod(
+      1,
+      teamMock,
+      1.5,
+      startDate,
+      endDate
+    );
     expect(actual).toEqual(0);
   });
   it("should return 0 if meanProductivity is negative", () => {
@@ -36,6 +61,8 @@ describe("computeVolumeEstimationFromTimePeriod", () => {
 
     const actual = computeVolumeEstimationFromTimePeriod(
       -2,
+      teamMock,
+      1.5,
       startDate,
       endDate
     );
