@@ -10,7 +10,7 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
         where: { id: releaseId },
         include: {
           version: {
-            include: { project: true, productions: true },
+            include: { project: { include: { productions: true } } },
           },
         },
       });

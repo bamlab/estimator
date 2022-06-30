@@ -52,9 +52,10 @@ type FULL_TEAM_DTO = Team & {
 type Props = {
   release: Omit<Release, "forecastEndDate"> & {
     version: Omit<Version, "starDate"> & {
-      project: Project;
+      project: Project & {
+        productions: (Omit<Production, "date"> & { date: string })[];
+      };
       startDate: string;
-      productions: (Omit<Production, "date"> & { date: string })[];
     };
     forecastEndDate: string;
   };
@@ -174,7 +175,7 @@ export default function ReleasePage({ release, team, version }: Props) {
   useEffect(() => {
     const tmp: Record<string, { id: string; value: number }> = {};
 
-    release.version.productions.forEach((production) => {
+    release.version.project.productions.forEach((production) => {
       tmp[formatDate(new Date(production.date))] = {
         id: production.id,
         value: production.done,
@@ -194,7 +195,7 @@ export default function ReleasePage({ release, team, version }: Props) {
         id,
         date,
         done: value,
-        versionId: release.version.id,
+        projectId: release.version.project.id,
       })
       .json();
 

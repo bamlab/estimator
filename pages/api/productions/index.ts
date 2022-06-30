@@ -6,11 +6,11 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     res.status(400).send("wrong route (GET productions)");
   } else if (req.method === "POST") {
-    const { date, done, id, versionId } = req.body as {
+    const { date, done, id, projectId } = req.body as {
       date: string;
       done: string;
       id: string;
-      versionId: string;
+      projectId: string;
     };
 
     if (!done) {
@@ -25,7 +25,7 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
         create: {
           date: new Date(date),
           done: done ? parseInt(done) : 0,
-          versionId,
+          projectId,
         },
         update: { done: done ? parseInt(done) : 0 },
         where: { id },

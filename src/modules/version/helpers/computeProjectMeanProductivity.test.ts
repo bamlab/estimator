@@ -22,7 +22,7 @@ describe("computeVolumeEstimationFromTimePeriod", () => {
     const actual = computeProjectMeanProductivity(
       productionsMock.concat({
         id: "15",
-        versionId: "0",
+        projectId: "0",
         date: parseISO("2022-07-19T00:00:00+0000"),
         done: 9,
       }),

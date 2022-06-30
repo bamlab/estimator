@@ -10,215 +10,225 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
-
 model Project {
-  id            String     @default(uuid()) @id
-  name          String
-  epics         Epic[]
-  estimation    Estimation?
-  batches       Batch[]
-  estimatedAt   DateTime?
-  signedAt      DateTime?
-  startAt       DateTime?
-  endAt         DateTime?
-  unit          UnitType
-  productivity  Int @default(1)
-  team          Team?
-  versions      Version[]
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  id           String       @id @default(uuid())
+  name         String
+  epics        Epic[]
+  estimation   Estimation?
+  batches      Batch[]
+  productions  Production[]
+  estimatedAt  DateTime?
+  signedAt     DateTime?
+  startAt      DateTime?
+  endAt        DateTime?
+  unit         UnitType
+  productivity Int          @default(1)
+  team         Team?
+  versions     Version[]
+  createdAt    DateTime     @default(now()) @map(name: "created_at")
+  updatedAt    DateTime     @updatedAt @map(name: "updated_at")
+
   @@map(name: "projects")
 }
 
-
 model Staffing {
-  id    String @default(uuid()) @id
-  date  DateTime
-  value Float
-  developer  Developer @relation(fields: [developerId], references: [id])
-  developerId  String
+  id          String    @id @default(uuid())
+  date        DateTime
+  value       Float
+  developer   Developer @relation(fields: [developerId], references: [id])
+  developerId String
 }
 
 model Version {
-  id            String @default(uuid()) @id
-  name          String
-  startDate     DateTime
-  scope         String
-  volume        Int
-  releases      Release[]
-  projectId     String
-  project       Project @relation(fields: [projectId], references: [id])
-  productions   Production[]
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  id        String    @id @default(uuid())
+  name      String
+  startDate DateTime
+  scope     String
+  volume    Int
+  releases  Release[]
+  projectId String
+  project   Project   @relation(fields: [projectId], references: [id])
+  createdAt DateTime  @default(now()) @map(name: "created_at")
+  updatedAt DateTime  @updatedAt @map(name: "updated_at")
+
   @@map(name: "versions")
 }
 
 model Release {
-  id              String @default(uuid()) @id
+  id              String   @id @default(uuid())
   name            String
   forecastEndDate DateTime
   volume          Int
   comment         String
   versionId       String
-  version         Version @relation(fields: [versionId], references: [id])
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  @@map(name: "releases")
+  version         Version  @relation(fields: [versionId], references: [id])
+  createdAt       DateTime @default(now()) @map(name: "created_at")
+  updatedAt       DateTime @updatedAt @map(name: "updated_at")
 
+  @@map(name: "releases")
 }
 
 model Production {
-  id            String @default(uuid()) @id
-  done          Int
-  date          DateTime
-  versionId     String
-  release       Version @relation(fields: [versionId], references: [id])
-  @@map(name: "productions")
+  id        String   @id @default(uuid())
+  done      Int
+  date      DateTime
+  Project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
 
+  @@map(name: "productions")
 }
 
 model Estimation {
-  id            String       @default(uuid()) @id
-  archi         String
-  sales         String
-  projectId     String
-  project       Project @relation(fields: [projectId], references: [id])
-  epics         EstimationEpic[]
-  minSpeed      Float
-  maxSpeed      Float
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  id        String           @id @default(uuid())
+  archi     String
+  sales     String
+  projectId String           @unique
+  project   Project          @relation(fields: [projectId], references: [id])
+  epics     EstimationEpic[]
+  minSpeed  Float
+  maxSpeed  Float
+  createdAt DateTime         @default(now()) @map(name: "created_at")
+  updatedAt DateTime         @updatedAt @map(name: "updated_at")
+
   @@map(name: "estimations")
 }
 
 model EstimationFeature {
-  id                String       @default(uuid()) @id
-  name              String
-  batch             Int
-  dependencies      String
-  details           String
-  gestures          Gesture[]
-  exclude           String
-  saasOrPackage     String
-  type              FeatureType
-  estimationEpic    EstimationEpic @relation(fields: [estimationEpicId], references: [id])
-  estimationEpicId  String
-  feature           Feature?
-  createdAt         DateTime  @default(now()) @map(name: "created_at")
-  updatedAt         DateTime  @updatedAt @map(name: "updated_at")
+  id               String         @id @default(uuid())
+  name             String
+  batch            Int
+  dependencies     String
+  details          String
+  gestures         Gesture[]
+  exclude          String
+  saasOrPackage    String
+  type             FeatureType
+  estimationEpic   EstimationEpic @relation(fields: [estimationEpicId], references: [id])
+  estimationEpicId String
+  feature          Feature?
+  createdAt        DateTime       @default(now()) @map(name: "created_at")
+  updatedAt        DateTime       @updatedAt @map(name: "updated_at")
+
   @@map(name: "estimation_features")
 }
 
 model Gesture {
-  id                  String       @default(uuid()) @id
-  name                String
-  details             String
-  type                GestureType
-  estimationFeature   EstimationFeature[]
-  feature             Feature[]
-  createdAt           DateTime  @default(now()) @map(name: "created_at")
-  updatedAt           DateTime  @updatedAt @map(name: "updated_at")
+  id                String              @id @default(uuid())
+  name              String
+  details           String
+  type              GestureType
+  estimationFeature EstimationFeature[]
+  feature           Feature[]
+  createdAt         DateTime            @default(now()) @map(name: "created_at")
+  updatedAt         DateTime            @updatedAt @map(name: "updated_at")
+
   @@map(name: "gestures")
 }
 
 model Epic {
-  id                String       @default(uuid()) @id
-  name              String  @unique
-  createdAt         DateTime  @default(now()) @map(name: "created_at")
-  updatedAt         DateTime  @updatedAt @map(name: "updated_at")
-  project           Project @relation(fields: [projectId], references: [id])
-  projectId         String
-  features          Feature[]
-  estimationEpic    EstimationEpic? @relation(fields: [estimationEpicId], references: [id])
-  estimationEpicId  String
+  id               String          @id @default(uuid())
+  name             String          @unique
+  createdAt        DateTime        @default(now()) @map(name: "created_at")
+  updatedAt        DateTime        @updatedAt @map(name: "updated_at")
+  project          Project         @relation(fields: [projectId], references: [id])
+  projectId        String
+  features         Feature[]
+  estimationEpic   EstimationEpic? @relation(fields: [estimationEpicId], references: [id])
+  estimationEpicId String          @unique
+
   @@map(name: "epics")
 }
 
 model EstimationEpic {
-  id            String       @default(uuid()) @id
-  name          String
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  estimationId  String
-  estimation    Estimation @relation(fields: [estimationId], references: [id])
-  epic          Epic?
-  features      EstimationFeature[]
+  id           String              @id @default(uuid())
+  name         String
+  createdAt    DateTime            @default(now()) @map(name: "created_at")
+  updatedAt    DateTime            @updatedAt @map(name: "updated_at")
+  estimationId String
+  estimation   Estimation          @relation(fields: [estimationId], references: [id])
+  epic         Epic?
+  features     EstimationFeature[]
+
   @@map(name: "estimation_epics")
 }
 
 model Feature {
-  id                  String       @default(uuid()) @id
-  name                String  @unique
+  id                  String            @id @default(uuid())
+  name                String            @unique
   currentStep         FeatureStep
-  epic                Epic @relation(fields: [epicId], references: [id])
+  epic                Epic              @relation(fields: [epicId], references: [id])
   epicId              String
   tickets             Ticket[]
   estimationFeature   EstimationFeature @relation(fields: [estimationFeatureId], references: [id])
-  estimationFeatureId String
+  estimationFeatureId String            @unique
   gestures            Gesture[]
-  createdAt           DateTime  @default(now()) @map(name: "created_at")
-  updatedAt           DateTime  @updatedAt @map(name: "updated_at")
+  createdAt           DateTime          @default(now()) @map(name: "created_at")
+  updatedAt           DateTime          @updatedAt @map(name: "updated_at")
+
   @@map(name: "features")
 }
 
 model Ticket {
-  id              String       @default(uuid()) @id
+  id              String     @id @default(uuid())
   name            String
-  feature         Feature? @relation(fields: [featureId], references: [id])
+  feature         Feature?   @relation(fields: [featureId], references: [id])
   featureId       String?
-  dependencies    Ticket[] @relation("Dependency")
-  dependencyFor   Ticket? @relation("Dependency", fields: [dependencyForId], references: [id])
+  dependencies    Ticket[]   @relation("Dependency")
+  dependencyFor   Ticket?    @relation("Dependency", fields: [dependencyForId], references: [id])
   dependencyForId String?
   points          Int
   currentStep     TicketStep
   batchId         String?
-  batch           Batch? @relation(fields: [batchId], references: [id])
+  batch           Batch?     @relation(fields: [batchId], references: [id])
   doneAt          DateTime?
+
   @@map(name: "tickets")
 }
 
 model Batch {
-  id        String       @default(uuid()) @id
+  id        String   @id @default(uuid())
   name      String
   projectId String
-  project   Project @relation(fields: [projectId], references: [id])
+  project   Project  @relation(fields: [projectId], references: [id])
   tickets   Ticket[]
   capacity  Int // in points
   length    Int // in days
-  team      Team @relation(fields: [teamId], references: [id])
+  team      Team     @relation(fields: [teamId], references: [id])
   teamId    String
+
   @@map(name: "batches")
 }
 
 model Team {
-  id            String @default(uuid()) @id
-  developers    Developer[]
-  projectId     String
-  project       Project? @relation(fields: [projectId], references: [id])
-  batch         Batch[]
+  id         String      @id @default(uuid())
+  developers Developer[]
+  projectId  String      @unique
+  project    Project?    @relation(fields: [projectId], references: [id])
+  batch      Batch[]
+
   @@map(name: "teams")
 }
 
 model Developer {
-  id        String       @default(uuid()) @id
-  name      String
-  teamId    String
-  team      Team @relation(fields: [teamId], references: [id])
-  staffing  Staffing[]
-  capacity  Int // in points
+  id       String     @id @default(uuid())
+  name     String
+  teamId   String
+  team     Team       @relation(fields: [teamId], references: [id])
+  staffing Staffing[]
+  capacity Int // in points
+
   @@map(name: "developers")
 }
 
 model Changelog {
-  id          String @default(uuid()) @id
-  author      String @default("")
-  createdAt   DateTime  @default(now()) @map(name: "created_at")
-  type        ChangelogType
-  targetId    String
-  to          String
-  toString    String
+  id        String        @id @default(uuid())
+  author    String        @default("")
+  createdAt DateTime      @default(now()) @map(name: "created_at")
+  type      ChangelogType
+  targetId  String
+  to        String
+  toString  String
+
   @@map(name: "changelog")
 }
 
