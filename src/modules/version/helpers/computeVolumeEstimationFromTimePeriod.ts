@@ -40,8 +40,8 @@ export const computeVolumeEstimation = (
   isoDates.forEach(
     (isoDate) =>
       (staffingsForTimePeriod[isoDate] = developersWithStaffings.reduce(
-        (somme, developer) =>
-          somme +
+        (sum, developer) =>
+          sum +
           (developer.staffings[isoDate]?.value ??
             developer.defaultStaffingValue),
         0
@@ -49,8 +49,8 @@ export const computeVolumeEstimation = (
   );
 
   return isoDates.reduce(
-    (somme, isoDate) =>
-      somme +
+    (sum, isoDate) =>
+      sum +
       meanProductivity * (staffingsForTimePeriod[isoDate] / defaultStaffing),
     0
   );
@@ -75,7 +75,7 @@ export const computeVolumeEstimationFromTimePeriod = (
   };
 
   const defaultStaffing = teamEntity.developers.reduce(
-    (somme, dev) => somme + dev.defaultStaffingValue,
+    (sum, dev) => sum + dev.defaultStaffingValue,
     0
   );
 

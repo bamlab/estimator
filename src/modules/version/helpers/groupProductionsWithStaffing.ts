@@ -26,8 +26,8 @@ export const groupProductionsWithStaffing = (
     return {
       isoDate: isoDate,
       totalDateStaffing: developersWithStaffings.reduce(
-        (somme, developer) =>
-          somme +
+        (sum, developer) =>
+          sum +
           (developer.staffings[isoDate]?.value ??
             developer.defaultStaffingValue),
         0

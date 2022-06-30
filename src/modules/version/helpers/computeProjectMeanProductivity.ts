@@ -36,13 +36,13 @@ export const computeProjectMeanProductivity = ({
       : sortedProductions.slice(0, MEAN_PERIOD); //We only take the MEAN_PERIOD last days
 
   const totalStaffing: number = adjustedDoneProductions.reduce(
-    (somme, prod) => somme + prod.totalDateStaffing,
+    (sum, prod) => sum + prod.totalDateStaffing,
     0
   );
   return parseFloat(
     (
       adjustedDoneProductions.reduce(
-        (somme, prod) => somme + prod.productionValue * prod.totalDateStaffing,
+        (sum, prod) => sum + prod.productionValue * prod.totalDateStaffing,
         0
       ) / totalStaffing
     ).toFixed(1)
