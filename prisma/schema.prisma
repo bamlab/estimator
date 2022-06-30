@@ -210,12 +210,13 @@ model Team {
 }
 
 model Developer {
-  id       String     @id @default(uuid())
-  name     String
-  teamId   String
-  team     Team       @relation(fields: [teamId], references: [id])
-  staffing Staffing[]
-  capacity Int // in points
+  id                   String     @id @default(uuid())
+  name                 String
+  teamId               String
+  team                 Team       @relation(fields: [teamId], references: [id])
+  staffing             Staffing[]
+  defaultStaffingValue Float
+  capacity             Int // in points
 
   @@map(name: "developers")
 }
