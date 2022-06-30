@@ -61,7 +61,8 @@ export const VersionFormModal: React.FC<Props> = ({
 
   useEffect(() => {
     const meanProductivity = computeProjectMeanProductivity(
-      [], // TODO : Replace with project productions after prisma migration (currently productions are stored in each versions which is not ideal)
+      [],
+      1, // TODO : Replace with project productions after prisma migration (currently productions are stored in each versions which is not ideal)
       project.productivity
     );
     setVolumeEstimation(

@@ -1,27 +1,44 @@
-import { Production, Project } from "@prisma/client";
+import { Production } from "@prisma/client";
+import { differenceInBusinessDays, isAfter, parseISO } from "date-fns";
+import { ProductionsWithStaffing } from "./groupProductionsWithStaffing";
 
 const MEAN_PERIOD = 15;
-//This function assumes that productions are sorted by dates and valid (ie. done property is always > 0)
 export const computeProjectMeanProductivity = (
-  productions: Production[],
+  productionsWithStaffing: ProductionsWithStaffing[],
+  defaultStaffing: number,
   projectProductivity: number
 ) => {
-  if (productions.length === 0) return projectProductivity;
+  if (productionsWithStaffing.length === 0) return projectProductivity;
 
-  const doneProductions = productions.map((production) => production.done);
+  //Sort productions by descending dates (ex : [12/06,11/06,...])
+  const sortedProductions = productionsWithStaffing.sort((prod1, prod2) =>
+    differenceInBusinessDays(parseISO(prod2.isoDate), parseISO(prod1.isoDate))
+  );
 
-  const adjustedDoneProductions =
-    doneProductions.length <= MEAN_PERIOD
-      ? doneProductions.concat(
-          new Array(MEAN_PERIOD - doneProductions.length).fill(
-            projectProductivity
-          )
+  const numberOfDays = sortedProductions.length;
+  console.log(numberOfDays);
+
+  const adjustedDoneProductions: ProductionsWithStaffing[] =
+    numberOfDays <= MEAN_PERIOD
+      ? sortedProductions.concat(
+          new Array(MEAN_PERIOD - numberOfDays).fill({
+            isoDate: "",
+            totalDateStaffing: defaultStaffing,
+            productionValue: projectProductivity,
+          })
         ) //We add missing days by mocking the productivity to the project productivity
-      : doneProductions.slice(doneProductions.length - MEAN_PERIOD); //We only take the MEAN_PERIOD last days (productions must be sorted by dates)
-
+      : sortedProductions.slice(0, MEAN_PERIOD); //We only take the MEAN_PERIOD last days
+  console.log(adjustedDoneProductions.length);
+  const totalStaffing: number = adjustedDoneProductions.reduce(
+    (somme, prod) => somme + prod.totalDateStaffing,
+    0
+  );
   return parseFloat(
     (
-      adjustedDoneProductions.reduce((acc, d) => acc + d, 0) / MEAN_PERIOD
+      adjustedDoneProductions.reduce(
+        (somme, prod) => somme + prod.productionValue * prod.totalDateStaffing,
+        0
+      ) / totalStaffing
     ).toFixed(1)
   );
 };
