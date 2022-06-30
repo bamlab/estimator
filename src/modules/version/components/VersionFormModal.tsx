@@ -14,7 +14,6 @@ import {
 import { HelperText } from "./HelperText";
 import { validateStartDate } from "../helpers/validateStartDate";
 import { createNewVersion } from "../usecases/createNewVersion";
-import { computeProjectMeanProductivity } from "../helpers/computeProjectMeanProductivity";
 import { computeVolumeEstimationFromTimePeriod } from "../helpers/computeVolumeEstimationFromTimePeriod";
 import { parseISO } from "date-fns";
 import { ProjectWithDevelopersAndStaffingDTO } from "../../ressources/initializeRessourcesData";

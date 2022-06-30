@@ -8,25 +8,29 @@ const productionWithStaffingMock = groupProductionsWithStaffing(
   productionsMock,
   teamMock
 );
-describe("computeVolumeEstimationFromTimePeriod", () => {
+describe("computeProjectMeanProductivity", () => {
   it("should return projectProductivity if productions param is empty", () => {
-    const actual = computeProjectMeanProductivity([], 1.5, 1);
+    const actual = computeProjectMeanProductivity({
+      productionsWithStaffing: [],
+      defaultStaffing: 1.5,
+      projectProductivity: 1,
+    });
     expect(actual).toEqual(1);
   });
   it("should return the mean of productions param if there are 15 productions", () => {
-    const actual = computeProjectMeanProductivity(
-      productionWithStaffingMock,
-      1.5,
-      1
-    );
+    const actual = computeProjectMeanProductivity({
+      productionsWithStaffing: productionWithStaffingMock,
+      defaultStaffing: 1.5,
+      projectProductivity: 1,
+    });
     expect(actual).toEqual(8.0);
   });
   it("should return the mean of productions param and projectProductivity for missing days if there are less than 15 productions", () => {
-    const actual = computeProjectMeanProductivity(
-      productionWithStaffingMock.slice(0, 10),
-      1.5,
-      2
-    );
+    const actual = computeProjectMeanProductivity({
+      productionsWithStaffing: productionWithStaffingMock.slice(0, 10),
+      defaultStaffing: 1.5,
+      projectProductivity: 2,
+    });
     expect(actual).toEqual(6.2);
   });
   it("should return the mean of productions param on the 15th last days if there are more than 15 productions", () => {
@@ -39,11 +43,11 @@ describe("computeVolumeEstimationFromTimePeriod", () => {
       }),
       teamMock
     );
-    const actual = computeProjectMeanProductivity(
-      adjustedProductionWithStaffingMock,
-      1.5,
-      2
-    );
+    const actual = computeProjectMeanProductivity({
+      productionsWithStaffing: adjustedProductionWithStaffingMock,
+      defaultStaffing: 1.5,
+      projectProductivity: 2,
+    });
     expect(actual).toEqual(8.4);
   });
 });

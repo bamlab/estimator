@@ -82,11 +82,11 @@ export const computeVolumeEstimationFromTimePeriod = (
   const productionsWithStaffing: ProductionsWithStaffing[] =
     groupProductionsWithStaffing(project.productions, teamEntity);
 
-  const projectMeanProductivity = computeProjectMeanProductivity(
+  const projectMeanProductivity = computeProjectMeanProductivity({
     productionsWithStaffing,
     defaultStaffing,
-    project.productivity
-  );
+    projectProductivity: project.productivity,
+  });
 
   return computeVolumeEstimation(
     projectMeanProductivity,
