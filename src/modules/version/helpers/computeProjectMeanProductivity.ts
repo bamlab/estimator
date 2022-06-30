@@ -16,7 +16,6 @@ export const computeProjectMeanProductivity = (
   );
 
   const numberOfDays = sortedProductions.length;
-  console.log(numberOfDays);
 
   const adjustedDoneProductions: ProductionsWithStaffing[] =
     numberOfDays <= MEAN_PERIOD
@@ -28,7 +27,7 @@ export const computeProjectMeanProductivity = (
           })
         ) //We add missing days by mocking the productivity to the project productivity
       : sortedProductions.slice(0, MEAN_PERIOD); //We only take the MEAN_PERIOD last days
-  console.log(adjustedDoneProductions.length);
+
   const totalStaffing: number = adjustedDoneProductions.reduce(
     (somme, prod) => somme + prod.totalDateStaffing,
     0

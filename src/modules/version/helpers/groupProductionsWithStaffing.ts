@@ -1,7 +1,7 @@
 import { Developer, Production, Staffing } from "@prisma/client";
 import { formatISO } from "date-fns";
-import developers from "../../../../pages/api/developers";
 import { TeamWithDevelopersAndStaffing } from "../../ressources/initializeRessourcesData";
+import { developerWithStaffingAdapter } from "./developerWithStaffingAdapter";
 
 type ISODate = string;
 export interface ProductionsWithStaffing {
@@ -10,7 +10,7 @@ export interface ProductionsWithStaffing {
   productionValue: number;
 }
 
-type DeveloperWithDateIndexedStaffings = Developer & {
+export type DeveloperWithDateIndexedStaffings = Developer & {
   staffings: Record<ISODate, Staffing>;
 };
 
@@ -19,18 +19,7 @@ export const groupProductionsWithStaffing = (
   team: TeamWithDevelopersAndStaffing
 ): ProductionsWithStaffing[] => {
   const developersWithStaffings: DeveloperWithDateIndexedStaffings[] =
-    team.developers.map((developer) => {
-      const staffings: Record<ISODate, Staffing> = {};
-
-      developer.staffing.forEach(
-        (staffing) => (staffings[formatISO(staffing.date)] = staffing)
-      );
-
-      return {
-        ...developer,
-        staffings: staffings,
-      };
-    });
+    developerWithStaffingAdapter(team);
 
   return productions.map((production) => {
     const isoDate: ISODate = formatISO(production.date);
