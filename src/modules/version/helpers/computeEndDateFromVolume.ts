@@ -32,7 +32,7 @@ export const computeEndDateFromVolume = (
   };
 
   const defaultStaffing = teamEntity.developers.reduce(
-    (somme, dev) => somme + dev.defaultStaffingValue,
+    (sum, dev) => sum + dev.defaultStaffingValue,
     0
   );
 
@@ -85,8 +85,8 @@ export const computeEndDateFromVolumeAndStaffing = ({
     currentUnitSum +=
       meanProductivity *
       (developersWithStaffings.reduce(
-        (somme, developer) =>
-          somme +
+        (sum, developer) =>
+          sum +
           (developer.staffings[formatISO(currentDate)]?.value ??
             developer.defaultStaffingValue),
         0
