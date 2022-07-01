@@ -14,7 +14,7 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
     };
 
     if (!done) {
-      const production = await prisma.production.delete({
+      const production = await prisma.production.deleteMany({
         where: {
           id,
         },

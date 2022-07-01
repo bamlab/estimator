@@ -20,7 +20,7 @@ export type TeamWithDevelopersAndStaffing = Team & {
   developers: (Developer & { staffing: Staffing[] })[];
 };
 
-type TeamDTO = Team & {
+export type TeamDTO = Team & {
   developers: DeveloperDTO[];
 };
 
@@ -38,7 +38,7 @@ export type VersionDTO = Omit<
   releases: ReleaseDTO[];
 };
 
-type ReleaseDTO = Omit<
+export type ReleaseDTO = Omit<
   Release,
   "forecastEndDate" | "createdAt" | "updatedAt"
 > & {

@@ -1,8 +1,9 @@
-import { Developer, Release, Staffing } from "@prisma/client";
+import { Developer, Staffing } from "@prisma/client";
 import { addBusinessDays, differenceInBusinessDays, parseISO } from "date-fns";
 import { groupBy } from "lodash";
 import { ChartPoint } from "../../types/charts";
 import { formatDate } from "../../utils/formatDate";
+import { ReleaseDTO } from "../project/types";
 
 export const makeReleaseChartData = ({
   startDate,
@@ -14,10 +15,7 @@ export const makeReleaseChartData = ({
   startDate: Date;
   productions: Record<string, { id: string; value: number }>;
   productivity: number;
-  releases: (Omit<Release, "createdAt" | "forecastEndDate"> & {
-    createdAt: string;
-    forecastEndDate: string;
-  })[];
+  releases: ReleaseDTO[];
   ressources: (Developer & {
     staffing: (Omit<Staffing, "date"> & { date: string })[];
   })[];
