@@ -41,7 +41,7 @@ export const VolumeInput: React.FC<Props> = ({
           <Input
             onChange={onChange}
             value={value}
-            label="Volume"
+            label={`Volume (en ${project.unit.toLocaleLowerCase()}s)`}
             type="number"
           />
         )}
