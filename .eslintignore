@@ -1,0 +1,4 @@
+node_modules
+dist
+types
+next.config.js

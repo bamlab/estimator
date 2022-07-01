@@ -47,6 +47,8 @@
     "@types/lodash": "^4.14.178",
     "@types/react": "17.0.17",
     "@types/react-table": "^7.7.2",
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/parser": "^5.30.0",
     "babel-jest": "^27.2.1",
     "eslint": "8.14.0",
     "eslint-config-next": "12.1.6",
