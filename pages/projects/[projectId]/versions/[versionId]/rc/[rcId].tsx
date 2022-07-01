@@ -301,7 +301,7 @@ export default function ReleasePage({ release, team, version }: Props) {
             </LineChart>
             <Spacer y={3} />
             <Button onPress={() => setIsReleaseModalVisible(true)}>
-              Créer une nouvelle release
+              Créer une nouvelle release candidate
             </Button>
           </Col>
           <Spacer x={3} />
