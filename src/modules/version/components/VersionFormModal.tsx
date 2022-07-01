@@ -17,6 +17,7 @@ import { createNewVersion } from "../usecases/createNewVersion";
 import { computeVolumeEstimationFromTimePeriod } from "../helpers/computeVolumeEstimationFromTimePeriod";
 import { parseISO } from "date-fns";
 import { ProjectWithDevelopersAndStaffingDTO } from "../../ressources/initializeRessourcesData";
+import { VolumeInput } from "./VolumeInput";
 
 const REQUIRED_FIELD_ERROR_TEXT = "Ce champ est requis";
 
@@ -57,19 +58,6 @@ export const VersionFormModal: React.FC<Props> = ({
 
   const startDate = watch("startDate");
   const endDate = watch("endDate");
-  const [volumeEstimation, setVolumeEstimation] = useState<number | string>("");
-
-  useEffect(() => {
-    setVolumeEstimation(
-      startDate &&
-        endDate &&
-        computeVolumeEstimationFromTimePeriod(
-          parseISO(startDate),
-          parseISO(endDate),
-          project
-        )
-    );
-  }, [startDate, endDate, project]);
 
   const onSubmit = async (formData: VersionFormData) => {
     return createNewVersion(formData, project.id)
@@ -163,24 +151,12 @@ export const VersionFormModal: React.FC<Props> = ({
             )}
           />
           <Spacer y={1} />
-          <Controller
-            name="volume"
+          <VolumeInput
+            startDate={startDate}
+            endDate={endDate}
             control={control}
-            render={({ field: { onChange, value } }) => (
-              <Input
-                onChange={onChange}
-                value={value}
-                label="Volume"
-                type="number"
-              />
-            )}
+            project={project}
           />
-          {volumeEstimation !== "" && (
-            <HelperText
-              color={"primary"}
-              text={`Volume recommandé pour la période renseignée : ${volumeEstimation} ${project.unit.toLocaleLowerCase()}s `}
-            />
-          )}
           <Spacer y={1} />
 
           <Button color={"success"} type="submit">
