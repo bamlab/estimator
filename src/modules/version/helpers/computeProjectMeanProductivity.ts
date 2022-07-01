@@ -1,5 +1,6 @@
 import { Production } from "@prisma/client";
 import { differenceInBusinessDays, isAfter, parseISO } from "date-fns";
+import sumBy from "lodash/sumBy";
 import { ProductionsWithStaffing } from "./groupProductionsWithStaffing";
 
 const MEAN_PERIOD = 15;
@@ -36,15 +37,15 @@ export const computeProjectMeanProductivity = ({
         ) //We add missing days by mocking the productivity to the project productivity
       : sortedProductions.slice(0, MEAN_PERIOD); //We only take the MEAN_PERIOD last days
 
-  const totalStaffing: number = adjustedDoneProductions.reduce(
-    (sum, prod) => sum + prod.totalDateStaffing,
-    0
+  const totalStaffing: number = sumBy(
+    adjustedDoneProductions,
+    "totalDateStaffing"
   );
   return parseFloat(
     (
-      adjustedDoneProductions.reduce(
-        (sum, prod) => sum + prod.productionValue * prod.totalDateStaffing,
-        0
+      sumBy(
+        adjustedDoneProductions,
+        (prod) => prod.productionValue * prod.totalDateStaffing
       ) / totalStaffing
     ).toFixed(1)
   );

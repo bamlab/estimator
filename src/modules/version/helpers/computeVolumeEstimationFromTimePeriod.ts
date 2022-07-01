@@ -4,6 +4,7 @@ import {
   formatISO,
   parseISO,
 } from "date-fns";
+import sumBy from "lodash/sumBy";
 import {
   ProjectWithDevelopersAndStaffingDTO,
   TeamWithDevelopersAndStaffing,
@@ -47,20 +48,17 @@ export const computeVolumeEstimation = ({
   const staffingsForTimePeriod: Record<ISODate, number> = {};
   isoDates.forEach(
     (isoDate) =>
-      (staffingsForTimePeriod[isoDate] = developersWithStaffings.reduce(
-        (sum, developer) =>
-          sum +
-          (developer.staffings[isoDate]?.value ??
-            developer.defaultStaffingValue),
-        0
+      (staffingsForTimePeriod[isoDate] = sumBy(
+        developersWithStaffings,
+        (developer) =>
+          developer.staffings[isoDate]?.value ?? developer.defaultStaffingValue
       ))
   );
 
-  return isoDates.reduce(
-    (sum, isoDate) =>
-      sum +
-      meanProductivity * (staffingsForTimePeriod[isoDate] / defaultStaffing),
-    0
+  return sumBy(
+    isoDates,
+    (isoDate) =>
+      meanProductivity * (staffingsForTimePeriod[isoDate] / defaultStaffing)
   );
 };
 
@@ -82,10 +80,7 @@ export const computeVolumeEstimationFromTimePeriod = (
     })),
   };
 
-  const defaultStaffing = teamEntity.developers.reduce(
-    (sum, dev) => sum + dev.defaultStaffingValue,
-    0
-  );
+  const defaultStaffing = sumBy(teamEntity.developers, "defaultStaffingValue");
 
   const productionsWithStaffing: ProductionsWithStaffing[] =
     groupProductionsWithStaffing(project.productions, teamEntity);

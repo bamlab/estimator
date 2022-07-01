@@ -10,6 +10,7 @@ import {
   groupProductionsWithStaffing,
   ProductionsWithStaffing,
 } from "./groupProductionsWithStaffing";
+import sumBy from "lodash/sumBy";
 
 type ISODate = string;
 
@@ -31,10 +32,7 @@ export const computeEndDateFromVolume = (
     })),
   };
 
-  const defaultStaffing = teamEntity.developers.reduce(
-    (sum, dev) => sum + dev.defaultStaffingValue,
-    0
-  );
+  const defaultStaffing = sumBy(teamEntity.developers, "defaultStaffingValue");
 
   const productionsWithStaffing: ProductionsWithStaffing[] =
     groupProductionsWithStaffing(project.productions, teamEntity);
@@ -84,12 +82,11 @@ export const computeEndDateFromVolumeAndStaffing = ({
   ) {
     currentUnitSum +=
       meanProductivity *
-      (developersWithStaffings.reduce(
-        (sum, developer) =>
-          sum +
-          (developer.staffings[formatISO(currentDate)]?.value ??
-            developer.defaultStaffingValue),
-        0
+      (sumBy(
+        developersWithStaffings,
+        (developer) =>
+          developer.staffings[formatISO(currentDate)]?.value ??
+          developer.defaultStaffingValue
       ) /
         defaultStaffing);
 
