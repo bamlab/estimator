@@ -168,6 +168,10 @@ export const VersionFormModal: React.FC<Props> = ({
           >
             Créer une nouvelle version
           </Button>
+          <HelperText
+            color={"secondary"}
+            text={"Tous les champs sont requis"}
+          />
           <Spacer y={2} />
         </form>
       </Modal.Body>
