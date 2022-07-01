@@ -6,7 +6,7 @@ import {
 } from "date-fns";
 import sumBy from "lodash/sumBy";
 import {
-  ProjectWithDevelopersAndStaffingDTO,
+  FullProjectDTO,
   TeamWithDevelopersAndStaffing,
 } from "../../project/types";
 import { computeProjectMeanProductivity } from "./computeProjectMeanProductivity";
@@ -65,7 +65,7 @@ export const computeVolumeEstimation = ({
 export const computeVolumeEstimationFromTimePeriod = (
   startDate: Date,
   endDate: Date,
-  project: ProjectWithDevelopersAndStaffingDTO
+  project: FullProjectDTO
 ) => {
   if (!project.team) return 0;
 

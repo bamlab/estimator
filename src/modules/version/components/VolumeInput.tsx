@@ -2,7 +2,7 @@ import { Input } from "@nextui-org/react";
 import { parseISO } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { Control, Controller } from "react-hook-form";
-import { ProjectWithDevelopersAndStaffingDTO } from "../../project/types";
+import { FullProjectDTO } from "../../project/types";
 import { computeVolumeEstimationFromTimePeriod } from "../helpers/computeVolumeEstimationFromTimePeriod";
 import { HelperText } from "./HelperText";
 import { VersionFormData } from "./VersionFormModal";
@@ -11,7 +11,7 @@ interface Props {
   startDate: string;
   endDate: string;
   control: Control<VersionFormData, object>;
-  project: ProjectWithDevelopersAndStaffingDTO;
+  project: FullProjectDTO;
 }
 export const VolumeInput: React.FC<Props> = ({
   startDate,

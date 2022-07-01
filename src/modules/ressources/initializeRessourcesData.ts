@@ -5,7 +5,7 @@ import {
   parseISO,
 } from "date-fns";
 import { formatDate } from "../../utils/formatDate";
-import { ProjectWithDevelopersAndStaffingDTO } from "../project/types";
+import { FullProjectDTO } from "../project/types";
 
 export type RessourceRow = Record<string, number | string> & {
   name: string;
@@ -13,7 +13,7 @@ export type RessourceRow = Record<string, number | string> & {
 };
 
 export const initializeRessourcesData = (
-  project: ProjectWithDevelopersAndStaffingDTO
+  project: FullProjectDTO
 ): RessourceRow[] => {
   const startDate = parseISO(project.startAt);
   const days = differenceInBusinessDays(parseISO(project.endAt), startDate);

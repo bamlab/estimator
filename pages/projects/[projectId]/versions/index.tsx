@@ -6,10 +6,10 @@ import { GetServerSideProps } from "next";
 import { MainLayout } from "../../../../src/components/Layouts/MainLayout";
 import { VersionFormModal } from "../../../../src/modules/version/components/VersionFormModal";
 import { ROOT_URL } from "../../../../src/constants";
-import { ProjectWithDevelopersAndStaffingDTO } from "../../../../src/modules/project/types";
+import { FullProjectDTO } from "../../../../src/modules/project/types";
 
 type Props = {
-  project: ProjectWithDevelopersAndStaffingDTO;
+  project: FullProjectDTO;
 };
 
 type Params = {
@@ -29,7 +29,7 @@ export const getServerSideProps: GetServerSideProps<
 
   const { projectId } = params;
 
-  const project: ProjectWithDevelopersAndStaffingDTO = await wretch(
+  const project: FullProjectDTO = await wretch(
     `${ROOT_URL}/projects/${projectId}/full`
   )
     .get()

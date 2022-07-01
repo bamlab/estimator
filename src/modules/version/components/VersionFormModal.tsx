@@ -15,12 +15,12 @@ import { validateStartDate } from "../helpers/validateStartDate";
 import { createNewVersion } from "../usecases/createNewVersion";
 import { VolumeInput } from "./VolumeInput";
 import { EndDateInput } from "./EndDateInput";
-import { ProjectWithDevelopersAndStaffingDTO } from "../../project/types";
+import { FullProjectDTO } from "../../project/types";
 
 const REQUIRED_FIELD_ERROR_TEXT = "Ce champ est requis";
 
 interface Props {
-  project: ProjectWithDevelopersAndStaffingDTO;
+  project: FullProjectDTO;
   isVisible: boolean;
   setIsVisible: Dispatch<SetStateAction<boolean>>;
 }

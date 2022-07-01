@@ -8,10 +8,7 @@ import {
   Version,
 } from "@prisma/client";
 
-export type ProjectWithDevelopersAndStaffingDTO = Omit<
-  Project,
-  "startAt" | "endAt"
-> & {
+export type FullProjectDTO = Omit<Project, "startAt" | "endAt"> & {
   startAt: string;
   endAt: string;
   productions: Production[];

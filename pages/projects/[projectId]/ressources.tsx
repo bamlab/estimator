@@ -20,10 +20,10 @@ import { toast } from "react-toastify";
 import { CREATE_DEVELOPER_DTO } from "../../api/developers";
 import { useRouter } from "next/router";
 import { createStaffingList } from "../../../src/modules/ressources/createStaffingList";
-import { ProjectWithDevelopersAndStaffingDTO } from "../../../src/modules/project/types";
+import { FullProjectDTO } from "../../../src/modules/project/types";
 
 type Props = {
-  project: ProjectWithDevelopersAndStaffingDTO;
+  project: FullProjectDTO;
 };
 
 type Params = {
@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps<
 
   const { projectId } = params;
 
-  const project: ProjectWithDevelopersAndStaffingDTO = await wretch(
+  const project: FullProjectDTO = await wretch(
     `${ROOT_URL}/projects/${projectId}/full`
   )
     .get()

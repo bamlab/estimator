@@ -8,14 +8,14 @@ import {
 } from "./groupProductionsWithStaffing";
 import sumBy from "lodash/sumBy";
 import {
-  ProjectWithDevelopersAndStaffingDTO,
+  FullProjectDTO,
   TeamWithDevelopersAndStaffing,
 } from "../../project/types";
 
 export const computeEndDateFromVolume = (
   startDate: Date,
   volume: number,
-  project: ProjectWithDevelopersAndStaffingDTO
+  project: FullProjectDTO
 ): Date => {
   if (!project.team) return startDate;
 
