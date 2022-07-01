@@ -28,7 +28,10 @@ type DeveloperDTO = Developer & { staffing: StaffingDTO[] };
 
 type StaffingDTO = Omit<Staffing, "date"> & { date: string };
 
-type VersionDTO = Omit<Version, "startDate" | "createdAt" | "updatedAt"> & {
+export type VersionDTO = Omit<
+  Version,
+  "startDate" | "createdAt" | "updatedAt"
+> & {
   startDate: string;
   createdAt: string;
   updatedAt: string;
