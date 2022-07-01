@@ -15,7 +15,7 @@ type Params = {
 };
 
 export const getServerSideProps: GetServerSideProps<
-  Props | {},
+  Props | Record<string, unknown>,
   Params
 > = async ({ params }) => {
   if (!params || !params.projectId) {

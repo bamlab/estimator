@@ -1,5 +1,4 @@
-import { Production } from "@prisma/client";
-import { differenceInBusinessDays, isAfter, parseISO } from "date-fns";
+import { differenceInBusinessDays, parseISO } from "date-fns";
 import sumBy from "lodash/sumBy";
 import { ProductionsWithStaffing } from "./groupProductionsWithStaffing";
 

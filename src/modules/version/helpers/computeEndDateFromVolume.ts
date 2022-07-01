@@ -12,8 +12,6 @@ import {
 } from "./groupProductionsWithStaffing";
 import sumBy from "lodash/sumBy";
 
-type ISODate = string;
-
 export const computeEndDateFromVolume = (
   startDate: Date,
   volume: number,

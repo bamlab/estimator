@@ -17,7 +17,7 @@ export const defaultRow: EstimatedRow = {
   type: "A",
 };
 
-const createEmptyData = (rowsNumber: number = 10): EstimatedRow[] => {
+const createEmptyData = (rowsNumber = 10): EstimatedRow[] => {
   const data = [];
   for (let i = 1; i < rowsNumber; i++) {
     data.push(defaultRow);

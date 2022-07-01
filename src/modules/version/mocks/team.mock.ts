@@ -1,4 +1,3 @@
-import { Team } from "@prisma/client";
 import { parseISO } from "date-fns";
 import { TeamWithDevelopersAndStaffing } from "../../ressources/initializeRessourcesData";
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { Project, Release, Version } from "@prisma/client";
+import { Release, Version } from "@prisma/client";
 import { Button, Col, Link, Spacer } from "@nextui-org/react";
 import wretch from "wretch";
 import { GetServerSideProps } from "next";
@@ -18,7 +18,7 @@ type Params = {
 };
 
 export const getServerSideProps: GetServerSideProps<
-  Props | {},
+  Props | Record<string, unknown>,
   Params
 > = async ({ params }) => {
   if (!params || !params.projectId) {

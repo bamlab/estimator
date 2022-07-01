@@ -128,7 +128,6 @@ export default function ProjectsPage({ projects }: Props) {
           <Text>Unité (ticket ou points)</Text>
           <div style={{ width: 200 }}>
             <Select
-              // @ts-ignore
               options={unitOptions}
               onChange={(e) => {
                 setUnit(e?.value ?? "ticket");

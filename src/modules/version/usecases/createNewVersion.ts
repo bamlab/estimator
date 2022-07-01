@@ -1,4 +1,4 @@
-import { Project, Release, Version } from "@prisma/client";
+import { Release, Version } from "@prisma/client";
 import { VersionFormData } from "../components/VersionFormModal";
 import wretch from "wretch";
 import { CREATE_VERSION_DTO } from "../../../../pages/api/projects/[projectId]/versions";

@@ -1,4 +1,4 @@
-import { FieldSet, Record } from "airtable";
+import { FieldSet } from "airtable";
 import { table } from "./table";
 
 export const getAllRecords = async (): Promise<FieldSet[]> => {

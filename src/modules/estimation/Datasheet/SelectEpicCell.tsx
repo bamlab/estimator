@@ -1,6 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { ActionMeta, MultiValue, SingleValue } from "react-select";
-
+import { ActionMeta, SingleValue } from "react-select";
 import ReactSelect from "react-select/creatable";
 import { createEpic } from "../useCases/createEpic";
 import { DatasheetCellProps } from "./types";

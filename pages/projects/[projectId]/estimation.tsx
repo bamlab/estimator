@@ -212,7 +212,3 @@ const Header = styled.div`
   display: flex;
   flex-direction: row;
 `;
-
-const TotalContainer = styled.div`
-  margin-left: 2rem;
-`;

@@ -13,10 +13,8 @@ import {
 import {
   Button,
   Col,
-  Container,
   FormElement,
   Input,
-  Link,
   Modal,
   Row,
   Spacer,
@@ -41,7 +39,6 @@ import { CREATE_RELEASE_DTO } from "../../../../../api/releases";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import mean from "lodash/mean";
-import { NavBar } from "../../../../../../src/components/NavBar/NavBar";
 import { MainLayout } from "../../../../../../src/components/Layouts/MainLayout";
 
 type FULL_TEAM_DTO = Team & {
@@ -75,7 +72,7 @@ type Params = {
 };
 
 export const getServerSideProps: GetServerSideProps<
-  Props | {},
+  Props | Record<string, unknown>,
   Params
 > = async ({ params }) => {
   if (!params || !params.projectId) {
@@ -183,7 +180,7 @@ export default function ReleasePage({ release, team, version }: Props) {
     });
 
     setDone(tmp);
-  }, []);
+  }, [release.version.project.productions]);
 
   const setProductionDay = async (
     id: string | null,

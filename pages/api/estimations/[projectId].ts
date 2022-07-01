@@ -1,4 +1,4 @@
-import { Estimation, EstimationFeature, GestureType } from "@prisma/client";
+import { Estimation, EstimationFeature } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../src/lib/prisma";
 import {

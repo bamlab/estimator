@@ -1,4 +1,3 @@
-import { Project } from "@prisma/client";
 import { addDays, format, isBefore, parseISO } from "date-fns";
 
 export const validateStartDate = (

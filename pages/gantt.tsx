@@ -7,9 +7,7 @@ export const getServerSideProps = async () => {
   };
 };
 
-type Props = {};
-
-export default function Gantt({}: Props) {
+export default function Gantt() {
   return (
     <div>
       <GanttChart

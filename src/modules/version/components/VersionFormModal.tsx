@@ -1,6 +1,5 @@
-import { Project } from "@prisma/client";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import {
@@ -14,8 +13,6 @@ import {
 import { HelperText } from "./HelperText";
 import { validateStartDate } from "../helpers/validateStartDate";
 import { createNewVersion } from "../usecases/createNewVersion";
-import { computeVolumeEstimationFromTimePeriod } from "../helpers/computeVolumeEstimationFromTimePeriod";
-import { parseISO } from "date-fns";
 import { ProjectWithDevelopersAndStaffingDTO } from "../../ressources/initializeRessourcesData";
 import { VolumeInput } from "./VolumeInput";
 import { EndDateInput } from "./EndDateInput";
