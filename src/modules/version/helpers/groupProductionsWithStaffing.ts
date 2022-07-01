@@ -1,7 +1,10 @@
 import { Developer, Production, Staffing } from "@prisma/client";
 import { formatISO } from "date-fns";
 import sumBy from "lodash/sumBy";
-import { TeamWithDevelopersAndStaffing } from "../../project/types";
+import {
+  ProductionDTO,
+  TeamWithDevelopersAndStaffing,
+} from "../../project/types";
 import { developerWithStaffingAdapter } from "./developerWithStaffingAdapter";
 
 type ISODate = string;
@@ -16,14 +19,14 @@ export type DeveloperWithDateIndexedStaffings = Developer & {
 };
 
 export const groupProductionsWithStaffing = (
-  productions: Production[],
+  productions: ProductionDTO[],
   team: TeamWithDevelopersAndStaffing
 ): ProductionsWithStaffing[] => {
   const developersWithStaffings: DeveloperWithDateIndexedStaffings[] =
     developerWithStaffingAdapter(team);
 
   return productions.map((production) => {
-    const isoDate: ISODate = formatISO(production.date);
+    const isoDate: ISODate = production.date;
     return {
       isoDate: isoDate,
       totalDateStaffing: sumBy(

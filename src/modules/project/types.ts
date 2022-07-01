@@ -11,7 +11,7 @@ import {
 export type FullProjectDTO = Omit<Project, "startAt" | "endAt"> & {
   startAt: string;
   endAt: string;
-  productions: Production[];
+  productions: ProductionDTO[];
   team: null | TeamDTO;
   versions: VersionDTO[];
 };
@@ -46,3 +46,5 @@ export type ReleaseDTO = Omit<
   createdAt: string;
   updatedAt: string;
 };
+
+export type ProductionDTO = Omit<Production, "date"> & { date: string };
