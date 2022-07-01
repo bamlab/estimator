@@ -18,6 +18,7 @@ import { computeVolumeEstimationFromTimePeriod } from "../helpers/computeVolumeE
 import { parseISO } from "date-fns";
 import { ProjectWithDevelopersAndStaffingDTO } from "../../ressources/initializeRessourcesData";
 import { VolumeInput } from "./VolumeInput";
+import { EndDateInput } from "./EndDateInput";
 
 const REQUIRED_FIELD_ERROR_TEXT = "Ce champ est requis";
 
@@ -58,6 +59,7 @@ export const VersionFormModal: React.FC<Props> = ({
 
   const startDate = watch("startDate");
   const endDate = watch("endDate");
+  const volume = watch("volume");
 
   const onSubmit = async (formData: VersionFormData) => {
     return createNewVersion(formData, project.id)
@@ -130,17 +132,11 @@ export const VersionFormModal: React.FC<Props> = ({
             text={errors.startDate?.message}
           />
           <Spacer y={1} />
-          <Controller
-            name="endDate"
+          <EndDateInput
             control={control}
-            render={({ field: { onChange, value } }) => (
-              <Input
-                onChange={onChange}
-                value={value}
-                label="Date de fin prévue"
-                type="date"
-              />
-            )}
+            startDate={startDate}
+            volume={volume}
+            project={project}
           />
           <Spacer y={1} />
           <Controller
@@ -152,9 +148,9 @@ export const VersionFormModal: React.FC<Props> = ({
           />
           <Spacer y={1} />
           <VolumeInput
+            control={control}
             startDate={startDate}
             endDate={endDate}
-            control={control}
             project={project}
           />
           <Spacer y={1} />
