@@ -9,13 +9,13 @@ const productionWithStaffingMock = groupProductionsWithStaffing(
   teamMock
 );
 describe("computeProjectMeanProductivity", () => {
-  it("should return projectProductivity if productions param is empty", () => {
+  it("should return projectProductivity * defaultStaffing if productions param is empty", () => {
     const actual = computeProjectMeanProductivity({
       productionsWithStaffing: [],
       defaultStaffing: 1.5,
       projectProductivity: 1,
     });
-    expect(actual).toEqual(1);
+    expect(actual).toEqual(1.5);
   });
   it("should return the mean of productions param if there are 15 productions", () => {
     const actual = computeProjectMeanProductivity({
@@ -31,7 +31,7 @@ describe("computeProjectMeanProductivity", () => {
       defaultStaffing: 1.5,
       projectProductivity: 2,
     });
-    expect(actual).toEqual(6.2);
+    expect(actual).toEqual(6.6);
   });
   it("should return the mean of productions param on the 15th last days if there are more than 15 productions", () => {
     const adjustedProductionWithStaffingMock = groupProductionsWithStaffing(
