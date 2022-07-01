@@ -22,9 +22,9 @@ export const EndDateInput: React.FC<Props> = ({
   const [endDateEstimation, setEndDateEstimation] = useState<string>("");
 
   useEffect(() => {
-    setEndDateEstimation(
-      volume &&
-        startDate &&
+    if (startDate === "" || volume === "") setEndDateEstimation("");
+    else
+      setEndDateEstimation(
         format(
           computeEndDateFromVolume(
             parseISO(startDate),
@@ -33,7 +33,7 @@ export const EndDateInput: React.FC<Props> = ({
           ),
           "dd/MM/yyyy"
         )
-    );
+      );
   }, [startDate, volume, project]);
 
   return (

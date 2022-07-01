@@ -22,15 +22,15 @@ export const VolumeInput: React.FC<Props> = ({
   const [volumeEstimation, setVolumeEstimation] = useState<number | string>("");
 
   useEffect(() => {
-    setVolumeEstimation(
-      startDate &&
-        endDate &&
+    if (startDate === "" || endDate === "") setVolumeEstimation("");
+    else
+      setVolumeEstimation(
         computeVolumeEstimationFromTimePeriod(
           parseISO(startDate),
           parseISO(endDate),
           project
         )
-    );
+      );
   }, [startDate, endDate, project]);
   return (
     <>
