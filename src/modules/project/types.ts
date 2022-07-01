@@ -12,7 +12,7 @@ export type FullProjectDTO = Omit<Project, "startAt" | "endAt"> & {
   startAt: string;
   endAt: string;
   productions: Production[];
-  team: null | TeamWithDevelopersAndStaffingDTO;
+  team: null | TeamDTO;
   versions: VersionDTO[];
 };
 
@@ -20,7 +20,7 @@ export type TeamWithDevelopersAndStaffing = Team & {
   developers: (Developer & { staffing: Staffing[] })[];
 };
 
-type TeamWithDevelopersAndStaffingDTO = Team & {
+type TeamDTO = Team & {
   developers: DeveloperDTO[];
 };
 
