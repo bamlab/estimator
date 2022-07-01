@@ -1,4 +1,4 @@
-import { Input } from "@nextui-org/react";
+import { Input, Spacer } from "@nextui-org/react";
 import { format, parseISO } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { Control, Controller } from "react-hook-form";
@@ -46,25 +46,28 @@ export const EndDateInput: React.FC<Props> = ({
 
   return (
     <>
-      <Controller
-        name="endDate"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <Input
-            onChange={onChange}
-            value={value}
-            label="Date de fin prévue"
-            type="date"
-          />
-        )}
-      />
+      <div>
+        <Controller
+          name="endDate"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <Input
+              onChange={onChange}
+              value={value}
+              label="Date de fin prévue"
+              type="date"
+            />
+          )}
+        />
+      </div>
       {endDateEstimation !== "" && (
         <HelperText
           color={"primary"}
           text={`Date de fin estimée pour le volume renseigné : ${endDateEstimation}`}
         />
       )}
-      <HelperText color={"warning"} text={endDateWarning} />
+      <Spacer y={0.5} />
+      <HelperText color={"warning"} text={endDateWarning} italic />
     </>
   );
 };
