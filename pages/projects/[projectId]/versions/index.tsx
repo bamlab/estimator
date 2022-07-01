@@ -5,11 +5,11 @@ import wretch from "wretch";
 import { GetServerSideProps } from "next";
 import { MainLayout } from "../../../../src/components/Layouts/MainLayout";
 import { VersionFormModal } from "../../../../src/modules/version/components/VersionFormModal";
+import { ROOT_URL } from "../../../../src/constants";
 import { ProjectWithDevelopersAndStaffingDTO } from "../../../../src/modules/project/types";
 
 type Props = {
   project: ProjectWithDevelopersAndStaffingDTO;
-  versions: (Version & { releases: Release[] })[];
 };
 
 type Params = {
@@ -29,22 +29,18 @@ export const getServerSideProps: GetServerSideProps<
 
   const { projectId } = params;
 
-  const project = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/full`
-  ).then((res) => res.json());
-
-  const versions: Version[] = await wretch(
-    `${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/versions`
+  const project: ProjectWithDevelopersAndStaffingDTO = await wretch(
+    `${ROOT_URL}/projects/${projectId}/full`
   )
     .get()
     .json();
 
   return {
-    props: { versions, project },
+    props: { project },
   };
 };
 
-export default function VersionPage({ versions, project }: Props) {
+export default function VersionPage({ project }: Props) {
   const [isVersionModalVisible, setIsVersionModalVisible] = useState(false);
 
   return (
@@ -54,7 +50,7 @@ export default function VersionPage({ versions, project }: Props) {
           <h1>{project.name}</h1>
         </Header>
 
-        {versions.map((version) => (
+        {project.versions.map((version) => (
           <>
             <h3 key={version.id}>{version.name}</h3>
             <Col>

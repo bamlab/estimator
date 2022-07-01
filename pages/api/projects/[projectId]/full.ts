@@ -11,6 +11,7 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
           id: projectId,
         },
         include: {
+          versions: { include: { releases: true } },
           productions: true,
           team: {
             include: {
