@@ -135,6 +135,7 @@ export const VersionFormModal: React.FC<Props> = ({
           <EndDateInput
             control={control}
             startDate={startDate}
+            endDate={endDate}
             volume={volume}
             project={project}
           />

@@ -3,6 +3,7 @@ import { format, parseISO } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { Control, Controller } from "react-hook-form";
 import { ProjectWithDevelopersAndStaffingDTO } from "../../ressources/initializeRessourcesData";
+import { checkEndDate } from "../helpers/checkEndDate";
 import { computeEndDateFromVolume } from "../helpers/computeEndDateFromVolume";
 import { HelperText } from "./HelperText";
 import { VersionFormData } from "./VersionFormModal";
@@ -10,16 +11,19 @@ import { VersionFormData } from "./VersionFormModal";
 interface Props {
   volume: string;
   startDate: string;
+  endDate: string;
   control: Control<VersionFormData, object>;
   project: ProjectWithDevelopersAndStaffingDTO;
 }
 export const EndDateInput: React.FC<Props> = ({
   volume,
   startDate,
+  endDate,
   control,
   project,
 }) => {
   const [endDateEstimation, setEndDateEstimation] = useState<string>("");
+  const [endDateWarning, setEndDateWarning] = useState("");
 
   useEffect(() => {
     if (startDate === "" || volume === "") setEndDateEstimation("");
@@ -35,6 +39,10 @@ export const EndDateInput: React.FC<Props> = ({
         )
       );
   }, [startDate, volume, project]);
+
+  useEffect(() => {
+    setEndDateWarning(checkEndDate(project.endAt, endDate));
+  }, [endDate, project.endAt]);
 
   return (
     <>
@@ -56,6 +64,7 @@ export const EndDateInput: React.FC<Props> = ({
           text={`Date de fin estimée pour le volume renseigné : ${endDateEstimation}`}
         />
       )}
+      <HelperText color={"warning"} text={endDateWarning} />
     </>
   );
 };
