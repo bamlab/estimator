@@ -8,7 +8,7 @@ import sumBy from "lodash/sumBy";
 import {
   ProjectWithDevelopersAndStaffingDTO,
   TeamWithDevelopersAndStaffing,
-} from "../../ressources/initializeRessourcesData";
+} from "../../project/types";
 import { computeProjectMeanProductivity } from "./computeProjectMeanProductivity";
 import { developerWithStaffingAdapter } from "./developerWithStaffingAdapter";
 import {

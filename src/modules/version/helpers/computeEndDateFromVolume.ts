@@ -1,8 +1,4 @@
 import { addBusinessDays, formatISO, parseISO } from "date-fns";
-import {
-  ProjectWithDevelopersAndStaffingDTO,
-  TeamWithDevelopersAndStaffing,
-} from "../../ressources/initializeRessourcesData";
 import { computeProjectMeanProductivity } from "./computeProjectMeanProductivity";
 import { developerWithStaffingAdapter } from "./developerWithStaffingAdapter";
 import {
@@ -11,6 +7,10 @@ import {
   ProductionsWithStaffing,
 } from "./groupProductionsWithStaffing";
 import sumBy from "lodash/sumBy";
+import {
+  ProjectWithDevelopersAndStaffingDTO,
+  TeamWithDevelopersAndStaffing,
+} from "../../project/types";
 
 export const computeEndDateFromVolume = (
   startDate: Date,

@@ -13,9 +13,9 @@ import {
 import { HelperText } from "./HelperText";
 import { validateStartDate } from "../helpers/validateStartDate";
 import { createNewVersion } from "../usecases/createNewVersion";
-import { ProjectWithDevelopersAndStaffingDTO } from "../../ressources/initializeRessourcesData";
 import { VolumeInput } from "./VolumeInput";
 import { EndDateInput } from "./EndDateInput";
+import { ProjectWithDevelopersAndStaffingDTO } from "../../project/types";
 
 const REQUIRED_FIELD_ERROR_TEXT = "Ce champ est requis";
 

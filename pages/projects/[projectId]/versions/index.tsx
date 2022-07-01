@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { Release, Version } from "@prisma/client";
 import { Button, Col, Link, Spacer } from "@nextui-org/react";
 import wretch from "wretch";
 import { GetServerSideProps } from "next";
 import { MainLayout } from "../../../../src/components/Layouts/MainLayout";
 import { VersionFormModal } from "../../../../src/modules/version/components/VersionFormModal";
-import { ProjectWithDevelopersAndStaffingDTO } from "../../../../src/modules/ressources/initializeRessourcesData";
+import { ProjectWithDevelopersAndStaffingDTO } from "../../../../src/modules/project/types";
 
 type Props = {
   project: ProjectWithDevelopersAndStaffingDTO;

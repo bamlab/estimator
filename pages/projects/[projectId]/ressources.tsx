@@ -9,7 +9,6 @@ import { Column, Row as RowType, useBlockLayout, useTable } from "react-table";
 import { InputCell } from "../../../src/modules/estimation/Datasheet/InputCell";
 import {
   initializeRessourcesData,
-  ProjectWithDevelopersAndStaffingDTO,
   RessourceRow,
 } from "../../../src/modules/ressources/initializeRessourcesData";
 import { ArrowRight, Plus } from "react-iconly";
@@ -21,6 +20,7 @@ import { toast } from "react-toastify";
 import { CREATE_DEVELOPER_DTO } from "../../api/developers";
 import { useRouter } from "next/router";
 import { createStaffingList } from "../../../src/modules/ressources/createStaffingList";
+import { ProjectWithDevelopersAndStaffingDTO } from "../../../src/modules/project/types";
 
 type Props = {
   project: ProjectWithDevelopersAndStaffingDTO;

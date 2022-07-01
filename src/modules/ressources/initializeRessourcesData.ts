@@ -1,4 +1,3 @@
-import { Developer, Staffing, Team } from "@prisma/client";
 import {
   addBusinessDays,
   addDays,
@@ -6,24 +5,11 @@ import {
   parseISO,
 } from "date-fns";
 import { formatDate } from "../../utils/formatDate";
-import { ProjectDTO } from "../project/types";
+import { ProjectWithDevelopersAndStaffingDTO } from "../project/types";
 
 export type RessourceRow = Record<string, number | string> & {
   name: string;
   defaultStaffingValue: number;
-};
-export type TeamWithDevelopersAndStaffing = Team & {
-  developers: (Developer & { staffing: Staffing[] })[];
-};
-
-export type TeamWithDevelopersAndStaffingDTO = Team & {
-  developers: (Developer & {
-    staffing: (Omit<Staffing, "date"> & { date: string })[];
-  })[];
-};
-
-export type ProjectWithDevelopersAndStaffingDTO = ProjectDTO & {
-  team: null | TeamWithDevelopersAndStaffingDTO;
 };
 
 export const initializeRessourcesData = (

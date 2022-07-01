@@ -2,7 +2,7 @@ import { Input } from "@nextui-org/react";
 import { parseISO } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { Control, Controller } from "react-hook-form";
-import { ProjectWithDevelopersAndStaffingDTO } from "../../ressources/initializeRessourcesData";
+import { ProjectWithDevelopersAndStaffingDTO } from "../../project/types";
 import { computeVolumeEstimationFromTimePeriod } from "../helpers/computeVolumeEstimationFromTimePeriod";
 import { HelperText } from "./HelperText";
 import { VersionFormData } from "./VersionFormModal";

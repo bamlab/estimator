@@ -2,7 +2,7 @@ import { Input, Spacer } from "@nextui-org/react";
 import { format, parseISO } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { Control, Controller } from "react-hook-form";
-import { ProjectWithDevelopersAndStaffingDTO } from "../../ressources/initializeRessourcesData";
+import { ProjectWithDevelopersAndStaffingDTO } from "../../project/types";
 import { checkEndDate } from "../helpers/checkEndDate";
 import { computeEndDateFromVolume } from "../helpers/computeEndDateFromVolume";
 import { HelperText } from "./HelperText";

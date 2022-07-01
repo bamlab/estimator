@@ -1,7 +1,7 @@
 import { Developer, Production, Staffing } from "@prisma/client";
 import { formatISO } from "date-fns";
 import sumBy from "lodash/sumBy";
-import { TeamWithDevelopersAndStaffing } from "../../ressources/initializeRessourcesData";
+import { TeamWithDevelopersAndStaffing } from "../../project/types";
 import { developerWithStaffingAdapter } from "./developerWithStaffingAdapter";
 
 type ISODate = string;

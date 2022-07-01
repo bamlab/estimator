@@ -1,5 +1,5 @@
 import { parseISO } from "date-fns";
-import { TeamWithDevelopersAndStaffing } from "../../ressources/initializeRessourcesData";
+import { TeamWithDevelopersAndStaffing } from "../../project/types";
 
 export const teamMock: TeamWithDevelopersAndStaffing = {
   id: "0",

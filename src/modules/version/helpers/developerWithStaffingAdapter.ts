@@ -1,6 +1,6 @@
 import { Staffing } from "@prisma/client";
 import { formatISO } from "date-fns";
-import { TeamWithDevelopersAndStaffing } from "../../ressources/initializeRessourcesData";
+import { TeamWithDevelopersAndStaffing } from "../../project/types";
 import { DeveloperWithDateIndexedStaffings } from "./groupProductionsWithStaffing";
 
 type ISODate = string;
