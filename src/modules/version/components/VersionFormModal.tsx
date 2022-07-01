@@ -57,8 +57,10 @@ export const VersionFormModal: React.FC<Props> = ({
     },
   });
 
+  const versioName = watch("versionName");
   const startDate = watch("startDate");
   const endDate = watch("endDate");
+  const scope = watch("scope");
   const volume = watch("volume");
 
   const onSubmit = async (formData: VersionFormData) => {
@@ -156,7 +158,13 @@ export const VersionFormModal: React.FC<Props> = ({
           />
           <Spacer y={1} />
 
-          <Button color={"success"} type="submit">
+          <Button
+            color={"success"}
+            type="submit"
+            disabled={
+              (versioName && startDate && endDate && scope && volume) === ""
+            }
+          >
             Créer une nouvelle version
           </Button>
           <Spacer y={2} />
