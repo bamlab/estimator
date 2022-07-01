@@ -48,6 +48,7 @@ export const VersionFormModal: React.FC<Props> = ({
     formState: { errors },
     watch,
   } = useForm<VersionFormData>({
+    mode: "all",
     defaultValues: {
       versionName: "",
       startDate: "",
