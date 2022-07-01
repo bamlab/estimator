@@ -68,9 +68,7 @@ export const VersionFormModal: React.FC<Props> = ({
 
         if (version) {
           toast(`La version ${version.name} a bien été créée`);
-          router.push(
-            `/projects/${project.id}/versions/${version.id}/rc/${version.releases[0].id}`
-          );
+          router.push(`/projects/${project.id}/versions/${version.id}`);
         } else {
           toast(`Une erreur s'est produite`, { type: "error" });
         }

@@ -105,7 +105,7 @@ export const getServerSideProps: GetServerSideProps<
   };
 };
 
-export default function ReleasePage({
+export default function VersionPage({
   release,
   team,
   version,
@@ -225,16 +225,14 @@ export default function ReleasePage({
       setIsError(true);
       return;
     }
-    const newRelease = await createNewRelease({
+    await createNewRelease({
       comment,
       forecastEndDate: new Date(endDate),
       volume: parseInt(volume),
     });
     closeReleaseModal();
     toast("Nouvelle release créée", { type: "success" });
-    router.push(
-      `/projects/${project.id}/versions/${version.id}/rc/${newRelease.id}`
-    );
+    router.reload();
   };
 
   const sortedReleases = useMemo(
