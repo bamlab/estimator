@@ -18,9 +18,9 @@ import { toast } from "react-toastify";
 import wretch from "wretch";
 
 export const getServerSideProps = async () => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/projects`
-  ).then((res) => res.json());
+  const response = await fetch(`${ROOT_URL}/projects`).then((res) =>
+    res.json()
+  );
 
   return {
     props: { projects: response.projects },
