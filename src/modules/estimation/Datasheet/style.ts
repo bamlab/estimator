@@ -4,6 +4,7 @@ export const Styles = styled.div`
   table {
     border-spacing: 0;
     border: 1px solid black;
+    border-width: 1px 1px 1px 0px;
 
     tr {
       :last-child {
@@ -19,7 +20,11 @@ export const Styles = styled.div`
       padding: 0.5rem;
       border-bottom: 1px solid black;
       border-right: 1px solid black;
+      background-color: white;
 
+      :first-child {
+        border-left: 1px solid black;
+      }
       :last-child {
         border-right: 0;
       }

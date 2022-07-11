@@ -6,6 +6,7 @@ import { ROOT_URL } from "../../../src/constants";
 import wretch from "wretch";
 import { Datasheet } from "../../../src/modules/estimation/Datasheet";
 import { Column, Row as RowType, useBlockLayout, useTable } from "react-table";
+import { useSticky } from "react-table-sticky";
 import { InputCell } from "../../../src/modules/estimation/Datasheet/InputCell";
 import {
   initializeRessourcesData,
@@ -106,20 +107,23 @@ export default function RessourcesPage({ project }: Props) {
     );
   };
 
-  const columns: Column<RessourceRow>[] = useMemo(() => {
-    const headers = [{ id: "name", Header: "Développeur", accessor: "name" }];
-    const startDate = parseISO(project.startAt);
-    const days = differenceInBusinessDays(parseISO(project.endAt), startDate);
+  const columns: ({ sticky?: string } & Column<RessourceRow>)[] =
+    useMemo(() => {
+      const headers: ({ sticky?: string } & Column<RessourceRow>)[] = [
+        { id: "name", Header: "Développeur", accessor: "name", sticky: "left" },
+      ];
+      const startDate = parseISO(project.startAt);
+      const days = differenceInBusinessDays(parseISO(project.endAt), startDate);
 
-    for (let i = 0; i <= days; i++) {
-      const currentDay = addBusinessDays(startDate, i);
-      const date = formatDate(currentDay);
+      for (let i = 0; i <= days; i++) {
+        const currentDay = addBusinessDays(startDate, i);
+        const date = formatDate(currentDay);
 
-      headers.push({ id: date, Header: date, accessor: date });
-    }
+        headers.push({ id: date, Header: date, accessor: date });
+      }
 
-    return headers;
-  }, [project]);
+      return headers;
+    }, [project]);
 
   const addRow = async () => {
     if (!project.team) {
@@ -198,6 +202,7 @@ export default function RessourcesPage({ project }: Props) {
       manualPagination: true, // see the autoResetPage propss if turned to false
     },
     useBlockLayout,
+    useSticky,
     (hooks) => {
       hooks.visibleColumns.push((columns) => [
         {
@@ -207,6 +212,7 @@ export default function RessourcesPage({ project }: Props) {
               <DeleteButton onClick={() => removeRow(row.index)} />
             </CenterDiv>
           ),
+          sticky: "left",
         },
         {
           id: "defaultStaffing",
@@ -220,6 +226,7 @@ export default function RessourcesPage({ project }: Props) {
               />
             </CenterDiv>
           ),
+          sticky: "left",
         },
         ...columns,
       ]);
@@ -228,43 +235,49 @@ export default function RessourcesPage({ project }: Props) {
 
   return (
     <Container>
-      <Header>
-        <h2>{project.name}</h2>
-        <span>
-          Renseigner ici vos ressources de production disponibles sur le projet
-          :
-        </span>
-        <Ul>
-          <li>Ajouter autant de lignes que de ressources de production</li>
-          <li>
-            Remplacer &quot;Développeur&quot; par le nom des membres de votre
-            équipe
-          </li>
-          <li>
-            Renseigner la disponibilité de ces ressources en <Bold>jour</Bold>{" "}
-            (entrer une valeur comprise entre 0 et 1). Exemple : Renseigner 1 si
-            la personne est à plein temps sur le projet sur le jour indiqué, 0,5
-            si la personne est à 50%.
-          </li>
-        </Ul>
-      </Header>
+      <Scrollable>
+        <Header>
+          <h2>{project.name}</h2>
+          <span>
+            Renseigner ici vos ressources de production disponibles sur le
+            projet :
+          </span>
+          <Ul>
+            <li>Ajouter autant de lignes que de ressources de production</li>
+            <li>
+              Remplacer &quot;Développeur&quot; par le nom des membres de votre
+              équipe
+            </li>
+            <li>
+              Renseigner la disponibilité de ces ressources en <Bold>jour</Bold>{" "}
+              (entrer une valeur comprise entre 0 et 1). Exemple : Renseigner 1
+              si la personne est à plein temps sur le projet sur le jour
+              indiqué, 0,5 si la personne est à 50%.
+            </li>
+          </Ul>
+        </Header>
 
-      <Datasheet {...tableInstance} />
-      <Spacer />
-      <StickyRow>
-        <Button auto icon={<Plus />} onClick={addRow} title="" />
-        <Button onClick={goToVersions} icon={<ArrowRight />}>
-          Etape Suivante
-        </Button>
-      </StickyRow>
+        <Datasheet {...tableInstance} />
+        <Spacer />
+        <StickyRow>
+          <Button auto icon={<Plus />} onClick={addRow} title="" />
+          <Button onClick={goToVersions} icon={<ArrowRight />}>
+            Etape Suivante
+          </Button>
+        </StickyRow>
+      </Scrollable>
     </Container>
   );
 }
 
 const Container = styled.div`
-  overflow: auto;
   margin-left: 20px;
-  padding: 20px;
+  padding: 0px 20px;
+`;
+
+const Scrollable = styled.div`
+  overflow: auto;
+  padding: 20px 0px;
 `;
 
 const Header = styled.div`
