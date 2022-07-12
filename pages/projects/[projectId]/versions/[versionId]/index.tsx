@@ -16,14 +16,6 @@ import {
 } from "@nextui-org/react";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../../../src/constants";
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ReferenceLine,
-  XAxis,
-  YAxis,
-} from "recharts";
 import { makeReleaseChartData } from "../../../../../src/modules/bdc/makeReleaseChartData";
 import { addBusinessDays, differenceInBusinessDays, parseISO } from "date-fns";
 import { formatDate } from "../../../../../src/utils/formatDate";
@@ -38,6 +30,7 @@ import {
   TeamDTO,
   VersionDTO,
 } from "../../../../../src/modules/project/types";
+import { Chart } from "../../../../../src/modules/bdc/views/Chart";
 
 type Props = {
   project: FullProjectDTO;
@@ -260,33 +253,7 @@ export default function VersionPage({
 
         <Row>
           <Col>
-            <LineChart width={800} height={400} data={data} id="bdc">
-              <XAxis dataKey="name" />
-              <YAxis />
-              <CartesianGrid stroke="#ccc" />
-
-              <Line type="linear" stroke="#0059ff" dataKey="done" />
-              <Line
-                type="linear"
-                stroke={"#0059ff"}
-                dataKey="forecast"
-                strokeDasharray="5 5"
-              />
-              <Line type="linear" stroke="#ff0000" dataKey="standard" />
-              {sortedReleases.map((release, index) => {
-                if (index !== 0) {
-                  return (
-                    <ReferenceLine
-                      x={formatDate(parseISO(release.createdAt))}
-                      stroke={"#0059ff"}
-                      key={release.id}
-                      label={release.name}
-                      strokeDasharray="5 5"
-                    />
-                  );
-                }
-              })}
-            </LineChart>
+            <Chart data={data} sortedReleases={sortedReleases}></Chart>
             <Spacer y={3} />
             <Button onPress={() => setIsReleaseModalVisible(true)}>
               Créer une nouvelle release candidate
