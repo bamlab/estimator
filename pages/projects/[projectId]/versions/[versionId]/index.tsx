@@ -16,7 +16,7 @@ import {
 } from "@nextui-org/react";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../../../src/constants";
-import { makeReleaseChartData } from "../../../../../src/modules/bdc/makeReleaseChartData";
+import { makeVersionChartData } from "../../../../../src/modules/bdc/helpers/makeVersionChartData";
 import { addBusinessDays, differenceInBusinessDays, parseISO } from "date-fns";
 import { formatDate } from "../../../../../src/utils/formatDate";
 import { CREATE_RELEASE_DTO } from "../../../../api/releases";
@@ -136,12 +136,8 @@ export default function VersionPage({
 
   const data = useMemo(
     () =>
-      makeReleaseChartData({
-        productivity: productivityMean,
-        startDate,
-        productions: done,
-        releases: version.releases,
-        ressources: team.developers,
+      makeVersionChartData({
+        version,
       }),
     [done, productivityMean, version, startDate, team.developers]
   );

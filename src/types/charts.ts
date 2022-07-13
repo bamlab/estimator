@@ -1,6 +1,7 @@
-export type ChartPoint = {
+export type StandardChartPoint = {
   name: string;
-  done: number;
-  forecast: number;
   standard: number;
+  total: number;
 };
+
+export type ChartPoint = StandardChartPoint;
