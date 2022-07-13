@@ -124,8 +124,9 @@ export default function VersionPage({
     () =>
       makeVersionChartData({
         version,
+        project,
       }),
-    [version]
+    [version, project]
   );
 
   const setProductionAndUpdateProject = async (
