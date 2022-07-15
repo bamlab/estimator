@@ -27,6 +27,10 @@ export const computeChartPoints = (
         mergedChartPoint.total !== undefined ? mergedChartPoint.total : NaN;
       const done =
         mergedChartPoint.done !== undefined ? mergedChartPoint.done : NaN;
+      const forecastDone =
+        mergedChartPoint.forecastDone !== undefined
+          ? mergedChartPoint.forecastDone
+          : NaN;
 
       return {
         name,
@@ -34,6 +38,8 @@ export const computeChartPoints = (
         total,
         done,
         remaining: total - done,
+        forecastDone: 0,
+        forecastRemaining: total - forecastDone,
       };
     }
   );

@@ -6,10 +6,12 @@ export type StandardChartPoint = {
 export type DoneChartPoint = {
   name: string;
   done: number;
+  forecastDone: number;
 };
 export type RemainingChartPoint = {
   name: string;
   remaining: number;
+  forecastRemaining: number;
 };
 export type ChartPoint = StandardChartPoint &
   DoneChartPoint &
