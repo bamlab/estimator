@@ -22,6 +22,7 @@ import { CREATE_DEVELOPER_DTO } from "../../api/developers";
 import { useRouter } from "next/router";
 import { createStaffingList } from "../../../src/modules/ressources/createStaffingList";
 import { FullProjectDTO } from "../../../src/modules/project/types";
+import { parseGMTMidnight } from "../../../src/utils/parseGMTMidnight";
 
 type Props = {
   project: FullProjectDTO;
@@ -71,12 +72,12 @@ export default function RessourcesPage({ project }: Props) {
         name: value,
       });
     } else {
-      const year = new Date(parseISO(project.startAt)).getFullYear(); // TODO : This will stop working between two years because the year of the project's start can be different from the year of the updated value (ex project between December and January). When fixing this, be careful because there is currently a bug with formatISO that seems to return different result for the same date object between the front and the server. https://github.com/date-fns/date-fns/issues/2151
-      const month = parseInt(columnId.split("/")[1]) - 1;
-      const day = parseInt(columnId.split("/")[0]) + 1;
+      const year = parseISO(project.startAt).getFullYear(); // TODO : This will stop working between two years because the year of the project's start can be different from the year of the updated value (ex project between December and January). When fixing this, be careful because there is currently a bug with formatISO that seems to return different result for the same date object between the front and the server. https://github.com/date-fns/date-fns/issues/2151
+      const month = parseInt(columnId.split("/")[1]);
+      const day = parseInt(columnId.split("/")[0]);
 
       const body = {
-        date: new Date(year, month, day).toISOString(),
+        date: parseGMTMidnight(`${month}/${day}/${year}`),
         value: parseFloat(value),
       };
 

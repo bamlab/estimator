@@ -11,9 +11,9 @@ export const developerWithStaffingAdapter = (
   return team.developers.map((developer) => {
     const staffings: Record<ISODate, Staffing> = {};
 
-    developer.staffing.forEach(
-      (staffing) => (staffings[formatISO(staffing.date)] = staffing)
-    );
+    developer.staffing.forEach((staffing) => {
+      staffings[formatISO(staffing.date)] = staffing;
+    });
 
     return {
       ...developer,
