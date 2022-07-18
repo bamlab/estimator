@@ -40,6 +40,13 @@ export const Chart = ({
       <YAxis />
       <CartesianGrid stroke="#ccc" />
       <Line type="linear" stroke={STANDARD_STROKE_COLOR} dataKey="standard" />
+      <Line
+        type="linear"
+        stroke={DONE_STROKE_COLOR}
+        dataKey="forecastRemaining"
+        strokeDasharray={"5 5"}
+      />
+      <Line type="linear" stroke={DONE_STROKE_COLOR} dataKey="remaining" />
       {sortedReleases.map((release, index) => {
         if (index !== 0) {
           return (
