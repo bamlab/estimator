@@ -1,4 +1,3 @@
-import { parseISO } from "date-fns";
 import { productionsMock } from "../mocks/productions.mock";
 import { teamMock } from "../mocks/team.mock";
 import { computeProjectMeanProductivity } from "./computeProjectMeanProductivity";
@@ -38,7 +37,7 @@ describe("computeProjectMeanProductivity", () => {
       productionsMock.concat({
         id: "15",
         projectId: "0",
-        date: parseISO("2022-07-19T00:00:00+0000"),
+        date: "2022-07-19T00:00:00+0000",
         done: 9,
       }),
       teamMock

@@ -35,7 +35,7 @@ export const getDoneChartPoints = ({
     });
 
     cumulativeDone = currentDayHasProduction
-      ? cumulativeDone + currentDayDone
+      ? cumulativeDone + (currentDayDone ?? 0)
       : NaN;
 
     cumulativeForecastDone = !currentDayHasProduction
