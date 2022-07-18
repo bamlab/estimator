@@ -22,7 +22,7 @@ describe("computeProjectMeanProductivity", () => {
       defaultStaffing: 1.5,
       projectProductivity: 1,
     });
-    expect(actual).toEqual(8.0);
+    expect(actual).toEqual(7.8);
   });
   it("should return the mean of productions param and projectProductivity for missing days if there are less than 15 productions", () => {
     const actual = computeProjectMeanProductivity({
@@ -30,7 +30,7 @@ describe("computeProjectMeanProductivity", () => {
       defaultStaffing: 1.5,
       projectProductivity: 2,
     });
-    expect(actual).toEqual(6.6);
+    expect(actual).toEqual(6.4);
   });
   it("should return the mean of productions param on the 15th last days if there are more than 15 productions", () => {
     const adjustedProductionWithStaffingMock = groupProductionsWithStaffing(
@@ -47,6 +47,6 @@ describe("computeProjectMeanProductivity", () => {
       defaultStaffing: 1.5,
       projectProductivity: 2,
     });
-    expect(actual).toEqual(8.4);
+    expect(actual).toEqual(8.1);
   });
 });
