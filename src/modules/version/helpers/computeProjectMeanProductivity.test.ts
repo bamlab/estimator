@@ -1,4 +1,3 @@
-import { parseISO } from "date-fns";
 import { productionsMock } from "../mocks/productions.mock";
 import { teamMock } from "../mocks/team.mock";
 import { computeProjectMeanProductivity } from "./computeProjectMeanProductivity";
@@ -23,7 +22,7 @@ describe("computeProjectMeanProductivity", () => {
       defaultStaffing: 1.5,
       projectProductivity: 1,
     });
-    expect(actual).toEqual(8.0);
+    expect(actual).toEqual(7.8);
   });
   it("should return the mean of productions param and projectProductivity for missing days if there are less than 15 productions", () => {
     const actual = computeProjectMeanProductivity({
@@ -31,14 +30,14 @@ describe("computeProjectMeanProductivity", () => {
       defaultStaffing: 1.5,
       projectProductivity: 2,
     });
-    expect(actual).toEqual(6.6);
+    expect(actual).toEqual(6.4);
   });
   it("should return the mean of productions param on the 15th last days if there are more than 15 productions", () => {
     const adjustedProductionWithStaffingMock = groupProductionsWithStaffing(
       productionsMock.concat({
         id: "15",
         projectId: "0",
-        date: parseISO("2022-07-19T00:00:00+0000"),
+        date: "2022-07-19T00:00:00+0000",
         done: 9,
       }),
       teamMock
@@ -48,6 +47,6 @@ describe("computeProjectMeanProductivity", () => {
       defaultStaffing: 1.5,
       projectProductivity: 2,
     });
-    expect(actual).toEqual(8.4);
+    expect(actual).toEqual(8.1);
   });
 });

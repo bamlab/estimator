@@ -1,9 +1,4 @@
-import {
-  addBusinessDays,
-  addDays,
-  differenceInBusinessDays,
-  parseISO,
-} from "date-fns";
+import { addBusinessDays, differenceInBusinessDays, parseISO } from "date-fns";
 import { formatDate } from "../../utils/formatDate";
 import { FullProjectDTO } from "../project/types";
 
@@ -26,12 +21,11 @@ export const initializeRessourcesData = (
 
     for (let i = 0; i <= days; i++) {
       const currentDay = addBusinessDays(startDate, i);
-      dates[formatDate(currentDay)] = 1;
+      dates[formatDate(currentDay)] = dev.defaultStaffingValue;
     }
 
     dev.staffing.forEach((staffingValue) => {
-      dates[formatDate(addDays(parseISO(staffingValue.date), -1))] =
-        staffingValue.value;
+      dates[formatDate(parseISO(staffingValue.date))] = staffingValue.value;
     });
     return {
       id: dev.id,

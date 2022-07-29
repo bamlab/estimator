@@ -1,6 +1,7 @@
-import { Developer, Production, Staffing } from "@prisma/client";
+import { Developer, Staffing } from "@prisma/client";
 import { formatISO } from "date-fns";
 import sumBy from "lodash/sumBy";
+import { formatDate } from "../../../utils/formatDate";
 import {
   ProductionDTO,
   TeamWithDevelopersAndStaffing,
@@ -26,14 +27,15 @@ export const groupProductionsWithStaffing = (
     developerWithStaffingAdapter(team);
 
   return productions.map((production) => {
-    const isoDate: ISODate = production.date;
+    const date = new Date(production.date);
     return {
-      isoDate: isoDate,
-      totalDateStaffing: sumBy(
-        developersWithStaffings,
-        (developer) =>
-          developer.staffings[isoDate]?.value ?? developer.defaultStaffingValue
-      ),
+      isoDate: formatISO(date),
+      totalDateStaffing: sumBy(developersWithStaffings, (developer) => {
+        return (
+          developer.staffings[formatDate(date)]?.value ??
+          developer.defaultStaffingValue
+        );
+      }),
       productionValue: production.done,
     };
   });
