@@ -1,5 +1,5 @@
 import { withSentry } from "@sentry/nextjs";
-import { parseISO } from "date-fns";
+import { parseGMTMidnight } from "../../../src/utils/parseGMTMidnight";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../src/lib/prisma";
 import { createStaffingList } from "../../../src/modules/ressources/createStaffingList";
@@ -15,8 +15,8 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(400).send("No name provided");
     }
     const staffingList = createStaffingList(
-      parseISO(startDate),
-      parseISO(endDate)
+      parseGMTMidnight(startDate),
+      parseGMTMidnight(endDate)
     );
 
     const project = await prisma.project.create({
@@ -24,8 +24,8 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
         name: req.body.name,
         unit: unit.toLowerCase() === "ticket" ? "TICKET" : "POINT",
         productivity: parseInt(productivity),
-        endAt: new Date(endDate),
-        startAt: new Date(startDate),
+        endAt: parseGMTMidnight(endDate),
+        startAt: parseGMTMidnight(startDate),
         team: {
           create: {
             developers: {

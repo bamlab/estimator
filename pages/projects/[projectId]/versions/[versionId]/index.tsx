@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { GetServerSideProps } from "next";
 import { Release } from "@prisma/client";
 import {
   Button,
   Col,
-  FormElement,
   Input,
   Modal,
   Row,
@@ -16,26 +15,25 @@ import {
 } from "@nextui-org/react";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../../../src/constants";
-import { makeReleaseChartData } from "../../../../../src/modules/bdc/makeReleaseChartData";
-import { addBusinessDays, differenceInBusinessDays, parseISO } from "date-fns";
+import { makeVersionChartData } from "../../../../../src/modules/bdc/helpers/makeVersionChartData";
+import { parseISO } from "date-fns";
 import { formatDate } from "../../../../../src/utils/formatDate";
 import { CREATE_RELEASE_DTO } from "../../../../api/releases";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-import mean from "lodash/mean";
 import { MainLayout } from "../../../../../src/components/Layouts/MainLayout";
 import {
   FullProjectDTO,
   ReleaseDTO,
-  TeamDTO,
   VersionDTO,
 } from "../../../../../src/modules/project/types";
 import { Chart } from "../../../../../src/modules/bdc/views/Chart";
+import { getVersionStartAndEndDate } from "../../../../../src/modules/version/helpers/getVersionStartAndEndDate";
+import { ProductionForm } from "../../../../../src/modules/production/views/ProductionForm";
 
 type Props = {
   project: FullProjectDTO;
   release: ReleaseDTO;
-  team: TeamDTO;
   version: VersionDTO;
 };
 
@@ -72,7 +70,6 @@ export const getServerSideProps: GetServerSideProps<
       props: {},
     };
 
-  const team = project.team;
   const release = version.releases[0];
 
   if (!release.id) {
@@ -92,7 +89,6 @@ export const getServerSideProps: GetServerSideProps<
     props: {
       project,
       release,
-      team,
       version,
     },
   };
@@ -100,22 +96,10 @@ export const getServerSideProps: GetServerSideProps<
 
 export default function VersionPage({
   release,
-  team,
   version,
-  project,
+  project: projectInitialInfo,
 }: Props) {
-  const [done, setDone] = useState<
-    Record<string, { id: string; value: number }>
-  >({});
-
-  const productivityMean = useMemo(() => {
-    const developersCount = team.developers.length;
-    const productivities = Object.values(done).map(
-      (doneThisDay) => doneThisDay.value / developersCount
-    );
-
-    return mean(productivities);
-  }, [team, done]);
+  const [project, setProject] = useState<FullProjectDTO>(projectInitialInfo);
 
   const [isReleaseModalVisible, setIsReleaseModalVisible] = useState(false);
   const {
@@ -132,45 +116,25 @@ export default function VersionPage({
   const [isError, setIsError] = useState(false);
 
   const router = useRouter();
-  const startDate = parseISO(version.startDate);
+
+  const { startDate: productionStartDate, endDate: productionEndDate } =
+    getVersionStartAndEndDate(version);
 
   const data = useMemo(
     () =>
-      makeReleaseChartData({
-        productivity: productivityMean,
-        startDate,
-        productions: done,
-        releases: version.releases,
-        ressources: team.developers,
+      makeVersionChartData({
+        version,
+        project,
       }),
-    [done, productivityMean, version, startDate, team.developers]
+    [version, project]
   );
 
-  const dates = Array.from(
-    Array(
-      differenceInBusinessDays(parseISO(release.forecastEndDate), startDate) + 1
-    ).keys()
-  ).map((_, index) => addBusinessDays(startDate, index));
-
-  useEffect(() => {
-    const tmp: Record<string, { id: string; value: number }> = {};
-
-    project.productions.forEach((production) => {
-      tmp[formatDate(new Date(production.date))] = {
-        id: production.id,
-        value: production.done,
-      };
-    });
-
-    setDone(tmp);
-  }, []);
-
-  const setProductionDay = async (
-    id: string | null,
+  const setProductionAndUpdateProject = async (
     date: Date,
+    id: string,
     value: string
   ) => {
-    const production = await wretch(`${ROOT_URL}/productions`)
+    await wretch(`${ROOT_URL}/productions`)
       .post({
         id,
         date,
@@ -179,13 +143,13 @@ export default function VersionPage({
       })
       .json();
 
-    setDone({
-      ...done,
-      [formatDate(date)]: {
-        id: production.id,
-        value: parseInt(value),
-      },
-    });
+    const updatedProject: FullProjectDTO = await wretch(
+      `${ROOT_URL}/projects/${project.id}/full`
+    )
+      .get()
+      .json();
+
+    setProject(updatedProject);
   };
 
   const createNewRelease = ({
@@ -261,54 +225,12 @@ export default function VersionPage({
           </Col>
           <Spacer x={3} />
 
-          <table>
-            <thead>
-              <tr>
-                <th>{"Jour"}</th>
-                <th>{"Done"}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dates.map((day) => {
-                const doneThisDay =
-                  done[formatDate(day)] !== undefined
-                    ? {
-                        id: done[formatDate(day)].id,
-                        value: done[formatDate(day)].value.toString(),
-                      }
-                    : { value: "", id: "" };
-
-                const changeLocalInputValue = (
-                  e: React.ChangeEvent<FormElement>
-                ) => {
-                  setDone({
-                    ...done,
-                    [formatDate(day)]: {
-                      id: doneThisDay.id,
-                      value: parseInt(e.target.value),
-                    },
-                  });
-                };
-
-                return (
-                  <tr key={day.toString()}>
-                    <td>{formatDate(day)}</td>
-                    <td>
-                      <Input
-                        type="number"
-                        aria-label="done"
-                        value={doneThisDay.value}
-                        onChange={changeLocalInputValue}
-                        onBlur={(e) => {
-                          setProductionDay(doneThisDay.id, day, e.target.value);
-                        }}
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <ProductionForm
+            project={project}
+            startDate={productionStartDate}
+            endDate={productionEndDate}
+            onProductionSet={setProductionAndUpdateProject}
+          />
 
           <Spacer y={3} />
         </Row>

@@ -1,5 +1,5 @@
 import { Input } from "@nextui-org/react";
-import { parseISO } from "date-fns";
+import { parseGMTMidnight } from "../../../utils/parseGMTMidnight";
 import React, { useEffect, useState } from "react";
 import { Control, Controller } from "react-hook-form";
 import { FullProjectDTO } from "../../project/types";
@@ -26,8 +26,8 @@ export const VolumeInput: React.FC<Props> = ({
     else
       setVolumeEstimation(
         computeVolumeEstimationFromTimePeriod(
-          parseISO(startDate),
-          parseISO(endDate),
+          parseGMTMidnight(startDate),
+          parseGMTMidnight(endDate),
           project
         )
       );

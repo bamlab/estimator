@@ -39,15 +39,14 @@ export const Chart = ({
       <XAxis dataKey="name" />
       <YAxis />
       <CartesianGrid stroke="#ccc" />
-
-      <Line type="linear" stroke={DONE_STROKE_COLOR} dataKey="done" />
+      <Line type="linear" stroke={STANDARD_STROKE_COLOR} dataKey="standard" />
       <Line
         type="linear"
         stroke={DONE_STROKE_COLOR}
-        dataKey="forecast"
-        strokeDasharray="5 5"
+        dataKey="forecastRemaining"
+        strokeDasharray={"5 5"}
       />
-      <Line type="linear" stroke={STANDARD_STROKE_COLOR} dataKey="standard" />
+      <Line type="linear" stroke={DONE_STROKE_COLOR} dataKey="remaining" />
       {sortedReleases.map((release, index) => {
         if (index !== 0) {
           return (
