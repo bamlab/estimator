@@ -1,5 +1,9 @@
 import { groupBy } from "lodash";
-import { ChartPoint } from "../../../types/charts";
+import {
+  ChartPoint,
+  DoneChartPoint,
+  StandardChartPoint,
+} from "../../../types/charts";
 
 const getChartPoint = (point: number | undefined): number | typeof NaN => {
   if (point !== undefined) {
@@ -9,10 +13,13 @@ const getChartPoint = (point: number | undefined): number | typeof NaN => {
 };
 
 export const computeChartPoints = (
-  standardPoints: Partial<ChartPoint>[],
-  doneChartPoints: Partial<ChartPoint>[]
+  standardPoints: StandardChartPoint[],
+  doneChartPoints: DoneChartPoint[]
 ): ChartPoint[] => {
-  const points: Partial<ChartPoint>[] = standardPoints.concat(doneChartPoints);
+  const points: (StandardChartPoint | DoneChartPoint)[] = [
+    ...standardPoints,
+    ...doneChartPoints,
+  ];
   const groupedChartPointsByName = groupBy(points, (point) => point.name);
 
   return Object.values(groupedChartPointsByName).map(
@@ -23,7 +30,7 @@ export const computeChartPoints = (
           ...currentChartPoint,
         }),
         ChartPointsWithSameName[0]
-      );
+      ) as ChartPoint;
 
       const name = mergedChartPoint.name ?? "";
       const standard = getChartPoint(mergedChartPoint.standard);
