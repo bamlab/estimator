@@ -22,6 +22,7 @@ export const computeChartPoints = (
   ];
   const groupedChartPointsByName = groupBy(points, (point) => point.name);
 
+  let lastTotal = 0;
   return Object.values(groupedChartPointsByName).map(
     (ChartPointsWithSameName) => {
       const mergedChartPoint = ChartPointsWithSameName.reduce(
@@ -38,14 +39,16 @@ export const computeChartPoints = (
       const done = getChartPoint(mergedChartPoint.done);
       const forecastDone = getChartPoint(mergedChartPoint.forecastDone);
 
+      lastTotal = isNaN(total) ? lastTotal : total;
+
       return {
         name,
         standard,
         total,
         done,
-        remaining: total - done,
+        remaining: lastTotal - done,
         forecastDone: 0,
-        forecastRemaining: total - forecastDone,
+        forecastRemaining: lastTotal - forecastDone,
       };
     }
   );

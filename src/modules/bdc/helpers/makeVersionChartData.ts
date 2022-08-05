@@ -26,6 +26,7 @@ export const makeVersionChartData = ({
     project,
     startDate: versionStartDate,
     endDate,
+    version,
   });
 
   return computeChartPoints(standardChartPoints, doneChartPoints);
