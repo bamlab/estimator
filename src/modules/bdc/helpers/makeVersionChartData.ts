@@ -13,7 +13,10 @@ export const makeVersionChartData = ({
   version: VersionDTO;
   project: FullProjectDTO;
 }): ChartPoint[] => {
-  const standardChartPoints = getStandardChartPointsFromVersion(version);
+  const standardChartPoints = getStandardChartPointsFromVersion(
+    project,
+    version
+  );
 
   const { startDate: versionStartDate, endDate: versionEndDate } =
     getVersionStartAndEndDate(version);

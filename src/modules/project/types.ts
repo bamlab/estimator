@@ -31,7 +31,7 @@ export type TeamDTO = Team & {
 
 type DeveloperDTO = Developer & { staffing: StaffingDTO[] };
 
-type StaffingDTO = Omit<Staffing, "date"> & { date: string };
+export type StaffingDTO = Omit<Staffing, "date"> & { date: string };
 
 export type VersionDTO = Omit<
   Version,

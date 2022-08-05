@@ -1,3 +1,7 @@
+import {
+  mockProject,
+  mockProjectWith1ReleaseAnd2DaysOff,
+} from "../mocks/mockProject";
 import { mockRelease } from "../mocks/mockRelease";
 import { mockVersion } from "../mocks/mockVersion";
 import {
@@ -8,20 +12,25 @@ import {
 describe("getStandardChartPointsFromVersion", () => {
   it("should return the correct total values", () => {
     expect(
-      getStandardChartPointsFromVersion(mockVersion).map(({ total }) => total)
+      getStandardChartPointsFromVersion(mockProject, mockVersion).map(
+        ({ total }) => total
+      )
     ).toEqual([30, 30, 20, 60, 60, 60, 60]);
   });
   it("should return the right dates", () => {
     expect(
-      getStandardChartPointsFromVersion(mockVersion).map(({ name }) => name)
+      getStandardChartPointsFromVersion(mockProject, mockVersion).map(
+        ({ name }) => name
+      )
     ).toEqual(["11/07", "12/07", "13/07", "14/07", "15/07", "18/07", "19/07"]);
   });
   it("should return the right chart points", () => {
     expect(
-      getStandardChartPointsFromVersion(mockVersion).map(
-        ({ standard }) => standard
-      )
-    ).toEqual([30, 24, 8, 46, 30.666666666666664, 15.333333333333332, 0]);
+      getStandardChartPointsFromVersion(
+        mockProjectWith1ReleaseAnd2DaysOff,
+        mockProjectWith1ReleaseAnd2DaysOff.versions[0]
+      ).map(({ standard }) => standard)
+    ).toEqual([6, 4, 4, 4, 2, 0]);
   });
 });
 
@@ -29,6 +38,7 @@ describe("getStandardChartPointsFromSingleRelease", () => {
   it("should return the right chart points for a release", () => {
     expect(
       getStandardChartPointsFromSingleRelease({
+        project: mockProject,
         release: mockRelease,
         standardVolumeToDoBeforeRelease: 20,
         releaseStartDate: new Date("2022-07-11T03:24:00"),
