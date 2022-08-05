@@ -1,6 +1,7 @@
 import {
   mockProject,
   mockProjectWith1ReleaseAnd2DaysOff,
+  mockProjectWith2ReleasesAnd2DaysOff,
 } from "../mocks/mockProject";
 import { mockRelease } from "../mocks/mockRelease";
 import { mockVersion } from "../mocks/mockVersion";
@@ -17,6 +18,7 @@ describe("getStandardChartPointsFromVersion", () => {
       )
     ).toEqual([30, 30, 20, 60, 60, 60, 60]);
   });
+
   it("should return the right dates", () => {
     expect(
       getStandardChartPointsFromVersion(mockProject, mockVersion).map(
@@ -24,13 +26,23 @@ describe("getStandardChartPointsFromVersion", () => {
       )
     ).toEqual(["11/07", "12/07", "13/07", "14/07", "15/07", "18/07", "19/07"]);
   });
-  it("should return the right chart points", () => {
+
+  it("should return the right chart points for 1 RC", () => {
     expect(
       getStandardChartPointsFromVersion(
         mockProjectWith1ReleaseAnd2DaysOff,
         mockProjectWith1ReleaseAnd2DaysOff.versions[0]
       ).map(({ standard }) => standard)
     ).toEqual([6, 4, 4, 4, 2, 0]);
+  });
+
+  it("should return the right chart points for 2 RC, with a new scope to match forecasts", () => {
+    expect(
+      getStandardChartPointsFromVersion(
+        mockProjectWith2ReleasesAnd2DaysOff,
+        mockProjectWith2ReleasesAnd2DaysOff.versions[0]
+      ).map(({ standard }) => standard)
+    ).toEqual([20, 12, 12, 12, 5, 0]);
   });
 });
 

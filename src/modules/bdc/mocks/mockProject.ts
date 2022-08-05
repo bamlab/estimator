@@ -788,3 +788,40 @@ export const mockProjectWith1ReleaseAnd2DaysOff: FullProjectDTO = {
     ],
   },
 };
+
+const mockVersionWith2Releases = {
+  id: "5b4832f5-84ea-485f-a715-c472dfbad8c9",
+  name: "Camion 1",
+  startDate: "2022-08-01T00:00:00.000Z",
+  scope: "Authentification",
+  volume: 20,
+  projectId: "da07b994-4c05-4c1c-8488-b84ce25f27e3",
+  createdAt: "2022-08-04T15:09:46.920Z",
+  updatedAt: "2022-08-04T15:09:46.921Z",
+  releases: [
+    {
+      id: "19212ce8-b309-4ba0-9591-c80dc47243be",
+      name: "RC1",
+      forecastEndDate: "2022-08-05T00:00:00.000Z",
+      volume: 20,
+      comment: "",
+      versionId: "5b4832f5-84ea-485f-a715-c472dfbad8c9",
+      createdAt: "2022-08-04T15:09:46.920Z",
+      updatedAt: "2022-08-04T15:09:46.921Z",
+    },
+    {
+      id: "76063683-4732-43f7-a509-678823871a10",
+      name: "RC2",
+      forecastEndDate: "2022-08-05T00:00:00.000Z",
+      volume: 17,
+      comment: "blabla",
+      versionId: "5b4832f5-84ea-485f-a715-c472dfbad8c9",
+      createdAt: "2022-08-04T15:11:19.710Z",
+      updatedAt: "2022-08-04T15:11:19.711Z",
+    },
+  ],
+};
+export const mockProjectWith2ReleasesAnd2DaysOff: FullProjectDTO = {
+  ...mockProjectWith1ReleaseAnd2DaysOff,
+  versions: [mockVersionWith2Releases],
+};
