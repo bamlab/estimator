@@ -1,6 +1,13 @@
 import { groupBy } from "lodash";
 import { ChartPoint } from "../../../types/charts";
 
+const getChartPoint = (point: number | undefined): number | typeof NaN => {
+  if (point !== undefined) {
+    return point;
+  }
+  return NaN;
+};
+
 export const computeChartPoints = (
   standardPoints: Partial<ChartPoint>[],
   doneChartPoints: Partial<ChartPoint>[]
@@ -19,18 +26,10 @@ export const computeChartPoints = (
       );
 
       const name = mergedChartPoint.name ?? "";
-      const standard =
-        mergedChartPoint.standard !== undefined
-          ? mergedChartPoint.standard
-          : NaN;
-      const total =
-        mergedChartPoint.total !== undefined ? mergedChartPoint.total : NaN;
-      const done =
-        mergedChartPoint.done !== undefined ? mergedChartPoint.done : NaN;
-      const forecastDone =
-        mergedChartPoint.forecastDone !== undefined
-          ? mergedChartPoint.forecastDone
-          : NaN;
+      const standard = getChartPoint(mergedChartPoint.standard);
+      const total = getChartPoint(mergedChartPoint.total);
+      const done = getChartPoint(mergedChartPoint.done);
+      const forecastDone = getChartPoint(mergedChartPoint.forecastDone);
 
       return {
         name,
