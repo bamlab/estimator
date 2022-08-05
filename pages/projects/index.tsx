@@ -97,7 +97,9 @@ export default function ProjectsPage({ projects }: Props) {
         />
         <Spacer y={1} />
         <Link href={`/projects/${projectId}/versions`}>
-          <Button disabled={projectId === ""}>{"C'est parti !"}</Button>
+          <Button disabled={projectId === ""} style={{ zIndex: 0 }}>
+            {"C'est parti !"}
+          </Button>
         </Link>
         <Spacer y={2} />
         <h2>Créer un projet</h2>
