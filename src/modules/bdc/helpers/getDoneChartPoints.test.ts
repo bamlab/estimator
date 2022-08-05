@@ -1,4 +1,5 @@
 import { mockProject } from "../mocks/mockProject";
+import { mockVersion } from "../mocks/mockVersion";
 import { getDoneChartPoints } from "./getDoneChartPoints";
 
 describe("getDoneChartPoints", () => {
@@ -8,6 +9,7 @@ describe("getDoneChartPoints", () => {
         project: mockProject,
         startDate: new Date("2022-07-11T03:24:00"),
         endDate: new Date("2022-07-20T03:24:00"),
+        version: mockVersion,
       })
     ).toEqual([
       { name: "11/07", done: 0, forecastDone: 0 },
@@ -18,6 +20,26 @@ describe("getDoneChartPoints", () => {
       { name: "18/07", done: 29, forecastDone: 29 },
       { name: "19/07", done: 31, forecastDone: 31 },
       { name: "20/07", done: 32, forecastDone: 32 },
+      {
+        done: NaN,
+        forecastDone: 46.2,
+        name: "21/07",
+      },
+      {
+        done: NaN,
+        forecastDone: 54.6,
+        name: "22/07",
+      },
+      {
+        done: NaN,
+        forecastDone: 58.800000000000004,
+        name: "25/07",
+      },
+      {
+        done: NaN,
+        forecastDone: 63.00000000000001,
+        name: "26/07",
+      },
     ]);
   });
   it("should return the correct values for a project with no production", () => {
@@ -26,6 +48,7 @@ describe("getDoneChartPoints", () => {
         project: { ...mockProject, productions: [] },
         startDate: new Date("2022-07-11T03:24:00"),
         endDate: new Date("2022-07-20T03:24:00"),
+        version: mockVersion,
       })
     ).toEqual([
       { name: "11/07", done: 0, forecastDone: 0 },
@@ -36,6 +59,11 @@ describe("getDoneChartPoints", () => {
       { name: "18/07", done: NaN, forecastDone: 36 },
       { name: "19/07", done: NaN, forecastDone: 42 },
       { name: "20/07", done: NaN, forecastDone: 48 },
+      {
+        done: NaN,
+        forecastDone: 60,
+        name: "21/07",
+      },
     ]);
   });
   it("should return the correct values for a project with some production", () => {
@@ -47,6 +75,7 @@ describe("getDoneChartPoints", () => {
         },
         startDate: new Date("2022-07-11T03:24:00"),
         endDate: new Date("2022-07-20T03:24:00"),
+        version: mockVersion,
       })
     ).toEqual([
       { name: "11/07", done: 0, forecastDone: 0 },
@@ -57,6 +86,16 @@ describe("getDoneChartPoints", () => {
       { name: "18/07", done: NaN, forecastDone: 36.53333333333333 },
       { name: "19/07", done: NaN, forecastDone: 41.8 },
       { name: "20/07", done: NaN, forecastDone: 47.06666666666666 },
+      {
+        done: NaN,
+        forecastDone: 57.599999999999994,
+        name: "21/07",
+      },
+      {
+        done: NaN,
+        forecastDone: 68.13333333333333,
+        name: "22/07",
+      },
     ]);
   });
   it("should return the correct for project staffed at half time", () => {
@@ -125,6 +164,7 @@ describe("getDoneChartPoints", () => {
         },
         startDate: new Date("2022-07-11T03:24:00"),
         endDate: new Date("2022-07-18T03:24:00"),
+        version: mockVersion,
       })
     ).toEqual([
       { name: "11/07", done: 0, forecastDone: 0 },
@@ -133,6 +173,26 @@ describe("getDoneChartPoints", () => {
       { name: "14/07", done: NaN, forecastDone: 8.7 },
       { name: "15/07", done: NaN, forecastDone: 11.399999999999999 },
       { name: "18/07", done: NaN, forecastDone: 14.099999999999998 },
+      {
+        done: NaN,
+        forecastDone: 35.7,
+        name: "19/07",
+      },
+      {
+        done: NaN,
+        forecastDone: 46.5,
+        name: "20/07",
+      },
+      {
+        done: NaN,
+        forecastDone: 57.3,
+        name: "21/07",
+      },
+      {
+        done: NaN,
+        forecastDone: 68.1,
+        name: "22/07",
+      },
     ]);
   });
 });
