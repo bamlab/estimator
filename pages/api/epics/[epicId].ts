@@ -14,6 +14,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   } else if (req.method === "POST") {
     res.status(404).end();
   } else {
-    res.status(404).end();
+    res.status(200).end();
   }
 };

@@ -36,6 +36,6 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
     });
     res.status(200).json(version);
   } else {
-    res.status(404).end();
+    res.status(200).end();
   }
 });

@@ -134,6 +134,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(200).json(estimation);
     }
   } else {
-    res.status(404).end();
+    res.status(200).end();
   }
 };
