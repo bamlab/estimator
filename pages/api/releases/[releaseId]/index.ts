@@ -25,6 +25,6 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
   } else if (req.method === "POST") {
     return res.status(400).send("wrong route");
   } else {
-    res.status(404).end();
+    res.status(200).end();
   }
 });

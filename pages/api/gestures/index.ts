@@ -23,6 +23,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     await prisma.gesture.createMany({ data: gestures });
     res.status(200).end();
   } else {
-    res.status(404).end();
+    res.status(200).end();
   }
 };

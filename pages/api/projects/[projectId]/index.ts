@@ -22,6 +22,6 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(400).send("multiple query params");
     }
   } else {
-    res.status(404).end();
+    res.status(200).end();
   }
 });
