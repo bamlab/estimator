@@ -1,5 +1,8 @@
 import { parseISO } from "date-fns";
-import { teamMock } from "../mocks/team.mock";
+import {
+  getTeamWith1DevMock,
+  teamMock as teamMockWith2Dev,
+} from "../mocks/team.mock";
 import { computeVolumeEstimation } from "./computeVolumeEstimationFromTimePeriod";
 
 describe("computeVolumeEstimation", () => {
@@ -7,10 +10,17 @@ describe("computeVolumeEstimation", () => {
     const startDate = parseISO("2022-06-29T00:00:00+0000");
     const endDate = parseISO("2022-06-29T00:00:00+0000");
 
+    const defaultStaffing = 1;
+    const teamMock = getTeamWith1DevMock({
+      defaultStaffingValue: defaultStaffing,
+      startDate,
+      endDate,
+    });
+
     const actual = computeVolumeEstimation({
       meanProductivity: 1,
       team: teamMock,
-      defaultStaffing: 1.5,
+      defaultStaffing,
       startDate,
       endDate,
     });
@@ -22,7 +32,7 @@ describe("computeVolumeEstimation", () => {
 
     const actual = computeVolumeEstimation({
       meanProductivity: 1,
-      team: teamMock,
+      team: teamMockWith2Dev,
       defaultStaffing: 1.5,
       startDate,
       endDate,
@@ -35,7 +45,7 @@ describe("computeVolumeEstimation", () => {
 
     const actual = computeVolumeEstimation({
       meanProductivity: 3,
-      team: teamMock,
+      team: teamMockWith2Dev,
       defaultStaffing: 1.5,
       startDate,
       endDate,
@@ -48,7 +58,7 @@ describe("computeVolumeEstimation", () => {
 
     const actual = computeVolumeEstimation({
       meanProductivity: 1,
-      team: teamMock,
+      team: teamMockWith2Dev,
       defaultStaffing: 1.5,
       startDate,
       endDate,
@@ -61,7 +71,7 @@ describe("computeVolumeEstimation", () => {
 
     const actual = computeVolumeEstimation({
       meanProductivity: -2,
-      team: teamMock,
+      team: teamMockWith2Dev,
       defaultStaffing: 1.5,
       startDate,
       endDate,

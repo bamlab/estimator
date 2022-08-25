@@ -33,7 +33,7 @@ export const computeVolumeEstimation = ({
   defaultStaffing,
   startDate,
   endDate,
-}: Params) => {
+}: Params): number => {
   if (meanProductivity < 0) return 0;
 
   const isoDates: ISODate[] = [];
