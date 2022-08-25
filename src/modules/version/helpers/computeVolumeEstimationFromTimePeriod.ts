@@ -11,6 +11,7 @@ import {
 } from "../../project/types";
 import { computeProjectMeanProductivity } from "./computeProjectMeanProductivity";
 import { developerWithStaffingAdapter } from "./developerWithStaffingAdapter";
+import { getStaffingThisDay } from "./getStaffingThisDay";
 import {
   DeveloperWithDateIndexedStaffings,
   groupProductionsWithStaffing,
@@ -46,19 +47,17 @@ export const computeVolumeEstimation = ({
     developerWithStaffingAdapter(team);
 
   const staffingsForTimePeriod: Record<ISODate, number> = {};
-  isoDates.forEach(
-    (isoDate) =>
-      (staffingsForTimePeriod[isoDate] = sumBy(
-        developersWithStaffings,
-        (developer) =>
-          developer.staffings[isoDate]?.value ?? developer.defaultStaffingValue
-      ))
-  );
+  isoDates.forEach((isoDate) => {
+    staffingsForTimePeriod[isoDate] = getStaffingThisDay({
+      developersWithStaffings,
+      date: parseISO(isoDate),
+    });
+  });
 
   return sumBy(
     isoDates,
     (isoDate) =>
-      meanProductivity * (staffingsForTimePeriod[isoDate] / defaultStaffing)
+      (meanProductivity * staffingsForTimePeriod[isoDate]) / defaultStaffing
   );
 };
 
