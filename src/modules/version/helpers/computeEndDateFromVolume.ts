@@ -1,4 +1,4 @@
-import { addBusinessDays, formatISO, parseISO } from "date-fns";
+import { addBusinessDays, parseISO } from "date-fns";
 import { computeProjectMeanProductivity } from "./computeProjectMeanProductivity";
 import { developerWithStaffingAdapter } from "./developerWithStaffingAdapter";
 import {
@@ -11,7 +11,39 @@ import {
   FullProjectDTO,
   TeamWithDevelopersAndStaffing,
 } from "../../project/types";
-import { parseGMTMidnight } from "../../../utils/parseGMTMidnight";
+import { getStaffingThisDay } from "./getStaffingThisDay";
+
+export const computeEndDateFromVolumeAndStaffing = ({
+  startDate,
+  volume,
+  meanProductivity,
+  team,
+  defaultStaffing,
+}: Params): Date => {
+  if (meanProductivity < 0) return startDate;
+
+  const developersWithStaffings: DeveloperWithDateIndexedStaffings[] =
+    developerWithStaffingAdapter(team);
+
+  let currentDone = 0;
+  let lastVisitedDate = startDate;
+
+  for (
+    let currentDate = startDate;
+    currentDone < volume;
+    currentDate = addBusinessDays(currentDate, 1)
+  ) {
+    const staffingThisDay = getStaffingThisDay({
+      date: currentDate,
+      developersWithStaffings,
+    });
+
+    currentDone += (meanProductivity * staffingThisDay) / defaultStaffing;
+    lastVisitedDate = currentDate;
+  }
+
+  return lastVisitedDate;
+};
 
 export const computeEndDateFromVolume = (
   startDate: Date,
@@ -58,38 +90,3 @@ interface Params {
   team: TeamWithDevelopersAndStaffing;
   defaultStaffing: number;
 }
-
-export const computeEndDateFromVolumeAndStaffing = ({
-  startDate,
-  volume,
-  meanProductivity,
-  team,
-  defaultStaffing,
-}: Params): Date => {
-  if (meanProductivity < 0) return startDate;
-
-  const developersWithStaffings: DeveloperWithDateIndexedStaffings[] =
-    developerWithStaffingAdapter(team);
-
-  let currentDone = 0;
-  let lastVisitedDate = startDate;
-
-  for (
-    let currentDate = startDate;
-    currentDone < volume;
-    currentDate = addBusinessDays(currentDate, 1)
-  ) {
-    const staffingThisDay = sumBy(developersWithStaffings, (developer) => {
-      const isoDate = parseGMTMidnight(formatISO(currentDate)).toISOString();
-
-      return (
-        developer.staffings[isoDate]?.value ?? developer.defaultStaffingValue
-      );
-    });
-
-    currentDone += (meanProductivity * staffingThisDay) / defaultStaffing;
-    lastVisitedDate = currentDate;
-  }
-
-  return lastVisitedDate;
-};
