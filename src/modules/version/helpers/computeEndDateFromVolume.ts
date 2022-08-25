@@ -11,6 +11,7 @@ import {
   FullProjectDTO,
   TeamWithDevelopersAndStaffing,
 } from "../../project/types";
+import { parseGMTMidnight } from "../../../utils/parseGMTMidnight";
 
 export const computeEndDateFromVolume = (
   startDate: Date,
@@ -70,24 +71,23 @@ export const computeEndDateFromVolumeAndStaffing = ({
   const developersWithStaffings: DeveloperWithDateIndexedStaffings[] =
     developerWithStaffingAdapter(team);
 
-  let currentUnitSum = 0;
+  let currentDone = 0;
   let lastVisitedDate = startDate;
 
   for (
     let currentDate = startDate;
-    currentUnitSum < volume;
+    currentDone < volume;
     currentDate = addBusinessDays(currentDate, 1)
   ) {
-    currentUnitSum +=
-      meanProductivity *
-      (sumBy(
-        developersWithStaffings,
-        (developer) =>
-          developer.staffings[formatISO(currentDate)]?.value ??
-          developer.defaultStaffingValue
-      ) /
-        defaultStaffing);
+    const staffingThisDay = sumBy(developersWithStaffings, (developer) => {
+      const isoDate = parseGMTMidnight(formatISO(currentDate)).toISOString();
 
+      return (
+        developer.staffings[isoDate]?.value ?? developer.defaultStaffingValue
+      );
+    });
+
+    currentDone += (meanProductivity * staffingThisDay) / defaultStaffing;
     lastVisitedDate = currentDate;
   }
 

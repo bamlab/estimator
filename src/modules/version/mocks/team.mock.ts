@@ -215,7 +215,8 @@ export const getTeamWith1DevMock = ({
   startDate: Date;
   endDate: Date;
 }): TeamWithDevelopersAndStaffing => {
-  const diff = differenceInDays(startDate, endDate) + 1;
+  const diff = Math.abs(differenceInDays(startDate, endDate)) + 1;
+
   const dates = new Array(diff)
     .fill(0)
     .map((_, i) => i)
@@ -239,5 +240,45 @@ export const getTeamWith1DevMock = ({
         })),
       },
     ],
+  };
+};
+
+export const getTeamMock = ({
+  devNumber,
+  defaultStaffingValue,
+  endDate,
+  startDate,
+}: {
+  devNumber: number;
+  defaultStaffingValue: number;
+  startDate: Date;
+  endDate: Date;
+}): TeamWithDevelopersAndStaffing => {
+  const diff = Math.abs(differenceInDays(startDate, endDate)) + 1;
+
+  const dates = new Array(diff)
+    .fill(0)
+    .map((_, i) => i)
+    .map((value) => addDays(startDate, value));
+
+  return {
+    id: "0",
+    projectId: "0",
+    developers: new Array(devNumber)
+      .fill(0)
+      .map((_, i) => i)
+      .map((id) => ({
+        id: id.toString(),
+        name: "Guillaume-" + id.toString(),
+        teamId: "0",
+        capacity: 6,
+        defaultStaffingValue,
+        staffing: dates.map((date, index) => ({
+          id: index.toString(),
+          developerId: id.toString(),
+          date,
+          value: defaultStaffingValue,
+        })),
+      })),
   };
 };
