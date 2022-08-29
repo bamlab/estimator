@@ -1,5 +1,6 @@
 import { Staffing } from "@prisma/client";
 import { formatISO } from "date-fns";
+import { parseGMTMidnight } from "../../../utils/parseGMTMidnight";
 import { TeamWithDevelopersAndStaffing } from "../../project/types";
 import { DeveloperWithDateIndexedStaffings } from "./groupProductionsWithStaffing";
 
@@ -12,7 +13,8 @@ export const developerWithStaffingAdapter = (
     const staffings: Record<ISODate, Staffing> = {};
 
     developer.staffing.forEach((staffing) => {
-      staffings[formatISO(staffing.date)] = staffing;
+      staffings[parseGMTMidnight(formatISO(staffing.date)).toISOString()] =
+        staffing;
     });
 
     return {

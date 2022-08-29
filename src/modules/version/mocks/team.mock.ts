@@ -1,4 +1,4 @@
-import { parseISO } from "date-fns";
+import { addDays, differenceInDays, parseISO } from "date-fns";
 import { TeamWithDevelopersAndStaffing } from "../../project/types";
 
 export const teamMock: TeamWithDevelopersAndStaffing = {
@@ -204,4 +204,81 @@ export const teamMock: TeamWithDevelopersAndStaffing = {
       ],
     },
   ],
+};
+
+export const getTeamWith1DevMock = ({
+  defaultStaffingValue,
+  endDate,
+  startDate,
+}: {
+  defaultStaffingValue: number;
+  startDate: Date;
+  endDate: Date;
+}): TeamWithDevelopersAndStaffing => {
+  const diff = Math.abs(differenceInDays(startDate, endDate)) + 1;
+
+  const dates = new Array(diff)
+    .fill(0)
+    .map((_, i) => i)
+    .map((value) => addDays(startDate, value));
+
+  return {
+    id: "0",
+    projectId: "0",
+    developers: [
+      {
+        id: "0",
+        name: "Guillaume",
+        teamId: "0",
+        capacity: 6,
+        defaultStaffingValue,
+        staffing: dates.map((date) => ({
+          id: "0",
+          developerId: "0",
+          date,
+          value: defaultStaffingValue,
+        })),
+      },
+    ],
+  };
+};
+
+export const getTeamMock = ({
+  devNumber,
+  defaultStaffingValue,
+  endDate,
+  startDate,
+}: {
+  devNumber: number;
+  defaultStaffingValue: number;
+  startDate: Date;
+  endDate: Date;
+}): TeamWithDevelopersAndStaffing => {
+  const diff = Math.abs(differenceInDays(startDate, endDate)) + 1;
+
+  const dates = new Array(diff)
+    .fill(0)
+    .map((_, i) => i)
+    .map((value) => addDays(startDate, value));
+
+  return {
+    id: "0",
+    projectId: "0",
+    developers: new Array(devNumber)
+      .fill(0)
+      .map((_, i) => i)
+      .map((id) => ({
+        id: id.toString(),
+        name: "Guillaume-" + id.toString(),
+        teamId: "0",
+        capacity: 6,
+        defaultStaffingValue,
+        staffing: dates.map((date, index) => ({
+          id: index.toString(),
+          developerId: id.toString(),
+          date,
+          value: defaultStaffingValue,
+        })),
+      })),
+  };
 };

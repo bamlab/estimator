@@ -1,4 +1,4 @@
-import { addBusinessDays, formatISO, parseISO } from "date-fns";
+import { addBusinessDays, parseISO } from "date-fns";
 import { computeProjectMeanProductivity } from "./computeProjectMeanProductivity";
 import { developerWithStaffingAdapter } from "./developerWithStaffingAdapter";
 import {
@@ -11,6 +11,39 @@ import {
   FullProjectDTO,
   TeamWithDevelopersAndStaffing,
 } from "../../project/types";
+import { getStaffingThisDay } from "./getStaffingThisDay";
+
+export const computeEndDateFromVolumeAndStaffing = ({
+  startDate,
+  volume,
+  meanProductivity,
+  team,
+  defaultStaffing,
+}: Params): Date => {
+  if (meanProductivity < 0) return startDate;
+
+  const developersWithStaffings: DeveloperWithDateIndexedStaffings[] =
+    developerWithStaffingAdapter(team);
+
+  let currentDone = 0;
+  let lastVisitedDate = startDate;
+
+  for (
+    let currentDate = startDate;
+    currentDone < volume;
+    currentDate = addBusinessDays(currentDate, 1)
+  ) {
+    const staffingThisDay = getStaffingThisDay({
+      date: currentDate,
+      developersWithStaffings,
+    });
+
+    currentDone += (meanProductivity * staffingThisDay) / defaultStaffing;
+    lastVisitedDate = currentDate;
+  }
+
+  return lastVisitedDate;
+};
 
 export const computeEndDateFromVolume = (
   startDate: Date,
@@ -57,39 +90,3 @@ interface Params {
   team: TeamWithDevelopersAndStaffing;
   defaultStaffing: number;
 }
-
-export const computeEndDateFromVolumeAndStaffing = ({
-  startDate,
-  volume,
-  meanProductivity,
-  team,
-  defaultStaffing,
-}: Params): Date => {
-  if (meanProductivity < 0) return startDate;
-
-  const developersWithStaffings: DeveloperWithDateIndexedStaffings[] =
-    developerWithStaffingAdapter(team);
-
-  let currentUnitSum = 0;
-  let lastVisitedDate = startDate;
-
-  for (
-    let currentDate = startDate;
-    currentUnitSum < volume;
-    currentDate = addBusinessDays(currentDate, 1)
-  ) {
-    currentUnitSum +=
-      meanProductivity *
-      (sumBy(
-        developersWithStaffings,
-        (developer) =>
-          developer.staffings[formatISO(currentDate)]?.value ??
-          developer.defaultStaffingValue
-      ) /
-        defaultStaffing);
-
-    lastVisitedDate = currentDate;
-  }
-
-  return lastVisitedDate;
-};

@@ -10,6 +10,11 @@ interface Params {
   projectProductivity: number;
 }
 
+/**
+ *
+ * @description compute mean productivity on a slicing mean on 15 work days
+ */
+
 export const computeProjectMeanProductivity = ({
   productionsWithStaffing,
   defaultStaffing,
@@ -40,12 +45,12 @@ export const computeProjectMeanProductivity = ({
     adjustedDoneProductions,
     "totalDateStaffing"
   );
-  return parseFloat(
-    (
-      sumBy(
-        adjustedDoneProductions,
-        (prod) => prod.productionValue * prod.totalDateStaffing
-      ) / totalStaffing
-    ).toFixed(1)
-  );
+
+  const meanProductivity =
+    sumBy(
+      adjustedDoneProductions,
+      (prod) => prod.productionValue * prod.totalDateStaffing
+    ) / totalStaffing;
+
+  return parseFloat(meanProductivity.toFixed(1));
 };
