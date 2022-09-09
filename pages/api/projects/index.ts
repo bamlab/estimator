@@ -23,7 +23,7 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
       data: {
         name: req.body.name,
         unit: unit.toLowerCase() === "ticket" ? "TICKET" : "POINT",
-        productivity: parseInt(productivity),
+        productivity: parseFloat(productivity),
         endAt: parseGMTMidnight(endDate),
         startAt: parseGMTMidnight(startDate),
         team: {

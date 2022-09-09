@@ -22,7 +22,7 @@ model Project {
   startAt      DateTime?
   endAt        DateTime?
   unit         UnitType
-  productivity Int          @default(1)
+  productivity Float          @default(1.0)
   team         Team?
   versions     Version[]
   createdAt    DateTime     @default(now()) @map(name: "created_at")
