@@ -7,11 +7,12 @@ import { computeVolumeEstimationFromTimePeriod } from "../helpers/computeVolumeE
 import { HelperText } from "./HelperText";
 import { VersionFormData } from "./VersionFormModal";
 import { formatTwoDecimal } from "../../../utils/formatTwoDecimal";
+import { ReleaseFormData } from "../../../../pages/projects/[projectId]/versions/[versionId]";
 
 interface Props {
   startDate: string;
   endDate: string;
-  control: Control<VersionFormData, object>;
+  control: Control<VersionFormData, object> | Control<ReleaseFormData, object>;
   project: FullProjectDTO;
 }
 export const VolumeInput: React.FC<Props> = ({
@@ -37,6 +38,8 @@ export const VolumeInput: React.FC<Props> = ({
     <>
       <Controller
         name="volume"
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         control={control}
         render={({ field: { onChange, value } }) => (
           <Input

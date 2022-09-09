@@ -5,13 +5,11 @@ import { Release } from "@prisma/client";
 import {
   Button,
   Col,
-  Input,
   Modal,
   Row,
   Spacer,
   Text,
   Textarea,
-  useInput,
 } from "@nextui-org/react";
 import wretch from "wretch";
 import { ROOT_URL } from "../../../../../src/constants";
@@ -30,6 +28,10 @@ import {
 import { Chart } from "../../../../../src/modules/bdc/views/Chart";
 import { getVersionStartAndEndDate } from "../../../../../src/modules/version/helpers/getVersionStartAndEndDate";
 import { ProductionForm } from "../../../../../src/modules/production/views/ProductionForm";
+import { VolumeInput } from "../../../../../src/modules/version/components/VolumeInput";
+import { Controller, useForm } from "react-hook-form";
+import { HelperText } from "../../../../../src/modules/version/components/HelperText";
+import { EndDateInput } from "../../../../../src/modules/version/components/EndDateInput";
 
 type Props = {
   project: FullProjectDTO;
@@ -42,6 +44,14 @@ type Params = {
   versionId: string;
   rcId: string;
 };
+
+export type ReleaseFormData = {
+  endDate: string;
+  comment: string;
+  volume: string;
+};
+
+const REQUIRED_FIELD_ERROR_TEXT = "Ce champ est requis";
 
 export const getServerSideProps: GetServerSideProps<
   Props | Record<string, unknown>,
@@ -100,19 +110,27 @@ export default function VersionPage({
   project: projectInitialInfo,
 }: Props) {
   const [project, setProject] = useState<FullProjectDTO>(projectInitialInfo);
-
   const [isReleaseModalVisible, setIsReleaseModalVisible] = useState(false);
+
   const {
-    value: comment,
-    bindings: commentBindings,
-    setValue: setComment,
-  } = useInput("");
-  const { value: volume, bindings: volumeBindings } = useInput(
-    release.volume.toString()
-  );
-  const { value: endDate, bindings: endDateBindings } = useInput(
-    release.forecastEndDate
-  );
+    control,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setValue,
+  } = useForm<ReleaseFormData>({
+    mode: "all",
+    defaultValues: {
+      endDate: release.forecastEndDate.split("T")[0],
+      comment: "",
+      volume: release.volume.toString(),
+    },
+  });
+
+  const endDate = watch("endDate");
+  const comment = watch("comment");
+  const volume = watch("volume");
+
   const [isError, setIsError] = useState(false);
 
   const router = useRouter();
@@ -172,20 +190,20 @@ export default function VersionPage({
   };
 
   const closeReleaseModal = () => {
-    setComment("");
+    setValue("comment", "");
     setIsError(false);
     setIsReleaseModalVisible(false);
   };
 
-  const handleCreateNewRelease = async () => {
+  const handleCreateNewRelease = async (formData: ReleaseFormData) => {
     if (!comment) {
       setIsError(true);
       return;
     }
     await createNewRelease({
-      comment,
-      forecastEndDate: new Date(endDate),
-      volume: parseInt(volume),
+      comment: formData.comment,
+      forecastEndDate: new Date(formData.endDate),
+      volume: parseInt(formData.volume),
     });
     closeReleaseModal();
     toast("Nouvelle release créée", { type: "success" });
@@ -211,7 +229,7 @@ export default function VersionPage({
 
         <p>
           {`Date de fin de jalon : ${formatDate(
-            new Date(release.forecastEndDate)
+            new Date(sortedReleases[sortedReleases.length - 1].forecastEndDate)
           )}`}
         </p>
 
@@ -240,35 +258,59 @@ export default function VersionPage({
         closeButton
         aria-labelledby="modal-title"
         open={isReleaseModalVisible}
-        onClose={() => {
-          setIsReleaseModalVisible(false);
-        }}
+        onClose={closeReleaseModal}
       >
         <Modal.Header>
           <Text id="modal-title" size={18}>
             Nouvelle release
           </Text>
         </Modal.Header>
-        <Modal.Body>
-          <Input
-            fullWidth
-            type="date"
-            label="Nouvelle date de fin prévisionnelle"
-            {...endDateBindings}
-          />
-          <Input fullWidth label="Nouveau volume" {...volumeBindings} />
-          <Textarea
-            fullWidth
-            label="Commentaire"
-            status={isError ? "error" : undefined}
-            {...commentBindings}
-          />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button auto onClick={handleCreateNewRelease}>
-            Créer la nouvelle release
-          </Button>
-        </Modal.Footer>
+        <form onSubmit={handleSubmit(handleCreateNewRelease)}>
+          <Modal.Body>
+            <EndDateInput
+              control={control}
+              startDate={version.startDate}
+              endDate={endDate}
+              volume={volume}
+              project={project}
+            />
+
+            <VolumeInput
+              control={control}
+              startDate={version.startDate}
+              endDate={endDate}
+              project={project}
+            />
+            <Controller
+              name="comment"
+              control={control}
+              rules={{ required: REQUIRED_FIELD_ERROR_TEXT }}
+              render={({ field: { onChange, value } }) => (
+                <Textarea
+                  fullWidth
+                  label="Commentaire"
+                  status={isError ? "error" : undefined}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+            />
+            <HelperText
+              color={errors.endDate ? "error" : "default"}
+              text={errors.endDate?.message}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              auto
+              color={"success"}
+              type="submit"
+              disabled={(volume && endDate && comment) === ""}
+            >
+              Créer la nouvelle release
+            </Button>
+          </Modal.Footer>
+        </form>
       </Modal>
     </MainLayout>
   );

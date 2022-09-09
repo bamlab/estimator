@@ -2,6 +2,7 @@ import { Input, Spacer } from "@nextui-org/react";
 import { format, parseISO } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { Control, Controller } from "react-hook-form";
+import { ReleaseFormData } from "../../../../pages/projects/[projectId]/versions/[versionId]";
 import { FullProjectDTO } from "../../project/types";
 import { checkEndDate } from "../helpers/checkEndDate";
 import { computeEndDateFromVolume } from "../helpers/computeEndDateFromVolume";
@@ -12,7 +13,7 @@ interface Props {
   volume: string;
   startDate: string;
   endDate: string;
-  control: Control<VersionFormData, object>;
+  control: Control<VersionFormData, object> | Control<ReleaseFormData, object>;
   project: FullProjectDTO;
 }
 export const EndDateInput: React.FC<Props> = ({
@@ -49,6 +50,8 @@ export const EndDateInput: React.FC<Props> = ({
       <div>
         <Controller
           name="endDate"
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           control={control}
           render={({ field: { onChange, value } }) => (
             <Input
