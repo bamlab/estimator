@@ -6,6 +6,7 @@ import { FullProjectDTO } from "../../project/types";
 import { computeVolumeEstimationFromTimePeriod } from "../helpers/computeVolumeEstimationFromTimePeriod";
 import { HelperText } from "./HelperText";
 import { VersionFormData } from "./VersionFormModal";
+import { formatTwoDecimal } from "../../../utils/formatTwoDecimal";
 
 interface Props {
   startDate: string;
@@ -49,7 +50,10 @@ export const VolumeInput: React.FC<Props> = ({
       {volumeEstimation !== "" && (
         <HelperText
           color={"primary"}
-          text={`Volume recommandé pour la période renseignée : ${volumeEstimation} ${project.unit.toLocaleLowerCase()}s `}
+          text={`Volume recommandé pour la période renseignée : ${formatTwoDecimal(
+            volumeEstimation,
+            2
+          )} ${project.unit.toLocaleLowerCase()}s `}
         />
       )}
     </>
