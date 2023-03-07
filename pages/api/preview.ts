@@ -14,8 +14,6 @@ export default async (
   req: NextApiRequest,
   res: NextApiResponse<Data | Error>
 ) => {
-  console.log("Preview", req.method);
-
   if (req.method === "POST") {
     if (!req.body.email) {
       return res.status(500).json({ message: "No email provided" });
@@ -26,8 +24,6 @@ export default async (
       });
       return res.status(200).json({ success: true });
     } catch (e: unknown) {
-      console.log("e", e);
-
       return res.status(500).json({ error: e, message: "A server occured" });
     }
   }
