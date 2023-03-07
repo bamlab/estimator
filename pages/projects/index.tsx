@@ -16,8 +16,15 @@ import { useRouter } from "next/dist/client/router";
 import { ROOT_URL } from "../../src/constants";
 import { toast } from "react-toastify";
 import wretch from "wretch";
+import { GetServerSideProps } from "next";
+import { protectPage } from "../../src/utils/protectPage";
 
-export const getServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const redirect = await protectPage(context);
+  if (redirect) {
+    return { redirect };
+  }
+
   const response = await fetch(`${ROOT_URL}/projects`).then((res) =>
     res.json()
   );
