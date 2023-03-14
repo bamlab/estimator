@@ -1,3 +1,5 @@
+import { Button } from "@nextui-org/react";
+import { signOut } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -35,6 +37,9 @@ export default function Home() {
             </a>
           </Link>
         </div>
+        <Button onClick={() => signOut()} size="xs" light>
+          Logout
+        </Button>
       </main>
 
       <footer className={styles.footer}>
