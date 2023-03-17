@@ -11,6 +11,7 @@
     "prisma:generate": "npx prisma generate"
   },
   "dependencies": {
+    "18": "0.0.0",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@next-auth/prisma-adapter": "^1.0.5",

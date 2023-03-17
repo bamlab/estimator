@@ -17,6 +17,18 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
     } else {
       res.status(400).send("multiple query params");
     }
+  } else if (req.method === "DELETE") {
+    const { versionId } = req.query;
+    if (typeof versionId === "string") {
+      const something = prisma.version.delete({
+        where: {
+          id: versionId,
+        },
+      });
+      console.log("results of delete: ", something);
+    }
+
+    res.status(200).end();
   } else {
     res.status(200).end();
   }
