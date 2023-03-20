@@ -46,7 +46,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     res.status(200).json(version);
-  } else {
-    res.status(200).end();
+  } else if (req.method === "DELETE") {
+    const { versionIds } = req.query;
+
+    const ids = versionIds.toString().split(",");
+
+    const deleteVersionsResult = await prisma.version.deleteMany({
+      where: { id: { in: ids } },
+    });
+
+    res
+      .status(200)
+      .json({ message: "Versions deleted", count: deleteVersionsResult.count });
   }
 };
