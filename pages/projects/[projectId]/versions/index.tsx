@@ -69,12 +69,13 @@ export default function VersionPage({ project }: Props) {
         method: "DELETE",
       });
       if (response.ok) {
-        console.log(`deleted ${deleteList} successfully}`)
         router.reload()
       } else {
+        // eslint-disable-next-line no-console
         console.log('Failed to delete versions')
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log(error)
     }
   }

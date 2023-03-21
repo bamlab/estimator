@@ -18,7 +18,6 @@ export const createNewVersion = async (
     scope,
     volume,
   };
-  console.log("body", body);
 
   return await wretch(`${ROOT_URL}/versions`).post(body).json();
 };
