@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { Button, Col, Spacer } from "@nextui-org/react";
+import { Button, Col, Row, Spacer, Text } from "@nextui-org/react";
 import wretch from "wretch";
 import { GetServerSideProps } from "next";
 import { MainLayout } from "../../../../src/components/Layouts/MainLayout";
@@ -60,6 +60,26 @@ export default function VersionPage({ project }: Props) {
   const [isVersionModalVisible, setIsVersionModalVisible] = useState(false);
   const router = useRouter();
 
+  const deleteChecked = async () => {
+    const checked = document.querySelectorAll('input[type="checkbox"]:checked')
+    const deleteList = Array.from(checked).map(x => x.id)
+
+    try {
+      const response = await fetch(`/api/projects/${project.id}/versions?versionIds=${deleteList.toString()}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        router.reload()
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('Failed to delete versions')
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error)
+    }
+  }
+
   const navigateToVersion = (version: VersionDTO) =>
     router.push(`/projects/${project.id}/versions/${version.id}`);
 
@@ -69,8 +89,19 @@ export default function VersionPage({ project }: Props) {
         <Header>
           <h1>{project.name}</h1>
         </Header>
+        <Spacer y={1} />
+        <Row justify="space-between">
+          <Text h4>
+            Sprints
+          </Text>
+          <Button style={{ zIndex: 0 }} onClick={deleteChecked}>
+            {"Delete"}
+          </Button>
+        </Row>
         {project.versions.map((version, index) => (
           <PaddingBox key={version.id}>
+            <input type='checkbox' id={version.id}/>
+            <Spacer x={1}/>
             <VersionItem
               version={version}
               isLast={index === 0}

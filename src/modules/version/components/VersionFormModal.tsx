@@ -73,6 +73,7 @@ export const VersionFormModal: React.FC<Props> = ({
           toast(`Une erreur s'est produite`, { type: "error" });
         }
       })
+      // eslint-disable-next-line no-console
       .catch((e) => console.log(e));
   };
 
