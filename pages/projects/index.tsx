@@ -91,6 +91,19 @@ export default function ProjectsPage({ projects }: Props) {
     [projects]
   );
 
+  // `onClick`, `href`, and `ref` need to be passed to the DOM element
+  // for proper handling
+  const LinkButton = React.forwardRef(({ onClick, href }, ref) => {
+    return (
+      <a href={href} onClick={onClick} ref={ref}>
+        <Button disabled={projectId === ""} style={{ zIndex: 0 }}>
+            {"C'est parti !"}
+        </Button>
+      </a>
+    )
+  })
+  LinkButton.displayName = 'LinkButton'
+
   return (
     <Container>
       <Col>
@@ -108,10 +121,10 @@ export default function ProjectsPage({ projects }: Props) {
           }}
         />
         <Spacer y={1} />
-        <Link href={`/projects/${projectId}/versions`}>
-          <Button disabled={projectId === ""} style={{ zIndex: 0 }}>
-            {"C'est parti !"}
-          </Button>
+        <Link 
+          href={`/projects/${projectId}/versions`}
+          passHref>
+            <LinkButton/>
         </Link>
         <Spacer y={2} />
         <h2>Créer un projet</h2>
