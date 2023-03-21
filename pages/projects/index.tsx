@@ -9,8 +9,8 @@ import {
   Input,
   Spacer,
   Text,
-  useInput,
-} from "@nextui-org/react";
+  Dropdown,
+  useInput } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter } from "next/dist/client/router";
 import { ROOT_URL } from "../../src/constants";
@@ -18,6 +18,8 @@ import { toast } from "react-toastify";
 import wretch from "wretch";
 import { GetServerSideProps } from "next";
 import { protectPage } from "../../src/utils/protectPage";
+import { HelperText } from "../../src/modules/version/components/HelperText";
+
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const redirect = await protectPage(context);
@@ -42,13 +44,24 @@ export default function ProjectsPage({ projects }: Props) {
   const { bindings: projectNameBindings, value: projectName } = useInput("");
   const { bindings: startDateBindings, value: startDate } = useInput("");
   const { bindings: endDateBindings, value: endDate } = useInput("");
-  const [unit, setUnit] = useState("ticket");
-  const { bindings: productivityBindings, value: productivity } = useInput("1");
+  const [unit, setUnit] = useState(new Set(["Select"]));
+  const { bindings: productivityBindings, value: productivity } = useInput("");
   const [errorMessage, setErrorMessage] = useState("");
+  const initFields = {"projectName" : false, "startDate" : false, "endDate" : false, "unit" : false, "productivity" : false}
+  const [missingFields, setMissingFields] = useState(initFields);
 
   const createNewProject = async () => {
-    if (!projectName || !startDate || !endDate || !unit || !productivity) {
-      setErrorMessage("Remplis tous les champs");
+    if (!projectName || !startDate || !endDate || (Array.from(unit)[0] === "Select") || !productivity) {
+      const input = {
+        "projectName" : !projectName,
+        "startDate" : !startDate,
+        "endDate" : !endDate,
+        "unit" : (Array.from(unit)[0] === "Select"),
+        "productivity" : !productivity
+      }
+      setErrorMessage("Please complete all fields");
+      setMissingFields(input);
+
       return;
     }
     const response = await wretch(`${ROOT_URL}/projects`)
@@ -56,7 +69,7 @@ export default function ProjectsPage({ projects }: Props) {
         name: projectName,
         startDate,
         endDate,
-        unit: unit,
+        unit: unit.keys.toString(),
         productivity,
       })
       .json();
@@ -76,14 +89,6 @@ export default function ProjectsPage({ projects }: Props) {
           }))
         : [],
     [projects]
-  );
-
-  const unitOptions = useMemo(
-    () => [
-      { label: "Ticket", value: "ticket" },
-      { label: "Point", value: "point" },
-    ],
-    []
   );
 
   return (
@@ -115,9 +120,9 @@ export default function ProjectsPage({ projects }: Props) {
           <Input
             label="Nom du projet"
             placeholder="Yomoni"
+            type="text"
             {...projectNameBindings}
-            color={errorMessage ? "error" : "default"}
-            status={errorMessage ? "error" : "default"}
+            status={missingFields.projectName ? "error" : "default"}
           />
           <Spacer x={3} />
           <Input
@@ -125,6 +130,7 @@ export default function ProjectsPage({ projects }: Props) {
             placeholder="28/04/2022"
             type="date"
             {...startDateBindings}
+            status={missingFields.startDate ? "error" : "default"}
           />
           <Spacer x={3} />
           <Input
@@ -132,25 +138,47 @@ export default function ProjectsPage({ projects }: Props) {
             placeholder="28/04/2022"
             type="date"
             {...endDateBindings}
+            status={missingFields.endDate ? "error" : "default"}
           />
           <Spacer x={3} />
-          <Text>Unité (ticket ou points)</Text>
-          <div style={{ width: 200 }}>
-            <Select
-              options={unitOptions}
-              onChange={(e) => {
-                setUnit(e?.value ?? "ticket");
-              }}
-            />
-          </div>
+          <Text 
+            color= {missingFields.unit ? "#F31260" : "black"}
+            css = {labelText}>
+              Unité (ticket ou points)</Text>
+          {/* <div style={{ width: 200 }}> */}
+            <Dropdown>
+              <Dropdown.Button 
+                css={missingFields.unit ? errorDropdown : defaultDropdown}
+                flat>{unit}
+              </Dropdown.Button>
+              <Dropdown.Menu 
+                  aria-label="Static Actions"
+                  disallowEmptySelection
+                  selectionMode = "single"
+                  selectedKeys={unit}
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  //@ts-ignore https://nextui.org/docs/components/dropdown#command
+                  onSelectionChange={setUnit}
+                  >
+                <Dropdown.Item key="Tickets">Tickets</Dropdown.Item>
+                <Dropdown.Item key="Points">Points</Dropdown.Item>
+               </Dropdown.Menu>
+            </Dropdown>
+          {/* </div> */}
           <Spacer x={3} />
           <Input
             label="Productivité initiale (/jour/dev)"
             placeholder="1"
             type="number"
             {...productivityBindings}
+            color={missingFields.productivity ? "error" : "default"}
+            status={missingFields.productivity ? "error" : "default"}
           />
           <Spacer x={3} />
+          { errorMessage && <HelperText
+            color={"secondary"}
+            text={"Tous les champs sont requis"}
+          /> }
           <Button onClick={createNewProject} color={"success"}>
             Créer un nouveau projet
           </Button>
@@ -166,3 +194,19 @@ const Header = styled.div`
   display: flex;
   flex-direction: row;
 `;
+
+const defaultDropdown = {
+  background: "#ECEEF0",
+  color: "black",
+  "font-weight": "normal"
+}
+
+const errorDropdown = {
+  background: "#FDD8E5",
+  color: "#F31260"
+}
+
+const labelText = {
+  fontSize: '14px',
+  padding: '$1 $2',
+}
