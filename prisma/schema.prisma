@@ -22,7 +22,7 @@ model Project {
   startAt      DateTime?
   endAt        DateTime?
   unit         UnitType
-  productivity Float          @default(1.0)
+  productivity Float        @default(1.0)
   team         Team?
   versions     Version[]
   createdAt    DateTime     @default(now()) @map(name: "created_at")
@@ -61,7 +61,7 @@ model Release {
   volume          Int
   comment         String
   versionId       String
-  version         Version  @relation(fields: [versionId], references: [id])
+  version         Version  @relation(fields: [versionId], references: [id], onDelete: Cascade)
   createdAt       DateTime @default(now()) @map(name: "created_at")
   updatedAt       DateTime @updatedAt @map(name: "updated_at")
 
@@ -269,18 +269,18 @@ enum UnitType {
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -314,8 +314,8 @@ model VerificationToken {
 }
 
 model PreviewSubscription {
-  id                String @id @default(uuid())
-  email             String @unique
-  createdAt         DateTime @default(now()) @map(name: "created_at")
-  updatedAt         DateTime @updatedAt @map(name: "updated_at")
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
 }
