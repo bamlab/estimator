@@ -17,16 +17,9 @@ import { ROOT_URL } from "../../src/constants";
 import { toast } from "react-toastify";
 import wretch from "wretch";
 import { GetServerSideProps } from "next";
-import { protectPage } from "../../src/utils/protectPage";
 import { HelperText } from "../../src/modules/version/components/HelperText";
 
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const redirect = await protectPage(context);
-  if (redirect) {
-    return { redirect };
-  }
-
+export const getServerSideProps: GetServerSideProps = async () => {
   const response = await fetch(`${ROOT_URL}/projects`).then((res) =>
     res.json()
   );

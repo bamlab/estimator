@@ -20,17 +20,17 @@ export const protectPage = async (
 ): Promise<{ destination: string; permanent: boolean } | undefined> => {
   const session = await getServerSession(context.req, context.res, authOptions);
 
-  if (!session) {
-    return {
-      destination: "/api/auth/signin",
-      permanent: false,
-    };
-  }
-  if (!isM33er(session)) {
-    return {
-      destination: "/preview",
-      permanent: false,
-    };
-  }
-  return undefined;
+  // if (!session) {
+  //   return {
+  //     destination: "/api/auth/signin",
+  //     permanent: false,
+  //   };
+  // }
+  // if (!isM33er(session)) {
+  //   return {
+  //     destination: "/preview",
+  //     permanent: false,
+  //   };
+  // }
+  // return undefined;
 };
