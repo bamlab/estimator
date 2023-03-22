@@ -59,7 +59,7 @@ export const getServerSideProps: GetServerSideProps<
 export default function VersionPage({ project }: Props) {
   const [isVersionModalVisible, setIsVersionModalVisible] = useState(false);
   const router = useRouter();
-
+  
   const deleteChecked = async () => {
     const checked = document.querySelectorAll('input[type="checkbox"]:checked')
     const deleteList = Array.from(checked).map(x => x.id)
@@ -95,7 +95,7 @@ export default function VersionPage({ project }: Props) {
             Sprints
           </Text>
           <Button style={{ zIndex: 0 }} onClick={deleteChecked}>
-            {"Delete"}
+            {"Delete selected sprints"}
           </Button>
         </Row>
         {project.versions.map((version, index) => (
