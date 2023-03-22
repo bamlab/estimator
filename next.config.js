@@ -5,6 +5,8 @@
 
 const { withSentryConfig } = require("@sentry/nextjs");
 
+const shouldDisableSentry = process.env.DISABLE_SENTRY === "1";
+
 const moduleExports = {
   async headers() {
     return [
@@ -43,4 +45,9 @@ const sentryWebpackPluginOptions = {
 
 // Make sure adding Sentry options is the last code to run before exporting, to
 // ensure that your source maps include changes from all other Webpack plugins
-module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions);
+if(shouldDisableSentry){
+  module.exports = moduleExports;
+} else {
+  module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions);
+}
+
