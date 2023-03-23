@@ -13,6 +13,8 @@ import {
 import { parseISO } from "date-fns";
 import { VersionItem } from "../../../../src/modules/version/components/VersionItem";
 import { useRouter } from "next/router";
+import { DeleteConfirmationModal } from "../../../../src/modules/project/components/DeleteConfirmationModal";
+import { toast } from "react-toastify";
 
 type Props = {
   project: FullProjectDTO;
@@ -58,46 +60,59 @@ export const getServerSideProps: GetServerSideProps<
 
 export default function VersionPage({ project }: Props) {
   const [isVersionModalVisible, setIsVersionModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState("no");
   const router = useRouter();
-  
+
   const deleteChecked = async () => {
-    const checked = document.querySelectorAll('input[type="checkbox"]:checked')
-    const deleteList = Array.from(checked).map(x => x.id)
+    const checked = document.querySelectorAll('input[type="checkbox"]:checked');
+    const deleteList = Array.from(checked).map((x) => x.id);
 
     try {
-      const response = await fetch(`/api/projects/${project.id}/versions?versionIds=${deleteList.toString()}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/projects/${
+          project.id
+        }/versions?versionIds=${deleteList.toString()}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (response.ok) {
-        router.reload()
+        router.reload();
+        toast(`Deleting Sprints`);
       } else {
         // eslint-disable-next-line no-console
-        console.log('Failed to delete versions')
+        console.log("Failed to delete versions");
       }
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const deleteAll = async () => {
-    const deleteList = Array.from(project.versions).map(x => x.id)
+    const deleteList = Array.from(project.versions).map((x) => x.id);
 
     try {
-      const response = await fetch(`/api/projects/${project.id}/versions?versionIds=${deleteList.toString()}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/projects/${
+          project.id
+        }/versions?versionIds=${deleteList.toString()}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (response.ok) {
-        router.reload()
+        router.reload();
+        toast(`Deleting Sprints`);
       } else {
         // eslint-disable-next-line no-console
-        console.log('Failed to delete versions')
+        console.log("Failed to delete versions");
       }
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const navigateToVersion = (version: VersionDTO) =>
     router.push(`/projects/${project.id}/versions/${version.id}`);
@@ -109,26 +124,34 @@ export default function VersionPage({ project }: Props) {
           <h1>{project.name}</h1>
         </Header>
         <Spacer y={1} />
-        <Grid.Container >
+        <Grid.Container>
           <Grid xs={6}>
-            <Text h4>
-            Sprints
-            </Text>
+            <Text h4>Sprints</Text>
           </Grid>
-          <Grid xs={3}>          
-            <Button style={{ zIndex: 0 }} onClick={deleteChecked}>
-            {"Delete selected sprints"}
+          <Grid xs={3}>
+            <Button
+              style={{ zIndex: 0 }}
+              onPress={() => {
+                setIsDeleteModalVisible("selected");
+              }}
+            >
+              {"Delete selected sprints"}
             </Button>
             <Spacer x={1} />
-            <Button style={{ zIndex: 0 }} onClick={deleteAll}>
-            {"Delete all sprints"}
+            <Button
+              style={{ zIndex: 0 }}
+              onPress={() => {
+                setIsDeleteModalVisible("all");
+              }}
+            >
+              {"Delete all sprints"}
             </Button>
           </Grid>
         </Grid.Container>
         {project.versions.map((version, index) => (
           <PaddingBox key={version.id}>
-            <input type='checkbox' id={version.id}/>
-            <Spacer x={1}/>
+            <input type="checkbox" id={version.id} />
+            <Spacer x={1} />
             <VersionItem
               version={version}
               isLast={index === 0}
@@ -147,11 +170,17 @@ export default function VersionPage({ project }: Props) {
           {"Créer une nouvelle version"}
         </Button>
 
-        <Spacer y={2} />
         <VersionFormModal
           project={project}
           isVisible={isVersionModalVisible}
           setIsVisible={setIsVersionModalVisible}
+        />
+        <DeleteConfirmationModal
+          isVisible={isDeleteModalVisible}
+          setIsVisible={setIsDeleteModalVisible}
+          onDeleteConfirm={
+            isDeleteModalVisible === "selected" ? deleteChecked : deleteAll
+          }
         />
       </Col>
     </MainLayout>
