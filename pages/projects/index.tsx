@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState} from "react";
 import styled from "@emotion/styled";
 import Select from "react-select";
 import { Project } from "@prisma/client";
@@ -84,19 +84,6 @@ export default function ProjectsPage({ projects }: Props) {
     [projects]
   );
 
-  // `onClick`, `href`, and `ref` need to be passed to the DOM element
-  // for proper handling
-  // const LinkButton = React.forwardRef(({ onClick, href }, ref) => {
-  //   return (
-  //     <a href={href} onClick={onClick} ref={ref}>
-  //       <Button disabled={projectId === ""} style={{ zIndex: 0 }}>
-  //           {"C'est parti !"}
-  //       </Button>
-  //     </a>
-  //   )
-  // })
-  // LinkButton.displayName = 'LinkButton'
-
   return (
     <Container>
       <Col>
@@ -117,9 +104,9 @@ export default function ProjectsPage({ projects }: Props) {
         <Link
           href={`/projects/${projectId}/versions`}
           passHref>
-            <Button disabled={projectId === ""} style={{ zIndex: 0 }}>
-              {"C'est parti !"}
-            </Button>
+            {!projectId ?            
+             (<a style = {UnavailableButton}> {"C'est parti !"}</a>) :
+             (<a style = {SelectButton}>{"C'est parti !"}</a>)}
         </Link>
         <Spacer y={2} />
         <h2>Créer un projet</h2>
@@ -217,4 +204,33 @@ const errorDropdown = {
 const labelText = {
   fontSize: '14px',
   padding: '$1 $2',
+}
+
+const SelectButton = {
+  "display": "block",
+    "width": "115px",
+    "height": "45px",
+    "background": "#0072F5",
+    "padding": "10px",
+    "text-align": "center",
+    "border-radius": "10px",
+    "color": "white",
+    "font-weight": "normal",
+    "font-size" : "14px",
+    "line-height": "25px",
+}
+
+const UnavailableButton = {
+    "display": "block",
+    "width": "115px",
+    "height": "45px",
+    "background": "#ECEEF0",
+    "padding": "10px",
+    "text-align": "center",
+    "border-radius": "10px",
+    "color": "black",
+    "font-weight": "normal",
+    "font-size" : "14px",
+    "line-height": "25px",
+    "pointer-events": 'none'
 }
