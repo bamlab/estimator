@@ -1,12 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import {
-  Button,
-  Modal,
-  Row,
-  Spacer,
-  Text,
-} from "@nextui-org/react";
-
+import { Button, Modal, Row, Spacer, Text } from "@nextui-org/react";
 
 interface Props {
   isVisible: string;
@@ -17,50 +10,55 @@ interface Props {
 export const DeleteConfirmationModal: React.FC<Props> = ({
   isVisible,
   setIsVisible,
-  onDeleteConfirm
+  onDeleteConfirm,
 }) => {
-
   return (
-    <Modal open={isVisible === 'selected' ||
-                 isVisible === 'all' }
-           onClose={() => setIsVisible('no')}
-           width = "500px">
+    <Modal
+      open={isVisible === "selected" || isVisible === "all"}
+      onClose={() => setIsVisible("no")}
+      width="500px"
+    >
       <Modal.Header>
-        <Text id="modal-title" 
-              size={18}
-              weight="bold">
+        <Text id="modal-title" size={18} weight="bold">
           Warning
-        </Text >
+        </Text>
       </Modal.Header>
 
       <Modal.Body>
-        <Text css={{textAlign: "center"}}>          
+        <Text css={{ textAlign: "center" }}>
           Sprint deletion is permanent, are you sure you want to continue?
         </Text>
-        <Spacer y={0.5}/>
+        <Spacer y={0.5} />
 
         <Row justify="space-between">
-          <Button style={DeleteButton}
-                    onPress={() => { onDeleteConfirm() }}>
-            {"Yes, Delete"}
+          <Button
+            style={BackButton}
+            onPress={() => {
+              setIsVisible("no");
+            }}
+          >
+            {"Cancel"}
           </Button>
-          <Spacer x={2}/>
-          <Button style={BackButton} 
-                    onPress={() => { setIsVisible('no') }}>
-            {"Go Back"}
+          <Spacer x={2} />
+          <Button
+            style={DeleteButton}
+            onPress={() => {
+              onDeleteConfirm();
+            }}
+          >
+            {"Delete"}
           </Button>
         </Row>
-
       </Modal.Body>
     </Modal>
   );
 };
 
 const DeleteButton = {
-  "backgroundColor": "#f03d30"
-}
+  backgroundColor: "#f03d30",
+};
 
 const BackButton = {
-  "backgroundColor": "#ECEEF0" ,
-  "color": "black"
-}
+  backgroundColor: "#ECEEF0",
+  color: "black",
+};
