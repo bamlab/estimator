@@ -24,8 +24,10 @@ export const Chart = ({
   data: ChartPoint[];
   sortedReleases: ReleaseDTO[];
 }) => {
+  const positiveChartPoints = data.filter((point) => point.remaining >= 0);
+
   return (
-    <LineChart width={800} height={400} data={data} id="bdc">
+    <LineChart width={800} height={400} data={positiveChartPoints} id="bdc">
       <Legend
         verticalAlign={"bottom"}
         wrapperStyle={{
@@ -36,7 +38,7 @@ export const Chart = ({
         }}
         content={() => <ChartLegend />}
       />
-      <XAxis dataKey="name" />
+      <XAxis dataKey="name"/>
       <YAxis />
       <CartesianGrid stroke="#ccc" />
       <Line type="linear" stroke={STANDARD_STROKE_COLOR} dataKey="standard" />
