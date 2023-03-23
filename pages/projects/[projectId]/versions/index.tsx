@@ -13,6 +13,8 @@ import {
 import { parseISO } from "date-fns";
 import { VersionItem } from "../../../../src/modules/version/components/VersionItem";
 import { useRouter } from "next/router";
+import { DeleteConfirmationModal } from "../../../../src/modules/project/components/DeleteConfirmationModal";
+import { toast } from "react-toastify";
 
 type Props = {
   project: FullProjectDTO;
@@ -58,6 +60,7 @@ export const getServerSideProps: GetServerSideProps<
 
 export default function VersionPage({ project }: Props) {
   const [isVersionModalVisible, setIsVersionModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState('no');
   const router = useRouter();
   
   const deleteChecked = async () => {
@@ -70,6 +73,7 @@ export default function VersionPage({ project }: Props) {
       });
       if (response.ok) {
         router.reload()
+        toast(`Deleting Sprints`);
       } else {
         // eslint-disable-next-line no-console
         console.log('Failed to delete versions')
@@ -89,6 +93,7 @@ export default function VersionPage({ project }: Props) {
       });
       if (response.ok) {
         router.reload()
+        toast(`Deleting Sprints`);
       } else {
         // eslint-disable-next-line no-console
         console.log('Failed to delete versions')
@@ -116,12 +121,14 @@ export default function VersionPage({ project }: Props) {
             </Text>
           </Grid>
           <Grid xs={3}>          
-            <Button style={{ zIndex: 0 }} onClick={deleteChecked}>
-            {"Delete selected sprints"}
+            <Button style={{ zIndex: 0 }} 
+                    onPress={() => { setIsDeleteModalVisible('selected') }}>
+              {"Delete selected sprints"}
             </Button>
             <Spacer x={1} />
-            <Button style={{ zIndex: 0 }} onClick={deleteAll}>
-            {"Delete all sprints"}
+            <Button style={{ zIndex: 0 }} 
+                    onPress={() => { setIsDeleteModalVisible('all') }}>
+              {"Delete all sprints"}
             </Button>
           </Grid>
         </Grid.Container>
@@ -147,11 +154,17 @@ export default function VersionPage({ project }: Props) {
           {"Créer une nouvelle version"}
         </Button>
 
-        <Spacer y={2} />
         <VersionFormModal
           project={project}
           isVisible={isVersionModalVisible}
           setIsVisible={setIsVersionModalVisible}
+        />
+        <DeleteConfirmationModal
+          isVisible={isDeleteModalVisible}
+          setIsVisible={setIsDeleteModalVisible}
+          onDeleteConfirm={
+            isDeleteModalVisible === 'selected' ? deleteChecked : deleteAll
+          }
         />
       </Col>
     </MainLayout>
