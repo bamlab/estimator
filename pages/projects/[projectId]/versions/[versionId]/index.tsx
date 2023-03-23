@@ -288,7 +288,7 @@ export default function VersionPage({
               render={({ field: { onChange, value } }) => (
                 <Textarea
                   fullWidth
-                  label="Commentaire"
+                  label="Problem Solving Description" //"Commentaire"
                   status={isError ? "error" : undefined}
                   onChange={onChange}
                   value={value}
