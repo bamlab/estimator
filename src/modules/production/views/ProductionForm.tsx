@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { addBusinessDays, differenceInBusinessDays, parseISO } from "date-fns";
 import { formatDate } from "../../../utils/formatDate";
 import { FullProjectDTO } from "../../../modules/project/types";
-import { FormElement, Input } from "@nextui-org/react";
+import { Button, Container, FormElement, Input } from "@nextui-org/react";
 import range from "lodash/range";
 
 type Props = {
@@ -36,6 +36,16 @@ export const ProductionForm = ({
     }));
   };
 
+  const clearInput = () => {
+    setData((data) => {
+      const newData: Record<string, { id: string; value: number }> = {};
+      Object.keys(data).forEach((key) => {
+        newData[key] = { ...data[key], value: parseInt("") };
+      });
+      return newData;
+    });
+  };
+
   useEffect(() => {
     const newData: Record<string, { id: string; value: number }> = {};
 
@@ -50,38 +60,47 @@ export const ProductionForm = ({
   }, [project]);
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>{"Jour"}</th>
-          <th>{"Done"}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {dates.map((date) => {
-          const done = data[formatDate(date)];
-          const value = done?.value ?? "";
-          const id = done?.id ?? "";
-          return (
-            <tr key={date.toString()}>
-              <td> {formatDate(date)} </td>
-              <td>
-                <Input
-                  type="number"
-                  aria-label="done"
-                  value={value}
-                  onChange={(e: React.ChangeEvent<FormElement>) =>
-                    updateInput(date, id, e.target.value)
-                  }
-                  onBlur={(e) => {
-                    onProductionSet(date, id, e.target.value);
-                  }}
-                />
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <Container>
+      <table>
+        <thead>
+          <tr>
+            <th>{"Day"}</th>
+            <th>{"Done"}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {dates.map((date) => {
+            const done = data[formatDate(date)];
+            const value = done?.value ?? "";
+            const id = done?.id ?? "";
+            return (
+              <tr key={date.toString()}>
+                <td> {formatDate(date)} </td>
+                <td>
+                  <Input
+                    type="number"
+                    aria-label="done"
+                    value={value}
+                    onChange={(e: React.ChangeEvent<FormElement>) =>
+                      updateInput(date, id, e.target.value)
+                    }
+                    onBlur={(e) => {
+                      onProductionSet(date, id, e.target.value);
+                    }}
+                  />
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <Button
+        onPress={() => {
+          clearInput();
+        }}
+      >
+        Clear All
+      </Button>
+    </Container>
   );
 };
