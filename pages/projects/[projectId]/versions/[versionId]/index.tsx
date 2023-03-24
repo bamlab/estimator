@@ -240,7 +240,7 @@ export default function VersionPage({
             <Chart data={data} sortedReleases={sortedReleases}></Chart>
             <Spacer y={1} />
             {data.length - positiveChartPoints.length > 0 && (
-              <Text style={{color: 'red'}}>
+              <Text style={{ color: "red" }}>
                 {`You have completed more ${project.unit.toLocaleLowerCase()}s than expected this sprint, please edit the volume`}
               </Text>
             )}
@@ -296,7 +296,7 @@ export default function VersionPage({
               render={({ field: { onChange, value } }) => (
                 <Textarea
                   fullWidth
-                  label="Problem Solving Description" //"Commentaire"
+                  label="Problem Solvin Description" //"Commentaire"
                   status={isError ? "error" : undefined}
                   onChange={onChange}
                   value={value}
