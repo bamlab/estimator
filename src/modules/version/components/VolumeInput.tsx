@@ -14,12 +14,14 @@ interface Props {
   endDate: string;
   control: Control<VersionFormData, object> | Control<ReleaseFormData, object>;
   project: FullProjectDTO;
+  label: string;
 }
 export const VolumeInput: React.FC<Props> = ({
   startDate,
   endDate,
   control,
   project,
+  label,
 }) => {
   const [volumeEstimation, setVolumeEstimation] = useState<number | string>("");
 
@@ -45,7 +47,7 @@ export const VolumeInput: React.FC<Props> = ({
           <Input
             onChange={onChange}
             value={value}
-            label={`Volume (en ${project.unit.toLocaleLowerCase()}s)`}
+            label={label} //`Volume (en ${project.unit.toLocaleLowerCase()}s)`
             type="number"
           />
         )}

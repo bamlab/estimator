@@ -62,19 +62,21 @@ export const VersionFormModal: React.FC<Props> = ({
   const volume = watch("volume");
 
   const onSubmit = async (formData: VersionFormData) => {
-    return createNewVersion(formData, project.id)
-      .then((version) => {
-        setIsVisible(false);
+    return (
+      createNewVersion(formData, project.id)
+        .then((version) => {
+          setIsVisible(false);
 
-        if (version) {
-          toast(`La version ${version.name} a bien été créée`);
-          router.push(`/projects/${project.id}/versions/${version.id}`);
-        } else {
-          toast(`Une erreur s'est produite`, { type: "error" });
-        }
-      })
-      // eslint-disable-next-line no-console
-      .catch((e) => console.log(e));
+          if (version) {
+            toast(`La version ${version.name} a bien été créée`);
+            router.push(`/projects/${project.id}/versions/${version.id}`);
+          } else {
+            toast(`Une erreur s'est produite`, { type: "error" });
+          }
+        })
+        // eslint-disable-next-line no-console
+        .catch((e) => console.log(e))
+    );
   };
 
   return (
@@ -119,7 +121,7 @@ export const VersionFormModal: React.FC<Props> = ({
               <Input
                 onChange={onChange}
                 value={value}
-                label="Date de début"
+                label="Start Date" //"Date de début"
                 type="date"
                 color={errors.startDate ? "error" : "default"}
                 status={errors.startDate ? "error" : "default"}
@@ -137,6 +139,7 @@ export const VersionFormModal: React.FC<Props> = ({
             endDate={endDate}
             volume={volume}
             project={project}
+            label={"End date"}
           />
           <Spacer y={1} />
           <Controller
@@ -152,6 +155,7 @@ export const VersionFormModal: React.FC<Props> = ({
             startDate={startDate}
             endDate={endDate}
             project={project}
+            label={`Volume (in ${project.unit.toLocaleLowerCase()}s)`}
           />
           <Spacer y={1} />
 
