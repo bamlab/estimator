@@ -281,6 +281,7 @@ export default function VersionPage({
               endDate={endDate}
               volume={volume}
               project={project}
+              label={"Revised end date"}
             />
 
             <VolumeInput
@@ -288,7 +289,9 @@ export default function VersionPage({
               startDate={version.startDate}
               endDate={endDate}
               project={project}
+              label={`Adjust volume (in ${project.unit.toLocaleLowerCase()}s)`}
             />
+
             <Controller
               name="comment"
               control={control}
@@ -296,7 +299,7 @@ export default function VersionPage({
               render={({ field: { onChange, value } }) => (
                 <Textarea
                   fullWidth
-                  label="Problem Solvin Description" //"Commentaire"
+                  label="Problem solving description" //"Commentaire"
                   status={isError ? "error" : undefined}
                   onChange={onChange}
                   value={value}

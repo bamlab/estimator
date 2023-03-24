@@ -15,6 +15,7 @@ interface Props {
   endDate: string;
   control: Control<VersionFormData, object> | Control<ReleaseFormData, object>;
   project: FullProjectDTO;
+  label: string;
 }
 export const EndDateInput: React.FC<Props> = ({
   volume,
@@ -22,6 +23,7 @@ export const EndDateInput: React.FC<Props> = ({
   endDate,
   control,
   project,
+  label,
 }) => {
   const [endDateEstimation, setEndDateEstimation] = useState<string>("");
   const [endDateWarning, setEndDateWarning] = useState("");
@@ -57,7 +59,7 @@ export const EndDateInput: React.FC<Props> = ({
             <Input
               onChange={onChange}
               value={value}
-              label="Date de fin prévue"
+              label={label} //"Date de fin prévue"
               type="date"
             />
           )}
