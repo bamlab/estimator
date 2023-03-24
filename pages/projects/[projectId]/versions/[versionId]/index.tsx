@@ -289,7 +289,7 @@ export default function VersionPage({
               startDate={version.startDate}
               endDate={endDate}
               project={project}
-              label={`Adjust Volume (in ${project.unit.toLocaleLowerCase()}s)`}
+              label={`Adjust volume (in ${project.unit.toLocaleLowerCase()}s)`}
             />
 
             <Controller
@@ -299,7 +299,7 @@ export default function VersionPage({
               render={({ field: { onChange, value } }) => (
                 <Textarea
                   fullWidth
-                  label="Problem Solving Description" //"Commentaire"
+                  label="Problem solving description" //"Commentaire"
                   status={isError ? "error" : undefined}
                   onChange={onChange}
                   value={value}
