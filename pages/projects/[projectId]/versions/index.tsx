@@ -80,8 +80,8 @@ export default function VersionPage({ project }: Props) {
         }
       );
       if (response.ok) {
-        router.reload();
         toast(`Deleting Sprints`);
+        router.reload();
       } else {
         // eslint-disable-next-line no-console
         console.log("Failed to delete versions");
@@ -105,8 +105,8 @@ export default function VersionPage({ project }: Props) {
         }
       );
       if (response.ok) {
-        router.reload();
         toast(`Deleting Sprints`);
+        router.reload();
       } else {
         // eslint-disable-next-line no-console
         console.log("Failed to delete versions");
