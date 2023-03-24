@@ -24,6 +24,8 @@ type Params = {
   projectId: string;
 };
 
+type DeleteModalState = "no" | "checked" | "all";
+
 export const getServerSideProps: GetServerSideProps<
   Props | Record<string, unknown>,
   Params
@@ -60,7 +62,8 @@ export const getServerSideProps: GetServerSideProps<
 
 export default function VersionPage({ project }: Props) {
   const [isVersionModalVisible, setIsVersionModalVisible] = useState(false);
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState("no");
+  const [isDeleteModalVisible, setIsDeleteModalVisible] =
+    useState<DeleteModalState>("no");
   const router = useRouter();
 
   const deleteChecked = async () => {
@@ -77,8 +80,8 @@ export default function VersionPage({ project }: Props) {
         }
       );
       if (response.ok) {
-        router.reload();
         toast(`Deleting Sprints`);
+        router.reload();
       } else {
         // eslint-disable-next-line no-console
         console.log("Failed to delete versions");
@@ -102,8 +105,8 @@ export default function VersionPage({ project }: Props) {
         }
       );
       if (response.ok) {
-        router.reload();
         toast(`Deleting Sprints`);
+        router.reload();
       } else {
         // eslint-disable-next-line no-console
         console.log("Failed to delete versions");
@@ -132,7 +135,7 @@ export default function VersionPage({ project }: Props) {
             <Button
               style={{ zIndex: 0 }}
               onPress={() => {
-                setIsDeleteModalVisible("selected");
+                setIsDeleteModalVisible("checked");
               }}
             >
               {"Delete selected sprints"}
@@ -179,7 +182,7 @@ export default function VersionPage({ project }: Props) {
           isVisible={isDeleteModalVisible}
           setIsVisible={setIsDeleteModalVisible}
           onDeleteConfirm={
-            isDeleteModalVisible === "selected" ? deleteChecked : deleteAll
+            isDeleteModalVisible === "checked" ? deleteChecked : deleteAll
           }
         />
       </Col>

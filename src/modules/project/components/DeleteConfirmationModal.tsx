@@ -3,9 +3,10 @@ import { Button, Modal, Row, Spacer, Text } from "@nextui-org/react";
 
 interface Props {
   isVisible: string;
-  setIsVisible: Dispatch<SetStateAction<string>>;
+  setIsVisible: Dispatch<SetStateAction<DeleteModalState>>;
   onDeleteConfirm: () => Promise<void>;
 }
+type DeleteModalState = "no" | "checked" | "all";
 
 export const DeleteConfirmationModal: React.FC<Props> = ({
   isVisible,
@@ -14,7 +15,7 @@ export const DeleteConfirmationModal: React.FC<Props> = ({
 }) => {
   return (
     <Modal
-      open={isVisible === "selected" || isVisible === "all"}
+      open={isVisible === "checked" || isVisible === "all"}
       onClose={() => setIsVisible("no")}
       width="500px"
     >
@@ -43,6 +44,7 @@ export const DeleteConfirmationModal: React.FC<Props> = ({
           <Button
             style={DeleteButton}
             onPress={() => {
+              setIsVisible("no");
               onDeleteConfirm();
             }}
           >
