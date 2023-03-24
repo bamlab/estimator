@@ -5,18 +5,20 @@ import styled from "@emotion/styled";
 interface Props {
   label: string;
   value: string | number | undefined;
+  style?: object;
 }
-export const InformationLabel: React.FC<Props> = ({ label, value }) => {
+export const InformationLabel: React.FC<Props> = ({ label, value, style }) => {
   return (
-    <LabelContainer>
-      <Text size={15}>{label}</Text>
-      <Text size={15}>{value}</Text>
+    <LabelContainer style={style}>
+      <Text size={14}>{label}</Text>
+      <Text size={14}>{value}</Text>
     </LabelContainer>
   );
 };
 
 const LabelContainer = styled.div`
   display: flex;
+  flex: 1;
   background-color: #6c99f2;
   border-radius: 10px;
   justify-content: space-between;
