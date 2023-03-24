@@ -221,11 +221,6 @@ export default function VersionPage({
 
   const positiveChartPoints = data.filter((point) => point.remaining >= 0);
 
-  const humaniseUnit = (unit: string) => {
-    if(unit === "POINT") return "points";
-    return "tickets";
-  }
-
   return (
     <MainLayout projectId={project.id}>
       <Col span={12}>
@@ -246,7 +241,7 @@ export default function VersionPage({
             <Spacer y={1} />
             {data.length - positiveChartPoints.length > 0 && (
               <Text style={{color: 'red'}}>
-                {`You have completed more ${humaniseUnit(project.unit)} than expected this sprint, please edit the volume`}
+                {`You have completed more ${project.unit.toLocaleLowerCase()}s than expected this sprint, please edit the volume`}
               </Text>
             )}
             <Spacer y={1} />
