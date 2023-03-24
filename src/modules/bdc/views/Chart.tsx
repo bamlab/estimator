@@ -24,10 +24,9 @@ export const Chart = ({
   data: ChartPoint[];
   sortedReleases: ReleaseDTO[];
 }) => {
-  const positiveChartPoints = data.filter((point) => point.remaining >= 0);
 
   return (
-    <LineChart width={800} height={400} data={positiveChartPoints} id="bdc">
+    <LineChart width={800} height={400} data={data} id="bdc">
       <Legend
         verticalAlign={"bottom"}
         wrapperStyle={{
