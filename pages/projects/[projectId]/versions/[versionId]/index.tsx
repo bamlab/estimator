@@ -219,6 +219,8 @@ export default function VersionPage({
     [version]
   );
 
+  const positiveChartPoints = data.filter((point) => point.remaining >= 0);
+
   return (
     <MainLayout projectId={project.id}>
       <Col span={12}>
@@ -236,7 +238,13 @@ export default function VersionPage({
         <Row>
           <Col>
             <Chart data={data} sortedReleases={sortedReleases}></Chart>
-            <Spacer y={3} />
+            <Spacer y={1} />
+            {data.length - positiveChartPoints.length > 0 && (
+              <Text style={{color: 'red'}}>
+                {`You have completed more ${project.unit.toLocaleLowerCase()}s than expected this sprint, please edit the volume`}
+              </Text>
+            )}
+            <Spacer y={1} />
             <Button onPress={() => setIsReleaseModalVisible(true)}>
               Créer une nouvelle release candidate
             </Button>
