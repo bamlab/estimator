@@ -219,7 +219,7 @@ export default function VersionPage({
     [version]
   );
 
-  const positiveChartPoints = data.filter((point) => point.remaining >= 0);
+  const positiveChartPoints = data.filter(point => !(point.remaining < 0));
 
   return (
     <MainLayout projectId={project.id}>
