@@ -28,6 +28,7 @@ import {
 import { Chart } from "../../../../../src/modules/bdc/views/Chart";
 import { getVersionStartAndEndDate } from "../../../../../src/modules/version/helpers/getVersionStartAndEndDate";
 import { ProductionForm } from "../../../../../src/modules/production/views/ProductionForm";
+import { AdjustmentHistoryTable } from "../../../../../src/modules/production/views/AdjustmentHistoryTable";
 import { VolumeInput } from "../../../../../src/modules/version/components/VolumeInput";
 import { Controller, useForm } from "react-hook-form";
 import { HelperText } from "../../../../../src/modules/version/components/HelperText";
@@ -220,7 +221,7 @@ export default function VersionPage({
     [version]
   );
 
-  const positiveChartPoints = data.filter(point => !(point.remaining < 0));
+  const positiveChartPoints = data.filter((point) => !(point.remaining < 0));
 
   const remainingVolumeArray = data
     .filter((point) => !isNaN(point.remaining))
@@ -254,6 +255,13 @@ export default function VersionPage({
             <Button onPress={() => setIsReleaseModalVisible(true)}>
               Créer une nouvelle release candidate
             </Button>
+            <Spacer y={2} />
+            <h3>Adjustment History</h3>
+
+            <AdjustmentHistoryTable
+              endDate={productionEndDate}
+              releases={sortedReleases}
+            />
           </Col>
           <Spacer x={3} />
 
