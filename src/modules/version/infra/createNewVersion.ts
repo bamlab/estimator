@@ -26,7 +26,8 @@ export const createNewVersion = async ({
       releases: {
         create: {
           name: "RC1",
-          comment: "",
+          description: "",
+          reasonForChange: "",
           forecastEndDate: new Date(endDate),
           volume: parsedVolume,
         },
