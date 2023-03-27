@@ -32,6 +32,7 @@ import { VolumeInput } from "../../../../../src/modules/version/components/Volum
 import { Controller, useForm } from "react-hook-form";
 import { HelperText } from "../../../../../src/modules/version/components/HelperText";
 import { EndDateInput } from "../../../../../src/modules/version/components/EndDateInput";
+import { InformationLabel } from "../../../../../src/modules/version/components/InformationLabel";
 
 type Props = {
   project: FullProjectDTO;
@@ -221,6 +222,11 @@ export default function VersionPage({
 
   const positiveChartPoints = data.filter(point => !(point.remaining < 0));
 
+  const remainingVolumeArray = data
+    .filter((point) => !isNaN(point.remaining))
+    .map((point) => point.remaining);
+  const chartPointRemaining = Math.min(...remainingVolumeArray);
+
   return (
     <MainLayout projectId={project.id}>
       <Col span={12}>
@@ -283,13 +289,31 @@ export default function VersionPage({
               project={project}
               label={"Revised end date"}
             />
+            <FormLabel>
+              Adjust volume (in {project.unit.toLocaleLowerCase()}s)
+            </FormLabel>
+            {
+              //original French label:
+              //`Volume (en ${project.unit.toLocaleLowerCase()}s)`
+            }
+            <VolumeInformation>
+              <InformationLabel
+                style={{ marginRight: "10px" }}
+                label={"Original Volume"}
+                value={control._defaultValues.volume}
+              />
+              <InformationLabel
+                style={{ marginLeft: "10px" }}
+                label={"Remaining Volume"}
+                value={chartPointRemaining}
+              />
+            </VolumeInformation>
 
             <VolumeInput
               control={control}
               startDate={version.startDate}
               endDate={endDate}
               project={project}
-              label={`Adjust volume (in ${project.unit.toLocaleLowerCase()}s)`}
             />
 
             <Controller
@@ -329,4 +353,16 @@ export default function VersionPage({
 
 const Header = styled.div`
   margin-left: 1rem;
+`;
+
+const VolumeInformation = styled.div`
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+`;
+
+const FormLabel = styled(Text)`
+  font-size: 14px;
+  margin-bottom: 6px;
 `;

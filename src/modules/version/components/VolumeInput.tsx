@@ -14,7 +14,7 @@ interface Props {
   endDate: string;
   control: Control<VersionFormData, object> | Control<ReleaseFormData, object>;
   project: FullProjectDTO;
-  label: string;
+  label?: string;
 }
 export const VolumeInput: React.FC<Props> = ({
   startDate,
@@ -47,7 +47,7 @@ export const VolumeInput: React.FC<Props> = ({
           <Input
             onChange={onChange}
             value={value}
-            label={label} //`Volume (en ${project.unit.toLocaleLowerCase()}s)`
+            label={label}
             type="number"
           />
         )}
