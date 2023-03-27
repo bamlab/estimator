@@ -281,14 +281,25 @@ export default function VersionPage({
         </Modal.Header>
         <form onSubmit={handleSubmit(handleCreateNewRelease)}>
           <Modal.Body>
-            <EndDateInput
-              control={control}
-              startDate={version.startDate}
-              endDate={endDate}
-              volume={volume}
-              project={project}
-              label={"Revised end date"}
-            />
+            <div>
+              <FormLabel>Revised end date</FormLabel>
+              {
+                //original French label:
+                //`Date de fin prévue`
+              }
+              <InformationLabel
+                style={{ marginBottom: "10px" }}
+                label={"Original End Date"}
+                value={control._defaultValues.endDate}
+              />
+              <EndDateInput
+                control={control}
+                startDate={version.startDate}
+                endDate={endDate}
+                volume={volume}
+                project={project}
+              />
+            </div>
             <FormLabel>
               Adjust volume (in {project.unit.toLocaleLowerCase()}s)
             </FormLabel>
