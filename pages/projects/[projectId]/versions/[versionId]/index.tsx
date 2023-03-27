@@ -48,8 +48,9 @@ type Params = {
 
 export type ReleaseFormData = {
   endDate: string;
-  comment: string;
+  description: string;
   volume: string;
+  reasonForChange: string;
 };
 
 const REQUIRED_FIELD_ERROR_TEXT = "Ce champ est requis";
@@ -123,13 +124,15 @@ export default function VersionPage({
     mode: "all",
     defaultValues: {
       endDate: release.forecastEndDate.split("T")[0],
-      comment: "",
+      description: "",
       volume: release.volume.toString(),
+      reasonForChange: "",
     },
   });
 
   const endDate = watch("endDate");
-  const comment = watch("comment");
+  const description = watch("description");
+  const reasonForChange = watch("reasonForChange");
   const volume = watch("volume");
 
   const [isError, setIsError] = useState(false);
@@ -172,39 +175,43 @@ export default function VersionPage({
   };
 
   const createNewRelease = ({
-    comment,
+    description,
     forecastEndDate,
     volume,
+    reasonForChange,
   }: {
     volume: number;
-    comment: string;
+    description: string;
     forecastEndDate: Date;
+    reasonForChange: string;
   }) => {
     const data: CREATE_RELEASE_DTO = {
-      comment,
+      description,
       forecastEndDate: forecastEndDate.toISOString(),
       name: "RC" + (parseInt(release.name.split("RC")[1]) + 1),
       versionId: version.id,
       volume,
+      reasonForChange,
     };
     return wretch(`${ROOT_URL}/releases`).post(data).json<Release>();
   };
 
   const closeReleaseModal = () => {
-    setValue("comment", "");
+    setValue("description", "");
     setIsError(false);
     setIsReleaseModalVisible(false);
   };
 
   const handleCreateNewRelease = async (formData: ReleaseFormData) => {
-    if (!comment) {
+    if (!description || !reasonForChange) {
       setIsError(true);
       return;
     }
     await createNewRelease({
-      comment: formData.comment,
+      description: formData.description,
       forecastEndDate: new Date(formData.endDate),
       volume: parseInt(formData.volume),
+      reasonForChange: formData.reasonForChange,
     });
     closeReleaseModal();
     toast("Nouvelle release créée", { type: "success" });
@@ -220,7 +227,7 @@ export default function VersionPage({
     [version]
   );
 
-  const positiveChartPoints = data.filter(point => !(point.remaining < 0));
+  const positiveChartPoints = data.filter((point) => !(point.remaining < 0));
 
   const remainingVolumeArray = data
     .filter((point) => !isNaN(point.remaining))
@@ -317,7 +324,23 @@ export default function VersionPage({
             />
 
             <Controller
-              name="comment"
+              name="reasonForChange"
+              control={control}
+              rules={{ required: REQUIRED_FIELD_ERROR_TEXT }}
+              render={({ field: { onChange, value } }) => (
+                <Textarea
+                  fullWidth
+                  label="Reason for change"
+                  status={isError ? "error" : undefined}
+                  onChange={onChange}
+                  value={value}
+                  maxLength={80}
+                  maxRows={2}
+                />
+              )}
+            />
+            <Controller
+              name="description"
               control={control}
               rules={{ required: REQUIRED_FIELD_ERROR_TEXT }}
               render={({ field: { onChange, value } }) => (
@@ -340,7 +363,9 @@ export default function VersionPage({
               auto
               color={"success"}
               type="submit"
-              disabled={(volume && endDate && comment) === ""}
+              disabled={
+                (volume && endDate && description && reasonForChange) === ""
+              }
             >
               Créer la nouvelle release
             </Button>
