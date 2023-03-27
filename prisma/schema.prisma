@@ -60,12 +60,12 @@ model Release {
   name            String
   forecastEndDate DateTime
   volume          Int
-  comment         String
+  description     String @map(name: "comment")
+  reasonForChange String @default("")
   versionId       String
   version         Version  @relation(fields: [versionId], references: [id], onDelete: Cascade)
   createdAt       DateTime @default(now()) @map(name: "created_at")
   updatedAt       DateTime @updatedAt @map(name: "updated_at")
-
   @@map(name: "releases")
 }
 

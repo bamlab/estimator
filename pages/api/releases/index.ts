@@ -4,7 +4,8 @@ import { prisma } from "../../../src/lib/prisma";
 
 export type CREATE_RELEASE_DTO = {
   name: string;
-  comment: string;
+  description: string;
+  reasonForChange: string;
   forecastEndDate: string;
   volume: number;
   versionId: string;
@@ -16,13 +17,20 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
 
     res.status(200).json(releases);
   } else if (req.method === "POST") {
-    const { name, comment, forecastEndDate, volume, versionId } =
-      req.body as CREATE_RELEASE_DTO;
+    const {
+      name,
+      description,
+      forecastEndDate,
+      volume,
+      versionId,
+      reasonForChange,
+    } = req.body as CREATE_RELEASE_DTO;
 
     const release = await prisma.release.create({
       data: {
         name,
-        comment,
+        description,
+        reasonForChange,
         forecastEndDate: new Date(forecastEndDate),
         volume,
         versionId,
