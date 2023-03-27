@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 import { addBusinessDays, differenceInBusinessDays, parseISO } from "date-fns";
 import { formatDate } from "../../../utils/formatDate";
 import { FullProjectDTO } from "../../../modules/project/types";
-import { Button, Container, FormElement, Input } from "@nextui-org/react";
+import {
+  Button,
+  Container,
+  FormElement,
+  Input,
+  Spacer,
+  styled,
+} from "@nextui-org/react";
 import range from "lodash/range";
 
 type Props = {
@@ -94,13 +101,20 @@ export const ProductionForm = ({
           })}
         </tbody>
       </table>
+      <Spacer y={1} />
       <Button
+        style={DeleteButton}
         onPress={() => {
           clearInput();
+          onProductionSet(new Date(0), "", "all");
         }}
       >
         Clear All
       </Button>
     </Container>
   );
+};
+
+const DeleteButton = {
+  backgroundColor: "#f03d30",
 };

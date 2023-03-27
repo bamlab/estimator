@@ -12,7 +12,6 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
       id: string;
       projectId: string;
     };
-
     if (!done) {
       const production = await prisma.production.deleteMany({
         where: {
@@ -20,7 +19,16 @@ export default withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
         },
       });
       return res.status(200).json(production);
-    } else {
+    } 
+    else if (done === 'all') {
+      const production = await prisma.production.deleteMany({
+        where: {
+          projectId,
+        },
+      });
+      return res.status(200).json(production);
+    }
+    else {
       const production = await prisma.production.upsert({
         create: {
           date: new Date(date),
