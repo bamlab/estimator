@@ -339,15 +339,20 @@ export default function VersionPage({
               control={control}
               rules={{ required: REQUIRED_FIELD_ERROR_TEXT }}
               render={({ field: { onChange, value } }) => (
-                <Textarea
-                  fullWidth
-                  label="Reason for change"
-                  status={isError ? "error" : undefined}
-                  onChange={onChange}
-                  value={value}
-                  maxLength={80}
-                  maxRows={2}
-                />
+                <div>
+                  <Textarea
+                    fullWidth
+                    label="Reason for change"
+                    status={isError ? "error" : undefined}
+                    onChange={onChange}
+                    value={value}
+                    maxLength={50}
+                    maxRows={1}
+                  />
+                  <LimitCounter>
+                    <HelperText text={value.length.toString() + "/50"} />
+                  </LimitCounter>
+                </div>
               )}
             />
             <Controller
@@ -401,4 +406,8 @@ const VolumeInformation = styled.div`
 const FormLabel = styled(Text)`
   font-size: 14px;
   margin-bottom: 6px;
+`;
+
+const LimitCounter = styled.div`
+  text-align: right;
 `;
