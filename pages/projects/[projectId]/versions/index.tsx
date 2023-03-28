@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { Button, Col, Grid, Row, Spacer, Text } from "@nextui-org/react";
+import { Button, Col, Grid, Spacer, Text } from "@nextui-org/react";
 import wretch from "wretch";
 import { GetServerSideProps } from "next";
 import { MainLayout } from "../../../../src/components/Layouts/MainLayout";
