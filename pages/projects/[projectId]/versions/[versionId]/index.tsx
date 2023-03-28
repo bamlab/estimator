@@ -259,7 +259,7 @@ export default function VersionPage({
             <h3>Adjustment History</h3>
 
             <AdjustmentHistoryTable
-              endDate={productionEndDate}
+              project={project}
               releases={sortedReleases}
             />
           </Col>

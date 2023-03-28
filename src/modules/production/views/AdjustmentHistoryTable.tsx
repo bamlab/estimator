@@ -1,42 +1,97 @@
 import { differenceInBusinessDays, parseISO } from "date-fns";
 import { formatDate } from "../../../utils/formatDate";
-import { ReleaseDTO } from "../../project/types";
-import { Table } from "@nextui-org/react";
+import { FullProjectDTO, ReleaseDTO } from "../../project/types";
+import { Table, Tooltip } from "@nextui-org/react";
+import { InfoSquare } from "react-iconly";
+// import "../Tooltip.css";
 
 type Props = {
-  endDate: Date;
+  project: FullProjectDTO;
   releases: ReleaseDTO[];
 };
 
-export const AdjustmentHistoryTable = ({ endDate, releases }: Props) => {
-  const dayDifference = (newDate: string, oldDate: Date) => {
-    return differenceInBusinessDays(oldDate, parseISO(newDate));
+export const AdjustmentHistoryTable = ({ project, releases }: Props) => {
+  const dayDifference = (newDate: string, oldDate: string) => {
+    const n = differenceInBusinessDays(parseISO(newDate), parseISO(oldDate));
+    return (n <= 0 ? "" : "+") + String(n);
   };
   const volDifference = (newVol: number, originalVol: number) => {
-    return newVol - originalVol;
+    const n = newVol - originalVol;
+    return (n <= 0 ? "" : "+") + String(n);
+  };
+
+  const conditionalStyling = (n: string, unit: string) => {
+    if (unit == "days") {
+      if (n[0] == "-") return PositiveCell;
+      else if (n[0] == "+") return NegativeCell;
+      else return NeutralCell;
+    } else {
+      if (n[0] == "-") return NegativeCell;
+      else if (n[0] == "+") return PositiveCell;
+      else return NeutralCell;
+    }
   };
 
   return (
-    <Table css={{ AdjustmentTable }}>
+    <Table>
       <Table.Header>
-        <Table.Column>{"Reason for change"}</Table.Column>
-        <Table.Column>{"Date"}</Table.Column>
-        <Table.Column>{"Volume Change (points)"}</Table.Column>
-        <Table.Column>{"End-date Change (days)"}</Table.Column>
+        <Table.Column width={500} css={{ Header }}>
+          Reason for Change
+        </Table.Column>
+        <Table.Column css={Header}>Date of Change</Table.Column>
+        <Table.Column css={Header} width={150}>
+          <Tooltip
+            content={
+              "Increase or decrease in volume compared to original sprint"
+            }
+            offset={25}
+          >
+            <InfoSquare set="bold" primaryColor="#a3a3a3" />{" "}
+          </Tooltip>
+          Change in Volume ({project.unit.toLocaleLowerCase()}s)
+        </Table.Column>
+        <Table.Column css={Header} width={150}>
+          <Tooltip
+            content={
+              "Increase or decrease in length of sprint compared to original sprint (in business days)"
+            }
+            offset={25}
+          >
+            <InfoSquare set="bold" primaryColor="#a3a3a3" />{" "}
+          </Tooltip>
+          Change in Days
+        </Table.Column>
       </Table.Header>
       <Table.Body>
-        {releases.map((item) => {
+        {releases.slice(1).map((item) => {
           return (
             <Table.Row key={item.id}>
               <Table.Cell> {item.comment} </Table.Cell>
-              <Table.Cell> {formatDate(parseISO(item.updatedAt))} </Table.Cell>
-              <Table.Cell>
+              <Table.Cell css={{ textAlign: "center" }}>
                 {" "}
+                {formatDate(parseISO(item.updatedAt))}{" "}
+              </Table.Cell>
+              <Table.Cell
+                css={conditionalStyling(
+                  volDifference(item.volume, releases[0].volume),
+                  "volume"
+                )}
+              >
                 {volDifference(item.volume, releases[0].volume)}
               </Table.Cell>
-              <Table.Cell>
-                {" "}
-                {dayDifference(item.forecastEndDate, endDate)}
+              <Table.Cell
+                css={conditionalStyling(
+                  dayDifference(
+                    item.forecastEndDate,
+                    releases[0].forecastEndDate
+                  ),
+                  "days"
+                )}
+              >
+                {dayDifference(
+                  item.forecastEndDate,
+                  releases[0].forecastEndDate
+                )}
               </Table.Cell>
             </Table.Row>
           );
@@ -46,6 +101,21 @@ export const AdjustmentHistoryTable = ({ endDate, releases }: Props) => {
   );
 };
 
-const AdjustmentTable = {
-  "text-align": "center",
+const Header = {
+  textAlign: "center",
+};
+
+const PositiveCell = {
+  backgroundColor: "#d9ffdd",
+  textAlign: "center",
+};
+
+const NegativeCell = {
+  backgroundColor: "#ffc9c9",
+  textAlign: "center",
+};
+
+const NeutralCell = {
+  backgroundColor: "#FFFFFF",
+  textAlign: "center",
 };
