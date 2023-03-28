@@ -3,7 +3,7 @@ import { format, parseISO } from "date-fns";
 import React from "react";
 import { VersionDTO } from "../../project/types";
 import { getVersionColor } from "../helpers/getVersionColor";
-
+import styled from "@emotion/styled";
 interface Props {
   version: VersionDTO;
   isLast?: boolean;
@@ -29,6 +29,24 @@ export const VersionItem: React.FC<Props> = ({
           "dd/MM/yyyy"
         )}`}
       </Text>
+      <Spacer x={1} />
+      {version.releases.length > 1 ? (
+        <EditedText>
+          <Text size={12}>
+            {"Last edited: " +
+              version.releases[0].createdAt.substring(0, 10) +
+              " - Problem solving: " +
+              version.releases[0].reasonForChange}
+          </Text>
+        </EditedText>
+      ) : (
+        ""
+      )}
     </Row>
   );
 };
+
+const EditedText = styled.div`
+  flex: 1;
+  flex-direction: column;
+`;
