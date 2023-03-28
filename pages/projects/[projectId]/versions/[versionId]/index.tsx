@@ -228,7 +228,6 @@ export default function VersionPage({
   );
 
   const positiveChartPoints = data.filter((point) => !(point.remaining < 0));
-
   const remainingVolumeArray = data
     .filter((point) => !isNaN(point.remaining))
     .map((point) => point.remaining);
