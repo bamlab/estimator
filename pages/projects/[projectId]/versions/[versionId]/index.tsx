@@ -346,11 +346,11 @@ export default function VersionPage({
                     status={isError ? "error" : undefined}
                     onChange={onChange}
                     value={value}
-                    maxLength={80}
-                    maxRows={2}
+                    maxLength={50}
+                    maxRows={1}
                   />
                   <LimitCounter>
-                    <HelperText text={value.length.toString() + "/80"} />
+                    <HelperText text={value.length.toString() + "/50"} />
                   </LimitCounter>
                 </div>
               )}
