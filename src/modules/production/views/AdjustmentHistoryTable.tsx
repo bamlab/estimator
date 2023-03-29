@@ -39,27 +39,25 @@ export const AdjustmentHistoryTable = ({ project, releases }: Props) => {
           Reason for Change
         </Table.Column>
         <Table.Column css={Header}>Date of Change</Table.Column>
-        <Table.Column css={Header} width={150}>
+        <Table.Column css={TooltipHeader} width={150}>
           <Tooltip
             content={
               "Increase or decrease in volume compared to original sprint"
             }
             offset={25}
           >
-            <InfoSquare set="bold" primaryColor="#a3a3a3" />{" "}
+            Change in Volume ({project.unit.toLocaleLowerCase()}s)
           </Tooltip>
-          Change in Volume ({project.unit.toLocaleLowerCase()}s)
         </Table.Column>
-        <Table.Column css={Header} width={150}>
+        <Table.Column css={TooltipHeader} width={150}>
           <Tooltip
             content={
               "Increase or decrease in length of sprint compared to original sprint (in business days)"
             }
             offset={25}
           >
-            <InfoSquare set="bold" primaryColor="#a3a3a3" />{" "}
+            Change in Days
           </Tooltip>
-          Change in Days
         </Table.Column>
       </Table.Header>
       <Table.Body>
@@ -103,6 +101,12 @@ export const AdjustmentHistoryTable = ({ project, releases }: Props) => {
 
 const Header = {
   textAlign: "center",
+};
+
+const TooltipHeader = {
+  textAlign: "center",
+  "text-decoration": "underline dotted",
+  "text-underline-offset": "0.3em",
 };
 
 const PositiveCell = {
