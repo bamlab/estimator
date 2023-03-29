@@ -1,6 +1,7 @@
 import React from "react";
 import {
   CartesianGrid,
+  LabelList,
   Legend,
   Line,
   LineChart,
@@ -13,6 +14,7 @@ import { ChartPoint } from "../../../types/charts";
 import { ReleaseDTO } from "../../project/types";
 import { parseISO } from "date-fns";
 import { ChartLegend } from "./ChartLegend";
+import { getLabel } from "../helpers/computeChartLabel";
 
 export const DONE_STROKE_COLOR = "#0059ff";
 export const STANDARD_STROKE_COLOR = "#ff0000";
@@ -24,7 +26,6 @@ export const Chart = ({
   data: ChartPoint[];
   sortedReleases: ReleaseDTO[];
 }) => {
-
   return (
     <LineChart width={800} height={400} data={data} id="bdc">
       <Legend
@@ -37,7 +38,7 @@ export const Chart = ({
         }}
         content={() => <ChartLegend />}
       />
-      <XAxis dataKey="name"/>
+      <XAxis dataKey="name" />
       <YAxis />
       <CartesianGrid stroke="#ccc" />
       <Line type="linear" stroke={STANDARD_STROKE_COLOR} dataKey="standard" />
@@ -46,7 +47,14 @@ export const Chart = ({
         stroke={DONE_STROKE_COLOR}
         dataKey="forecastRemaining"
         strokeDasharray={"5 5"}
-      />
+      >
+        <LabelList
+          position={"top"}
+          valueAccessor={({ payload }: { payload: ChartPoint }) =>
+            getLabel(payload)
+          }
+        />
+      </Line>
       <Line type="linear" stroke={DONE_STROKE_COLOR} dataKey="remaining" />
       {sortedReleases.map((release, index) => {
         if (index !== 0) {
