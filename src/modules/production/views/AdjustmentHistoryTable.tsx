@@ -2,8 +2,6 @@ import { differenceInBusinessDays, parseISO } from "date-fns";
 import { formatDate } from "../../../utils/formatDate";
 import { FullProjectDTO, ReleaseDTO } from "../../project/types";
 import { Table, Tooltip } from "@nextui-org/react";
-import { InfoSquare } from "react-iconly";
-// import "../Tooltip.css";
 
 type Props = {
   project: FullProjectDTO;
@@ -64,7 +62,7 @@ export const AdjustmentHistoryTable = ({ project, releases }: Props) => {
         {releases.slice(1).map((item) => {
           return (
             <Table.Row key={item.id}>
-              <Table.Cell> {item.comment} </Table.Cell>
+              <Table.Cell> {item.description} </Table.Cell>
               <Table.Cell css={{ textAlign: "center" }}>
                 {" "}
                 {formatDate(parseISO(item.updatedAt))}{" "}
