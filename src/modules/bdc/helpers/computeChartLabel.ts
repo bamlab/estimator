@@ -1,7 +1,7 @@
 import { ChartPoint } from "../../../types/charts";
 
 export const getLabel = (payload: ChartPoint) => {
-  if (payload.remaining) {
+  if (payload.remaining && payload.standard) {
     const difference = payload.remaining - payload.standard;
     if (difference > 0) {
       return "-" + Math.round(difference);
