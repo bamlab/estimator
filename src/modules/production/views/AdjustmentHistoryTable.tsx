@@ -62,7 +62,7 @@ export const AdjustmentHistoryTable = ({ project, releases }: Props) => {
         {releases.slice(1).map((item) => {
           return (
             <Table.Row key={item.id}>
-              <Table.Cell> {item.description} </Table.Cell>
+              <Table.Cell> {item.reasonForChange} </Table.Cell>
               <Table.Cell css={{ textAlign: "center" }}>
                 {" "}
                 {formatDate(parseISO(item.updatedAt))}{" "}
